@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PT Kalibesar Raya Utama - Portal Konsultan Asuransi Palu</title>
+    <style>
+        :root {
+            --primary-red: #b91c1c;
+            --dark-red: #7f1d1d;
+            --pure-white: #ffffff;
+            --bg-light: #f8fafc;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        nav {
+            background-color: var(--pure-white);
+            border-bottom: 3px solid var(--primary-red);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        }
+
+        .brand-logo {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--primary-red);
+            letter-spacing: 0.5px;
+        }
+
+        .branch-badge {
+            background-color: var(--primary-red);
+            color: var(--pure-white);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
+            color: var(--pure-white);
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .hero h1 {
+            font-size: 2.1rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.05rem;
+            max-width: 720px;
+            margin: 0 auto;
+            color: #ffe4e6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .section-title h2 {
+            font-size: 1.8rem;
+            color: var(--dark-red);
+        }
+
+        .lob-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .lob-card {
+            background-color: var(--pure-white);
+            border: 1px solid var(--border-color);
+            border-top: 4px solid var(--primary-red);
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .lob-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px rgba(185, 28, 28, 0.1);
+        }
+
+        .lob-card h3 {
+            color: var(--primary-red);
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .lob-card p {
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .btn-link {
+            display: inline-block;
+            text-align: center;
+            background-color: var(--primary-red);
+            color: var(--pure-white);
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: background-color 0.2s;
+        }
+
+        .btn-link:hover {
+            background-color: var(--dark-red);
+        }
+
+        .btn-disabled {
+            background-color: #cbd5e1;
+            color: #64748b;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        footer {
+            background-color: var(--pure-white);
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            padding: 20px 15px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 60px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="brand-logo">
+            PT KALIBESAR RAYA UTAMA
+            <span class="branch-badge">CABANG PALU</span>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <h1>Portal Simulasi Premi LOB</h1>
+        <p>Silakan pilih lini usaha (Line of Business) di bawah ini untuk menghitung estimasi premi komprehensif sesuai risiko aset Anda.</p>
+    </header>
+
+    <div class="container">
+        <div class="section-title">
+            <h2>Pilih Line of Business (LOB)</h2>
+        </div>
+
+        <div class="lob-grid">
+            <!-- PAR Card (Aktif) -->
+            <div class="lob-card">
+                <div>
+                    <h3>Property All Risk (PAR)</h3>
+                    <p>Simulasi proteksi aset properti dan bangunan, meliputi jaminan FLEXAS, TSFWD (banjir), RSMDCC, Others, hingga EQVET (gempa bumi).</p>
+                </div>
+                <a href="par.html" class="btn-link">Buka Kalkulator PAR &rarr;</a>
+            </div>
+
+            <!-- Heavy Equipment -->
+            <div class="lob-card">
+                <div>
+                    <h3>Heavy Equipment</h3>
+                    <p>Proteksi komprehensif alat berat pertambangan, konstruksi, dan perkebunan di wilayah Sulawesi Tengah.</p>
+                </div>
+                <a href="#" class="btn-link btn-disabled">Segera Hadir</a>
+            </div>
+
+            <!-- Motor Vehicle Card (Aktif) -->
+            <div class="lob-card">
+                <div>
+                    <h3>Motor Vehicle</h3>
+                    <p>Simulasi asuransi kendaraan operasional niaga dan armada perusahaan (Comprehensive & TLO) sesuai tarif OJK Wilayah 3.</p>
+                </div>
+                <a href="mv.html" class="btn-link">Buka Kalkulator MV &rarr;</a>
+            </div>
+
+            <!-- Marine Hull -->
+            <div class="lob-card">
+                <div>
+                    <h3>Marine Hull</h3>
+                    <p>Perlindungan rangka kapal tongkang, tugboat, dan armada logistik laut.</p>
+                </div>
+                <a href="#" class="btn-link btn-disabled">Segera Hadir</a>
+            </div>
+
+            <!-- Marine Cargo -->
+            <div class="lob-card">
+                <div>
+                    <h3>Marine Cargo</h3>
+                    <p>Jaminan pengangkutan kargo logistik via darat, laut, dan udara.</p>
+                </div>
+                <a href="#" class="btn-link btn-disabled">Segera Hadir</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 PT Kalibesar Raya Utama - Cabang Palu. Terdaftar & Diawasi Otoritas Jasa Keuangan (OJK).</p>
+    </footer>
+
+</body>
+</html>

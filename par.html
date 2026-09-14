@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Property All Risk (PAR) - PT Kalibesar Raya Utama Palu</title>
+    <style>
+        :root {
+            --primary-red: #b91c1c;
+            --dark-red: #7f1d1d;
+            --pure-white: #ffffff;
+            --bg-light: #f8fafc;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg-light); color: var(--text-dark); line-height: 1.5; }
+        nav { background: var(--pure-white); border-bottom: 3px solid var(--primary-red); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .brand-logo { font-size: 1.15rem; font-weight: 800; color: var(--primary-red); }
+        .nav-back { text-decoration: none; color: var(--primary-red); font-weight: 600; font-size: 0.9rem; }
+        .container { max-width: 1150px; margin: 25px auto; padding: 0 20px; }
+
+        .doc-section { background: var(--pure-white); border-left: 5px solid var(--primary-red); padding: 16px 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
+        .doc-section h3 { color: var(--dark-red); font-size: 1.05rem; margin-bottom: 4px; }
+        .doc-section p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; }
+        .doc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
+        .doc-card { border: 1px solid var(--border-color); background: var(--bg-light); border-radius: 6px; padding: 10px 12px; display: flex; flex-direction: column; justify-content: space-between; }
+        .doc-title { font-size: 0.83rem; font-weight: 700; }
+        .doc-desc { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; }
+        .btn-download { display: inline-block; text-align: center; background: var(--primary-red); color: var(--pure-white); text-decoration: none; padding: 5px 10px; border-radius: 4px; font-weight: 600; font-size: 0.78rem; }
+
+        .card { background: var(--pure-white); border-top: 4px solid var(--primary-red); border-radius: 8px; padding: 22px; box-shadow: 0 4px 6px rgba(0,0,0,0.03); margin-bottom: 25px; }
+        .card-header h2 { color: var(--dark-red); font-size: 1.35rem; }
+        .form-row { display: flex; gap: 15px; margin: 15px 0; flex-wrap: wrap; }
+        .form-group { flex: 1; min-width: 200px; }
+        label { display: block; font-weight: 600; font-size: 0.84rem; margin-bottom: 5px; }
+        input[type="text"], input[type="number"], select { width: 100%; padding: 8px 10px; border: 1px solid var(--border-color); border-radius: 5px; font-size: 0.9rem; outline: none; }
+        input:focus, select:focus { border-color: var(--primary-red); }
+
+        .info-panel { background: #f1f5f9; border: 1px solid var(--border-color); padding: 12px 16px; border-radius: 6px; margin-bottom: 18px; display: flex; gap: 20px; flex-wrap: wrap; }
+        .info-panel-item { flex: 1; min-width: 220px; }
+        .info-panel-title { font-size: 0.78rem; color: var(--text-muted); font-weight: 600; }
+        .info-panel-value { font-size: 0.9rem; font-weight: 700; color: var(--primary-red); }
+
+        .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid #e2e8f0; font-size: 0.88rem; }
+        th { background: #f1f5f9; font-weight: 700; }
+        .td-input input { padding: 6px 6px; font-size: 0.85rem; }
+        .td-premi { font-weight: 600; text-align: right; }
+        tr.row-disabled { background: #f8fafc; opacity: 0.45; }
+        tr.row-disabled td.td-premi { color: #94a3b8; text-decoration: line-through; }
+        .total-row td { color: var(--dark-red); font-size: 1.05rem; font-weight: bold; background: #fff1f2; border-top: 2px solid var(--primary-red); border-bottom: 2px solid var(--primary-red); }
+
+        .wa-btn { display: block; text-align: center; background: #16a34a; color: #fff; text-decoration: none; padding: 14px; border-radius: 6px; font-weight: bold; margin-top: 22px; }
+        footer { text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.85rem; }
+
+        @media (max-width: 600px) {
+            .container { padding: 0 8px; margin: 10px auto; }
+            .card { padding: 14px; }
+            table { min-width: 760px; }
+            .td-input input { min-width: 95px; font-size: 14px; }
+            input[type="text"], input[type="number"], select { font-size: 15px; }
+            input[type="checkbox"] { transform: scale(1.2); }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="brand-logo">PT KALIBESAR RAYA UTAMA - CABANG PALU</div>
+        <a href="index.html" class="nav-back">&larr; Kembali ke Portal Utama</a>
+    </nav>
+
+    <div class="container">
+        <!-- Dokumen Regulasi OJK -->
+        <div class="doc-section">
+            <h3>Dokumen Referensi Tarif & Okupasi OJK</h3>
+            <p>Silakan unduh dokumen acuan resmi di bawah ini untuk melihat daftar kode okupasi lengkap dan zona gempa wilayah Anda:</p>
+            <div class="doc-grid">
+                <div class="doc-card">
+                    <div>
+                        <div class="doc-title">Lampiran I - Harta Benda</div>
+                        <div class="doc-desc">Tarif FLEXAS per mil (%0) & ratusan kode okupasi[cite: 2, 3].</div>
+                    </div>
+                    <a href="SAL - Lampiran I - Property Amandemen.pdf" class="btn-download" target="_blank" download>Buka PDF</a>
+                </div>
+                <div class="doc-card">
+                    <div>
+                        <div class="doc-title">Lampiran II - Banjir</div>
+                        <div class="doc-desc">Tarif perluasan TSFWD & kerusakan air.</div>
+                    </div>
+                    <a href="SAL - Lampiran II - Banjir.pdf" class="btn-download" target="_blank" download>Buka PDF</a>
+                </div>
+                <div class="doc-card">
+                    <div>
+                        <div class="doc-title">Lampiran III - Gempa</div>
+                        <div class="doc-desc">Tarif EQVET, tabel wilayah zona 1-5, & kode 2976.</div>
+                    </div>
+                    <a href="SAL - Lampiran III - Earth Quake.pdf" class="btn-download" target="_blank" download>Buka PDF</a>
+                </div>
+                <div class="doc-card">
+                    <div>
+                        <div class="doc-title">Okupasi Properti Umum</div>
+                        <div class="doc-desc">Ringkasan okupasi properti umum komersial.</div>
+                    </div>
+                    <a href="Okupasi Property Umum.pdf" class="btn-download" target="_blank" download>Buka PDF</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>Kalkulator Property All Risk (PAR)</h2>
+                <span style="font-size: 0.85rem; color: var(--text-muted);">Pencarian otomatis zona gempa OJK berdasarkan kota/kabupaten serta auto-rate FLEXAS[cite: 2, 4].</span>
+            </div>
+
+            <!-- Parameter Input Objek -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="occCodeInput">Kode Okupasi (Ketik angka)</label>
+                    <input type="text" id="occCodeInput" value="29411" placeholder="Contoh: 2976, 2934, 29411" oninput="syncOccupationCode()">
+                </div>
+                <div class="form-group">
+                    <label for="objectDesc">Deskripsi Penggunaan Objek</label>
+                    <input type="text" id="objectDesc" value="Hotel Non-Bintang / Penginapan / Losmen" placeholder="Contoh: Rumah Tinggal, Ruko, Gudang" oninput="hitungPAR()">
+                </div>
+                <div class="form-group">
+                    <label for="cityInput">Kota / Kabupaten (Ketik manual)</label>
+                    <input type="text" id="cityInput" list="cityDatalist" value="Kota Palu" placeholder="Ketik nama kota/kabupaten..." oninput="syncEarthquake()">
+                    <datalist id="cityDatalist"></datalist>
+                </div>
+                <div class="form-group">
+                    <label for="tsiInput">Nilai Pertanggungan (IDR)</label>
+                    <input type="number" id="tsiInput" value="270000000" step="10000000" oninput="hitungPAR()">
+                </div>
+                <div class="form-group">
+                    <label for="tenorInput">Jangka Waktu (Tahun)</label>
+                    <input type="number" id="tenorInput" value="1" min="1" step="1" oninput="hitungPAR()">
+                </div>
+            </div>
+
+            <!-- Panel Deteksi Gempa Otomatis -->
+            <div class="info-panel">
+                <div class="info-panel-item">
+                    <div class="info-panel-title">Klasifikasi Okupasi:</div>
+                    <div class="info-panel-value" id="occTypeLabel">Commercial & Industrial (Non-2976)</div>
+                </div>
+                <div class="info-panel-item">
+                    <div class="info-panel-title">Zona Gempa & Tarif EQVET:</div>
+                    <div class="info-panel-value" id="earthquakeInfo">Kota Palu: ZONA 5 OJK (Tarif: 0.1900%)</div>
+                </div>
+            </div>
+
+            <!-- Tabel Detail Klausul PAR -->
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 6%; text-align: center;">Pilih</th>
+                            <th style="width: 14%;">Jaminan</th>
+                            <th style="width: 18%;">TSI (IDR)</th>
+                            <th style="width: 18%;">Rate (%)</th>
+                            <th style="width: 20%;">Okupasi / Keterangan Zona</th>
+                            <th style="width: 8%;">Tahun</th>
+                            <th style="width: 16%; text-align: right;">Premi (IDR)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr id="rowFLEXAS">
+                            <td style="text-align: center;"><input type="checkbox" id="checkFLEXAS" checked disabled title="Jaminan Pokok Wajib"></td>
+                            <td><strong>FLEXAS</strong></td>
+                            <td class="tsiCell">-</td>
+                            <td class="td-input"><input type="number" id="rateFLEXAS" value="0.08860000" step="0.00000001" oninput="hitungPAR()"></td>
+                            <td class="td-input"><input type="text" id="zoneFLEXAS" value="Kode: 29411" oninput="hitungPAR()"></td>
+                            <td><span class="outTahun">1</span></td>
+                            <td class="td-premi" id="premiFLEXAS">-</td>
+                        </tr>
+                        <tr id="rowTSFWD">
+                            <td style="text-align: center;"><input type="checkbox" id="checkTSFWD" checked onchange="toggleRow('TSFWD')"></td>
+                            <td><strong>TSFWD</strong></td>
+                            <td class="tsiCell">-</td>
+                            <td class="td-input"><input type="number" id="rateTSFWD" value="0.04500000" step="0.00000001" oninput="hitungPAR()"></td>
+                            <td class="td-input"><input type="text" id="zoneTSFWD" value="Kota Palu" oninput="hitungPAR()"></td>
+                            <td><span class="outTahun">1</span></td>
+                            <td class="td-premi" id="premiTSFWD">-</td>
+                        </tr>
+                        <tr id="rowRSMDCC">
+                            <td style="text-align: center;"><input type="checkbox" id="checkRSMDCC" checked disabled></td>
+                            <td><strong>RSMDCC</strong></td>
+                            <td class="tsiCell">-</td>
+                            <td class="td-input"><input type="number" id="rateRSMDCC" value="0.00000100" step="0.00000001" oninput="hitungPAR()"></td>
+                            <td class="td-input"><input type="text" id="zoneRSMDCC" value="-" oninput="hitungPAR()"></td>
+                            <td><span class="outTahun">1</span></td>
+                            <td class="td-premi" id="premiRSMDCC">-</td>
+                        </tr>
+                        <tr id="rowOTHERS">
+                            <td style="text-align: center;"><input type="checkbox" id="checkOTHERS" checked disabled></td>
+                            <td><strong>OTHERS</strong></td>
+                            <td class="tsiCell">-</td>
+                            <td class="td-input"><input type="number" id="rateOTHERS" value="0.00000100" step="0.00000001" oninput="hitungPAR()"></td>
+                            <td class="td-input"><input type="text" id="zoneOTHERS" value="-" oninput="hitungPAR()"></td>
+                            <td><span class="outTahun">1</span></td>
+                            <td class="td-premi" id="premiOTHERS">-</td>
+                        </tr>
+                        <tr id="rowEQVET">
+                            <td style="text-align: center;"><input type="checkbox" id="checkEQVET" checked onchange="toggleRow('EQVET')"></td>
+                            <td><strong>EQVET</strong></td>
+                            <td class="tsiCell">-</td>
+                            <td class="td-input"><input type="number" id="rateEQVET" value="0.19000000" step="0.00000001" oninput="hitungPAR()"></td>
+                            <td class="td-input"><input type="text" id="zoneEQVET" value="Zona 5" oninput="hitungPAR()"></td>
+                            <td><span class="outTahun">1</span></td>
+                            <td class="td-premi" id="premiEQVET">-</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td>-</td>
+                            <td>Premi Amount</td>
+                            <td>-</td>
+                            <td id="totalRate">-</td>
+                            <td>-</td>
+                            <td><span class="outTahun">1</span></td>
+                            <td class="td-premi" id="totalPremi">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 12px; font-style: italic;">
+                * Rate FLEXAS diisi dalam persen (%). Jika merujuk tabel Lampiran I OJK yang menggunakan per mil (%0), bagi angka tersebut dengan 10[cite: 2, 3].
+            </p>
+
+            <a href="#" id="waBtnPAR" class="wa-btn" target="_blank">Konsultasikan Rincian PAR via WhatsApp Palu</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 PT Kalibesar Raya Utama - Cabang Palu. Terdaftar & Diawasi Otoritas Jasa Keuangan (OJK)[cite: 1].</p>
+    </footer>
+
+    <script>
+        // Kamus Okupasi Umum & Rate Batas Bawah Kelas I (Lampiran I & Acuan Internal)
+        // Satuan %0 sudah dibagi 10 menjadi %
+        const occLookup = {
+            "2976":  { desc: "Rumah Tinggal (Dwelling House)", rate: 0.0294 },
+            "29761": { desc: "Kos-kosan / Asrama Hunian", rate: 0.0478 },
+            "2971":  { desc: "Kantor / Apartemen <= 6 Lantai", rate: 0.0368 },
+            "2931":  { desc: "Perkantoran (Office)", rate: 0.0540 },
+            "2934":  { desc: "Toko / Ruko (Non-Chain Store)", rate: 0.1520 },
+            "29395": { desc: "Showroom Tanpa Bengkel", rate: 0.1520 },
+            "29411": { desc: "Hotel Non-Bintang / Penginapan / Losmen", rate: 0.0886 },
+            "29412": { desc: "Hotel Bintang 3 ke Atas", rate: 0.0483 },
+            "29371": { desc: "Gudang Pribadi", rate: 0.1127 },
+            "2961":  { desc: "Bengkel Mobil (Body Repair/Service)", rate: 0.1088 },
+            "2945":  { desc: "Restoran / Rumah Makan Permanen", rate: 0.1479 },
+            "2946":  { desc: "Warung Makan / Kedai Non-Permanen", rate: 0.2278 },
+            "2947":  { desc: "Salon / Barbershop", rate: 0.0781 },
+            "2943":  { desc: "Fitness Center / Gym / Sport Stadium", rate: 0.0563 },
+            "2922":  { desc: "Studio Foto / Cetak Foto", rate: 0.0516 },
+            "2928":  { desc: "Wartel / Warnet / Sentral Telepon", rate: 0.0645 },
+            "2930":  { desc: "Apotek (Drug Store)", rate: 0.0889 },
+            "2951":  { desc: "Tempat Kursus / Sekolah / Faskes", rate: 0.0386 },
+            "2952":  { desc: "Tempat Ibadah / Rumah Ibadah", rate: 0.0352 },
+            "2742":  { desc: "Pabrik Minyak Kelapa Sawit (CPO)", rate: 0.0810 },
+            "200":   { desc: "Industri / Manufaktur Ringan", rate: 0.1350 }
+        };
+
+        // Database Wilayah & Zona Gempa OJK (Lampiran III Tabel III.D)
+        const cityZones = {
+            // Sulawesi Tengah (Lengkap)
+            "KOTA PALU": 5, "PALU": 5,
+            "KAB. MOROWALI": 4, "MOROWALI": 4,
+            "KAB. MOROWALI UTARA": 4, "MOROWALI UTARA": 4,
+            "KAB. POSO": 5, "POSO": 5,
+            "KAB. DONGGALA": 4, "DONGGALA": 4,
+            "KAB. PARIGI MOUTONG": 4, "PARIGI MOUTONG": 4, "PARIGI": 4,
+            "KAB. SIGI": 4, "SIGI": 4,
+            "KAB. TOLI-TOLI": 5, "TOLI-TOLI": 5, "TOLITOLI": 5,
+            "KAB. BUOL": 5, "BUOL": 5,
+            "KAB. BANGGAI": 4, "BANGGAI": 4, "LUWUK": 4,
+            "KAB. BANGGAI KEPULAUAN": 4, "BANGGAI KEPULAUAN": 4,
+            "KAB. BANGGAI LAUT": 4, "BANGGAI LAUT": 4,
+            "KAB. TOJO UNA-UNA": 4, "TOJO UNA-UNA": 4, "AMPANA": 4,
+
+            // Sulawesi Lainnya
+            "KOTA MAKASSAR": 2, "MAKASSAR": 2, "KAB. GOWA": 2, "KAB. MAROS": 2, "KAB. BONE": 2,
+            "KAB. LUWU": 2, "KAB. LUWU TIMUR": 4, "KAB. LUWU UTARA": 3, "KOTA PALOPO": 3,
+            "KAB. MAMUJU": 4, "MAMUJU": 4, "KAB. MAJENE": 5, "KAB. POLEWALI MANDAR": 5,
+            "KOTA KENDARI": 5, "KENDARI": 5, "KOTA MANADO": 4, "MANADO": 4, "KOTA BITUNG": 5, "KOTA GORONTALO": 5,
+
+            // Jawa & Bali
+            "KOTA JAKARTA PUSAT": 4, "JAKARTA": 4, "JAKARTA PUSAT": 4, "JAKARTA SELATAN": 4, "JAKARTA BARAT": 4,
+            "KAB. BOGOR": 4, "KOTA BOGOR": 4, "KOTA DEPOK": 4, "KOTA TANGERANG": 4, "KOTA BEKASI": 4,
+            "KOTA BANDUNG": 5, "BANDUNG": 5, "KOTA SEMARANG": 3, "SEMARANG": 3, "KOTA SURABAYA": 3, "SURABAYA": 3,
+            "KOTA YOGYAKARTA": 4, "YOGYAKARTA": 4, "KAB. BANTUL": 5, "BANTUL": 5, "KOTA DENPASAR": 4, "DENPASAR": 4,
+
+            // Sumatera, Kalimantan, Papua & Maluku
+            "KOTA BENGKULU": 5, "BENGKULU": 5, "KOTA PADANG": 5, "PADANG": 5, "KOTA BUKITTINGGI": 5,
+            "KOTA BANDA ACEH": 5, "BANDA ACEH": 5, "KOTA MEDAN": 4, "MEDAN": 4, "KOTA PALEMBANG": 3,
+            "KOTA BALIKPAPAN": 1, "BALIKPAPAN": 1, "KOTA SAMARINDA": 1, "KOTA PONTIANAK": 1, "KOTA BANJARMASIN": 1,
+            "KOTA AMBON": 5, "AMBON": 5, "KOTA JAYAPURA": 3, "JAYAPURA": 3, "KOTA SORONG": 5
+        };
+
+        // Tarif Gempa OJK (Lampiran III Tabel III.A: Steel/Wood/RC <= 9 Lantai: Permil / 10 -> %)
+        const eqRates = {
+            DWELLING_2976: [0.076, 0.079, 0.104, 0.135, 0.160], // Dwelling House (Kode 2976)
+            COMMERCIAL:    [0.075, 0.076, 0.100, 0.143, 0.190]  // Commercial / Industrial
+        };
+
+        const $ = id => document.getElementById(id);
+        const val = id => parseFloat($(id)?.value) || 0;
+        const formatIDR = n => "IDR " + Number(n).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        // Inisialisasi datalist kota/kabupaten
+        function populateCityDatalist() {
+            const dl = $("cityDatalist");
+            const uniqueCities = [...new Set(Object.keys(cityZones).filter(k => k.startsWith("KOTA") || k.startsWith("KAB")))];
+            dl.innerHTML = uniqueCities.map(c => `<option value="${c}"></option>`).join("");
+        }
+
+        // Sinkronisasi saat kode okupasi diketik
+        function syncOccupationCode() {
+            const code = $("occCodeInput").value.trim();
+            $("zoneFLEXAS").value = code ? `Kode: ${code}` : "-";
+
+            if (occLookup[code]) {
+                $("objectDesc").value = occLookup[code].desc;
+                $("rateFLEXAS").value = occLookup[code].rate.toFixed(8);
+            }
+            syncEarthquake();
+        }
+
+        // Sinkronisasi saat kota diketik manual
+        function syncEarthquake() {
+            const rawCity = $("cityInput").value.trim();
+            const cleanKey = rawCity.toUpperCase();
+            const occCode = $("occCodeInput").value.trim();
+            const isDwelling = occCode === "2976";
+
+            // Cari zona dari basis data
+            let detectedZone = cityZones[cleanKey];
+            if (!detectedZone) {
+                // Pencarian parsial jika input tanpa imbuhan 'Kota' atau 'Kab'
+                const matchKey = Object.keys(cityZones).find(k => k.includes(cleanKey) || cleanKey.includes(k));
+                detectedZone = matchKey ? cityZones[matchKey] : 5; // Default zona 5 jika di wilayah rawan
+            }
+
+            $("zoneTSFWD").value = rawCity || "Kota Palu";
+            $("zoneEQVET").value = `Zona ${detectedZone} (${rawCity || 'Palu'})`;
+
+            // Hitung rate gempa
+            const rateList = isDwelling ? eqRates.DWELLING_2976 : eqRates.COMMERCIAL;
+            const eqRate = rateList[detectedZone - 1];
+
+            $("rateEQVET").value = eqRate.toFixed(8);
+            $("occTypeLabel").innerHTML = isDwelling 
+                ? "<span style='color:#16a34a;'>Dwelling House (Kode 2976)</span>" 
+                : `Commercial / Industrial (Kode: ${occCode || '-'})`;
+            $("earthquakeInfo").innerHTML = `${rawCity || 'Palu'}: <strong>ZONA ${detectedZone} OJK</strong> (${isDwelling ? 'Tabel III.A.2' : 'Tabel III.A.1'}: <strong>${eqRate}%</strong>)`;
+
+            hitungPAR();
+        }
+
+        function toggleRow(id) {
+            const isChecked = $("check" + id).checked;
+            $("row" + id).classList.toggle("row-disabled", !isChecked);
+            $("rate" + id).disabled = !isChecked;
+            $("zone" + id).disabled = !isChecked;
+            hitungPAR();
+        }
+
+        function hitungPAR() {
+            const tsi = val("tsiInput");
+            const tenor = val("tenorInput") || 1;
+            const tsiFmt = formatIDR(tsi).split(",")[0];
+
+            document.querySelectorAll(".tsiCell").forEach(el => el.innerText = tsiFmt);
+            document.querySelectorAll(".outTahun").forEach(el => el.innerText = tenor);
+
+            const clauses = ["FLEXAS", "TSFWD", "RSMDCC", "OTHERS", "EQVET"];
+            let totalRate = 0, totalPremi = 0;
+
+            clauses.forEach(k => {
+                const isChecked = $("check" + k).checked;
+                const r = isChecked ? val("rate" + k) : 0;
+                const p = isChecked ? (tsi * (r / 100) * tenor) : 0;
+
+                $("premi" + k).innerText = isChecked ? formatIDR(p) : "Dikecualikan";
+                totalRate += r;
+                totalPremi += p;
+            });
+
+            $("totalRate").innerText = totalRate.toLocaleString('id-ID', { minimumFractionDigits: 8, maximumFractionDigits: 8 }) + "%";
+            $("totalPremi").innerText = formatIDR(totalPremi);
+
+            // WhatsApp link generator
+            const desc = $("objectDesc").value.trim() || "Properti";
+            const occ = $("occCodeInput").value.trim() || "-";
+            const city = $("cityInput").value.trim() || "Palu";
+            const textWA = `Halo Konsultan PT Kalibesar Raya Utama Cabang Palu,%0A%0ASaya melakukan simulasi Property All Risk (PAR):%0A- Objek: ${encodeURIComponent(desc)} (Kode Okupasi: ${occ})%0A- Lokasi: ${encodeURIComponent(city)}%0A- TSI: ${encodeURIComponent(formatIDR(tsi))}%0A- Tenor: ${tenor} Tahun%0A- TSFWD: ${$("checkTSFWD").checked ? 'Ya' : 'Dikecualikan'} | EQVET: ${$("checkEQVET").checked ? 'Ya' : 'Dikecualikan'}%0A- Total Rate: ${encodeURIComponent(totalRate.toFixed(8))}%25%0A- Estimasi Total Premi: ${encodeURIComponent(formatIDR(totalPremi))} (Belum Admin)%0A%0AMohon bantuan audit penawaran resmi. Terima kasih.`;
+            $("waBtnPAR").href = `https://wa.me/6281234567890?text=${textWA}`;
+        }
+
+        // Inisialisasi awal
+        populateCityDatalist();
+        syncOccupationCode();
+    </script>
+</body>
+</html>

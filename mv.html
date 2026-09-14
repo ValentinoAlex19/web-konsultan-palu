@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Motor Vehicle (MV) - PT Kalibesar Raya Utama Palu</title>
+    <style>
+        :root {
+            --primary-red: #b91c1c;
+            --dark-red: #7f1d1d;
+            --pure-white: #ffffff;
+            --bg-light: #f8fafc;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --soft-red: #fee2e2;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--bg-light); color: var(--text-dark); line-height: 1.5; }
+        nav { background-color: var(--pure-white); border-bottom: 3px solid var(--primary-red); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .brand-logo { font-size: 1.15rem; font-weight: 800; color: var(--primary-red); }
+        .nav-back { text-decoration: none; color: var(--primary-red); font-weight: 600; font-size: 0.9rem; }
+        .container { max-width: 1150px; margin: 30px auto; padding: 0 20px; }
+        .doc-section { background-color: var(--pure-white); border: 1px solid #e2e8f0; border-left: 5px solid var(--primary-red); padding: 16px 20px; border-radius: 8px; margin-bottom: 25px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .doc-section h3 { color: var(--dark-red); font-size: 1.05rem; margin-bottom: 4px; }
+        .doc-section p { font-size: 0.88rem; color: var(--text-muted); max-width: 750px; }
+        .btn-download { background-color: var(--primary-red); color: var(--pure-white); text-decoration: none; padding: 9px 16px; border-radius: 5px; font-weight: bold; font-size: 0.88rem; white-space: nowrap; transition: background-color 0.2s; }
+        .btn-download:hover { background-color: var(--dark-red); }
+        .card { background: var(--pure-white); border: 1px solid #e2e8f0; border-top: 4px solid var(--primary-red); border-radius: 8px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.03); margin-bottom: 25px; }
+        .card-header { margin-bottom: 20px; border-bottom: 2px solid var(--bg-light); padding-bottom: 10px; }
+        .card-header h2 { color: var(--dark-red); font-size: 1.4rem; }
+        .coverage-selector { display: flex; gap: 15px; margin-bottom: 20px; }
+        .coverage-btn { flex: 1; padding: 12px; text-align: center; border: 2px solid var(--primary-red); border-radius: 6px; background-color: var(--pure-white); color: var(--primary-red); font-weight: bold; cursor: pointer; transition: all 0.2s; }
+        .coverage-btn.active { background-color: var(--primary-red); color: var(--pure-white); }
+        .form-row { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
+        .form-group { flex: 1; min-width: 190px; }
+        label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 6px; }
+        input[type="text"], input[type="number"], select { width: 100%; padding: 9px 12px; border: 1px solid var(--border-color); border-radius: 5px; font-size: 0.92rem; outline: none; }
+        input:focus, select:focus { border-color: var(--primary-red); }
+        .plate-box { background-color: #f1f5f9; border: 1px solid var(--border-color); padding: 14px 18px; border-radius: 6px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; }
+        .plate-result { font-size: 0.92rem; font-weight: 700; color: var(--primary-red); }
+        .rate-tier-box { display: flex; align-items: center; gap: 18px; background: #fff; padding: 8px 14px; border-radius: 5px; border: 1px solid var(--border-color); }
+        .rate-tier-box label { margin: 0; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.88rem; }
+        .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid #e2e8f0; font-size: 0.88rem; }
+        th { background-color: #f1f5f9; color: var(--text-dark); font-weight: 700; }
+        .td-input input { padding: 6px 8px; font-size: 0.85rem; }
+        .td-premi { font-weight: 600; color: var(--text-dark); text-align: right; }
+        tr.row-disabled { background-color: #f8fafc; opacity: 0.45; }
+        tr.row-disabled td.td-premi { color: #94a3b8; text-decoration: line-through; }
+        .total-row { background-color: #fff1f2; font-weight: bold; }
+        .total-row td { color: var(--dark-red); font-size: 1.05rem; border-top: 2px solid var(--primary-red); border-bottom: 2px solid var(--primary-red); }
+        .info-pill { display: inline-block; background: #e2e8f0; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; color: var(--text-dark); }
+        .wa-btn { display: block; text-align: center; background-color: #16a34a; color: var(--pure-white); text-decoration: none; padding: 14px; border-radius: 6px; font-weight: bold; margin-top: 25px; transition: background-color 0.2s; }
+        .wa-btn:hover { background-color: #15803d; }
+        footer { text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.85rem; }
+
+        @media (max-width: 600px) {
+            .container { padding: 0 8px; margin: 10px auto; }
+            .card { padding: 12px; }
+            table { min-width: 780px; }
+            .td-input input { min-width: 100px; font-size: 14px; padding: 6px 4px; }
+            input[type="text"], input[type="number"], select { font-size: 15px; }
+            input[type="checkbox"] { transform: scale(1.2); }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="brand-logo">PT KALIBESAR RAYA UTAMA - CABANG PALU</div>
+        <a href="index.html" class="nav-back">&larr; Kembali ke Portal Utama</a>
+    </nav>
+
+    <div class="container">
+        <div class="doc-section">
+            <div>
+                <h3>Dokumen Referensi Tarif Kendaraan Bermotor OJK</h3>
+                <p>Surat Edaran OJK Nomor 6/SEOJK.05/2017 Lampiran IV: Tarif Premi Comprehensive, TLO, pembagian Wilayah 1–3, dan perluasan jaminan[cite: 2].</p>
+            </div>
+            <a href="SAL - Lampiran IV - KBM (Motor Vehicle).pdf" class="btn-download" target="_blank" download>Buka Lampiran IV (PDF)</a>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>Kalkulator Kendaraan Bermotor (Motor Vehicle)</h2>
+                <span style="font-size: 0.85rem; color: var(--text-muted);">Simulasi otomatis tarif OJK berdasarkan plat nomor, jenis unit, dan uang pertanggungan[cite: 2].</span>
+            </div>
+
+            <div class="coverage-selector">
+                <button type="button" class="coverage-btn active" id="btnCompre" onclick="setCoverType('COMPREHENSIVE')">COMPREHENSIVE (ALL RISK)</button>
+                <button type="button" class="coverage-btn" id="btnTLO" onclick="setCoverType('TLO')">TOTAL LOSS ONLY (TLO)</button>
+            </div>
+
+            <div class="plate-box">
+                <div style="flex: 1; min-width: 230px;">
+                    <label for="plateInput">Plat Nomor Kendaraan</label>
+                    <input type="text" id="plateInput" value="DN 1234 AB" placeholder="Contoh: DN, B, DD, L" oninput="detectPlateZone()">
+                </div>
+                <div style="flex: 1.2; min-width: 230px;">
+                    <span style="font-size: 0.82rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Wilayah Operasional OJK:</span>
+                    <div class="plate-result" id="plateInfo">Sulawesi Tengah (Kota Palu) &mdash; WILAYAH 3 OJK</div>
+                </div>
+                <div style="flex: 1; min-width: 230px;">
+                    <span style="font-size: 0.82rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Opsi Tarif Regulasi OJK:</span>
+                    <div class="rate-tier-box">
+                        <label><input type="radio" name="rateTier" value="BAWAH" checked onchange="autoRateOJK()"> Batas Bawah</label>
+                        <label><input type="radio" name="rateTier" value="ATAS" onchange="autoRateOJK()"> Batas Atas</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="vehicleType">Jenis Kendaraan</label>
+                    <select id="vehicleType" onchange="autoRateOJK()">
+                        <option value="NON_BUS_TRUK">Non Bus & Non Truk (Pribadi / Penumpang)</option>
+                        <option value="TRUK_PICKUP">Truk & Pickup (Niaga)</option>
+                        <option value="BUS">Bus</option>
+                        <option value="RODA_2">Sepeda Motor / Roda 2</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="carDesc">Merek / Tipe Kendaraan</label>
+                    <input type="text" id="carDesc" value="Toyota Innova Zenix" oninput="hitungMV()">
+                </div>
+                <div class="form-group">
+                    <label for="tsiVehicle">Uang Pertanggungan (TSI / IDR)</label>
+                    <input type="number" id="tsiVehicle" value="350000000" step="5000000" oninput="onTSIChange()">
+                </div>
+                <div class="form-group">
+                    <label for="loadingYears">Tambahan Usia > 5 Thn (Thn)</label>
+                    <input type="number" id="loadingYears" value="5" min="0" max="25" placeholder="0 jika <= 5 thn" oninput="syncLoadingUsia()">
+                </div>
+                <div class="form-group">
+                    <label for="tenorYear">Tenor (Tahun)</label>
+                    <input type="number" id="tenorYear" value="1" min="1" oninput="hitungMV()">
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 5%; text-align: center;">Pilih</th>
+                            <th style="width: 22%;">Jaminan / Klausul</th>
+                            <th style="width: 18%;">TSI / Limit (IDR)</th>
+                            <th style="width: 15%;">Rate (%)</th>
+                            <th style="width: 15%;">Okupasi / Keterangan</th>
+                            <th style="width: 6%;">Tahun</th>
+                            <th style="width: 19%; text-align: right;">Premi (IDR)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr id="rowMain">
+                            <td style="text-align: center;"><input type="checkbox" id="checkMain" checked disabled title="Jaminan Pokok Wajib"></td>
+                            <td id="lblMain"><strong>Comprehensive</strong></td>
+                            <td id="tsiMain">IDR 350.000.000</td>
+                            <td class="td-input"><input type="number" id="rateMain" value="1.79000000" step="0.00000001" oninput="hitungMV()"></td>
+                            <td><span class="info-pill" id="lblKategoriOJK">Wilayah 3 - Kat 3 (Batas Bawah)</span></td>
+                            <td><span class="outTahun">1</span></td>
+                            <td class="td-premi" id="premiMain">IDR 6.265.000,00</td>
+                        </tr>
+
+                        <tr id="rowPAPassenger">
+                            <td style="text-align: center;"><input type="checkbox" id="checkPAPassenger" checked onchange="toggleRow('PAPassenger')"></td>
+                            <td>PA Passenger</td>
+                            <td class="td-input"><input type="number" id="limitPAPassenger" value="10000000" step="1000000" oninput="hitungMV()"></td>
+                            <td class="td-input"><input type="number" id="ratePAPassenger" value="0.10000000" step="0.00000001" oninput="hitungMV()"></td>
+                            <td class="td-input"><input type="number" id="passCountInput" value="3" min="1" max="20" title="Jumlah Kursi Penumpang" oninput="hitungMV()" style="width: 100px;"> Penumpang</td>
+                            <td><span class="outTahun">1</span></td>
+                            <td class="td-premi" id="premiPAPassenger">IDR 30.000,00</td>
+                        </tr>
+
+                        <tr id="rowPADriver">
+                            <td style="text-align: center;"><input type="checkbox" id="checkPADriver" checked onchange="toggleRow('PADriver')"></td>
+                            <td>PA Driver</td>
+                            <td class="td-input"><input type="number" id="limitPADriver" value="10000000" step="1000000" oninput="hitungMV()"></td>
+                            <td class="td-input"><input type="number" id="ratePADriver" value="0.50000000" step="0.00000001" oninput="hitungMV()"></td>
+                            <td>1 Orang Pengemudi</td>
+                            <td><span class="outTahun">1</span></td>
+                            <td class="td-premi" id="premiPADriver">IDR 50.000,00</td>
+                        </tr>
+
+                        <tr id="rowFWWD">
+                            <td style="text-align: center;"><input type="checkbox" id="checkFWWD" checked onchange="toggleRow('FWWD')"></td>
+                            <td id="lblFWWD">Compre + FWWD</td>
+                            <td class="tsiVehicleCell">IDR 350.000.000</td>
+                            <td class="td-input"><input type="number" id="rateFWWD" value="0.07500000" step="0.00000001" oninput="hitungMV()"></td>
+                            <td>Banjir & Topan</td>
+                            <td><span class="outTahun">1</span></td>
+                            <td class="td-premi" id="premiFWWD">IDR 262.500,00</td>
+                        </tr>
+
+                        <tr id="rowEQ">
+                            <td style="text-align: center;"><input type="checkbox" id="checkEQ" checked onchange="toggleRow('EQ')"></td>
+                            <td id="lblEQ">Compre + EQ</td>
+                            <td class="tsiVehicleCell">IDR 350.000.000</td>
+                            <td class="td-input"><input type="number" id="rateEQ" value="0.07500000" step="0.00000001" oninput="hitungMV()"></td>
+                            <td>Gempa Bumi</td>
+                            <td><span class="outTahun">1</span></td>
+                            <td class="td-premi" id="premiEQ">IDR 262.500,00</td>
+                        </tr>
+
+                        <tr id="rowSRCC">
+                            <td style="text-align: center;"><input type="checkbox" id="checkSRCC" checked onchange="toggleRow('SRCC')"></td>
+                            <td id="lblSRCC">SRCC-Compre</td>
+                            <td class="tsiVehicleCell">IDR 350.000.000</td>
+                            <td class="td-input"><input type="number" id="rateSRCC" value="0.05000000" step="0.00000001" oninput="hitungMV()"></td>
+                            <td>Huru-hara</td>
+                            <td><span class="outTahun">1</span></td>
+                            <td class="td-premi" id="premiSRCC">IDR 175.000,00</td>
+                        </tr>
+
+                        <tr id="rowTS">
+                            <td style="text-align: center;"><input type="checkbox" id="checkTS" checked onchange="toggleRow('TS')"></td>
+                            <td id="lblTS">TS-Compre</td>
+                            <td class="tsiVehicleCell">IDR 350.000.000</td>
+                            <td class="td-input"><input type="number" id="rateTS" value="0.05000000" step="0.00000001" oninput="hitungMV()"></td>
+                            <td>Terorisme</td>
+                            <td><span class="outTahun">1</span></td>
+                            <td class="td-premi" id="premiTS">IDR 175.000,00</td>
+                        </tr>
+
+                        <tr id="rowWorkshop">
+                            <td style="text-align: center;"><input type="checkbox" id="checkWorkshop" checked onchange="toggleRow('Workshop')"></td>
+                            <td>Authorize Workshop Clause</td>
+                            <td class="tsiVehicleCell">IDR 350.000.000</td>
+                            <td class="td-input"><input type="number" id="rateWorkshop" value="0.00150000" step="0.00000001" oninput="hitungMV()"></td>
+                            <td>Bengkel Resmi</td>
+                            <td><span class="outTahun">1</span></td>
+                            <td class="td-premi" id="premiWorkshop">IDR 5.250,00</td>
+                        </tr>
+
+                        <tr id="rowLoading">
+                            <td style="text-align: center;"><input type="checkbox" id="checkLoading" checked onchange="toggleRow('Loading')"></td>
+                            <td>Loading Usia Kendaraan</td>
+                            <td id="tsiLoading">IDR 6.265.000</td>
+                            <td class="td-input"><input type="number" id="rateLoading" value="25.00000000" step="5" oninput="hitungMV()"></td>
+                            <td><span id="lblLoadingKet">+5%/thn (>5 thn)</span></td>
+                            <td><span class="outTahun">1</span></td>
+                            <td class="td-premi" id="premiLoading">IDR 1.566.250,00</td>
+                        </tr>
+
+                        <tr id="rowTPL">
+                            <td style="text-align: center;"><input type="checkbox" id="checkTPL" checked onchange="toggleRow('TPL')"></td>
+                            <td>TPL (Pihak Ketiga)</td>
+                            <td class="td-input"><input type="number" id="limitTPL" value="10000000" step="5000000" oninput="hitungMV()"></td>
+                            <td class="td-input"><input type="number" id="rateTPL" value="1.00000000" step="0.00000001" oninput="hitungMV()"></td>
+                            <td>Tanggung Jawab Hukum</td>
+                            <td><span class="outTahun">1</span></td>
+                            <td class="td-premi" id="premiTPL">IDR 100.000,00</td>
+                        </tr>
+
+                        <tr class="total-row">
+                            <td>-</td>
+                            <td>Total Estimasi Premi</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td><span class="outTahun">1</span></td>
+                            <td class="td-premi" id="totalPremiMV">IDR 8.689.000,00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 12px; font-style: italic;">
+                * Estimasi premi belum termasuk biaya administrasi polis dan meterai.
+            </p>
+
+            <a href="#" id="waBtnMV" class="wa-btn" target="_blank">Konsultasikan Penawaran MV via WhatsApp Palu</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 PT Kalibesar Raya Utama - Cabang Palu. Terdaftar & Diawasi Otoritas Jasa Keuangan (OJK).</p>
+    </footer>
+
+    <script>
+        let currentCover = "COMPREHENSIVE";
+        let detectedWilayah = 3;
+
+        // Basis Data Prefix Plat Nomor
+        const plateDB = {
+            "DN": ["Sulawesi Tengah (Kota Palu / Sekitarnya)", 3],
+            "B":  ["DKI Jakarta, Bekasi, Depok", 2],
+            "D":  ["Bandung, Cimahi", 2],
+            "F":  ["Bogor, Sukabumi, Cianjur", 2],
+            "E":  ["Cirebon, Majalengka", 2],
+            "Z":  ["Tasikmalaya, Garut", 2],
+            "A":  ["Banten, Serang, Tangerang", 2],
+            "DD": ["Sulawesi Selatan (Makassar)", 3],
+            "DP": ["Sulawesi Selatan (Parepare)", 3],
+            "DW": ["Sulawesi Selatan (Bone)", 3],
+            "DT": ["Sulawesi Tenggara (Kendari)", 3],
+            "DL": ["Sulawesi Utara (Sangihe)", 3],
+            "DB": ["Sulawesi Utara (Manado)", 3],
+            "DM": ["Gorontalo", 3],
+            "DC": ["Sulawesi Barat (Mamuju)", 3],
+            "L":  ["Jawa Timur (Surabaya)", 3],
+            "N":  ["Jawa Timur (Malang)", 3],
+            "H":  ["Jawa Tengah (Semarang)", 3],
+            "AD": ["Jawa Tengah (Solo)", 3],
+            "AB": ["DI Yogyakarta", 3],
+            "DK": ["Bali", 3],
+            "DR": ["NTB (Lombok)", 3],
+            "BK": ["Sumatera Utara (Medan)", 1],
+            "BL": ["Aceh", 1],
+            "BA": ["Sumatera Barat (Padang)", 1],
+            "BM": ["Riau", 1],
+            "BP": ["Kepulauan Riau (Batam)", 1],
+            "BH": ["Jambi", 1],
+            "BG": ["Sumatera Selatan (Palembang)", 1],
+            "BD": ["Bengkulu", 1],
+            "BE": ["Lampung", 1]
+        };
+
+        // Matriks Tarif Resmi OJK (Lampiran IV SEOJK 6/2017)[cite: 2]
+        const ojkRates = {
+            COMPREHENSIVE: {
+                NON_BUS_TRUK: [
+                    { max: 125e6, k: "Kat 1", r: [[3.82, 4.20], [3.26, 3.59], [2.53, 2.78]] },
+                    { max: 200e6, k: "Kat 2", r: [[2.67, 2.94], [2.47, 2.72], [2.69, 2.96]] },
+                    { max: 400e6, k: "Kat 3", r: [[2.18, 2.40], [2.08, 2.29], [1.79, 1.97]] },
+                    { max: 800e6, k: "Kat 4", r: [[1.20, 1.32], [1.20, 1.32], [1.14, 1.25]] },
+                    { max: Infinity, k: "Kat 5", r: [[1.05, 1.16], [1.05, 1.16], [1.05, 1.16]] }
+                ],
+                TRUK_PICKUP: [[2.42, 2.67], [2.39, 2.63], [2.23, 2.46]],
+                BUS: [[1.04, 1.14], [1.04, 1.14], [0.88, 0.97]],
+                RODA_2: [[3.18, 3.50], [3.18, 3.50], [3.18, 3.50]]
+            },
+            TLO: {
+                NON_BUS_TRUK: [
+                    { max: 125e6, k: "Kat 1", r: [[0.47, 0.56], [0.65, 0.78], [0.51, 0.56]] },
+                    { max: 200e6, k: "Kat 2", r: [[0.63, 0.69], [0.44, 0.53], [0.44, 0.48]] },
+                    { max: 400e6, k: "Kat 3", r: [[0.41, 0.46], [0.38, 0.42], [0.29, 0.35]] },
+                    { max: 800e6, k: "Kat 4", r: [[0.25, 0.30], [0.25, 0.30], [0.23, 0.27]] },
+                    { max: Infinity, k: "Kat 5", r: [[0.20, 0.24], [0.20, 0.24], [0.20, 0.24]] }
+                ],
+                TRUK_PICKUP: [[0.88, 1.07], [1.68, 2.02], [0.81, 0.98]],
+                BUS: [[0.23, 0.29], [0.23, 0.29], [0.18, 0.22]],
+                RODA_2: [[1.76, 2.11], [1.80, 2.16], [0.67, 0.80]]
+            }
+        };
+
+        // Utility: Parser nilai elemen
+        const val = id => parseFloat(document.getElementById(id)?.value) || 0;
+        const formatIDR = n => "IDR " + Number(n).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        function detectPlateZone() {
+            const raw = document.getElementById("plateInput").value.trim().toUpperCase();
+            const prefix = raw.split(" ")[0].replace(/[^A-Z]/g, '');
+            const match = plateDB[prefix];
+
+            detectedWilayah = match ? match[1] : 3;
+            document.getElementById("plateInfo").innerHTML = match
+                ? `${match[0]} &mdash; <strong>WILAYAH ${detectedWilayah} OJK</strong>`
+                : `Plat [${prefix || '-'}] &mdash; Dialokasikan ke <strong>WILAYAH 3 OJK</strong>`;
+
+            autoRateOJK();
+        }
+
+        function autoRateOJK() {
+            const vType = document.getElementById("vehicleType").value;
+            const tsi = val("tsiVehicle");
+            const isBawah = document.querySelector('input[name="rateTier"]:checked').value === "BAWAH";
+            const tierIdx = isBawah ? 0 : 1;
+            const wIdx = detectedWilayah - 1;
+            const table = ojkRates[currentCover];
+
+            let rate = 0, katLabel = "";
+
+            if (vType === "NON_BUS_TRUK") {
+                const target = table.NON_BUS_TRUK.find(b => tsi <= b.max);
+                rate = target.r[wIdx][tierIdx];
+                katLabel = `Wilayah ${detectedWilayah} - ${target.k} (Batas ${isBawah ? 'Bawah' : 'Atas'})`;
+            } else {
+                rate = table[vType][wIdx][tierIdx];
+                katLabel = `Wilayah ${detectedWilayah} - ${vType.replace('_', ' ')} (Batas ${isBawah ? 'Bawah' : 'Atas'})`;
+            }
+
+            document.getElementById("rateMain").value = Number(rate).toFixed(8);
+            document.getElementById("lblKategoriOJK").innerText = katLabel;
+            hitungMV();
+        }
+
+        function setCoverType(type) {
+            currentCover = type;
+            const isCompre = type === "COMPREHENSIVE";
+
+            document.getElementById("btnCompre").classList.toggle("active", isCompre);
+            document.getElementById("btnTLO").classList.toggle("active", !isCompre);
+
+            document.getElementById("lblMain").innerHTML = `<strong>${isCompre ? 'Comprehensive' : 'Total Loss Only (TLO)'}</strong>`;
+            document.getElementById("lblFWWD").innerText = isCompre ? "Compre + FWWD" : "TLO + FWWD";
+            document.getElementById("rateFWWD").value = (isCompre ? 0.075 : 0.05).toFixed(8);
+            document.getElementById("lblEQ").innerText = isCompre ? "Compre + EQ" : "TLO + EQ";
+            document.getElementById("rateEQ").value = (isCompre ? 0.075 : 0.05).toFixed(8);
+            document.getElementById("lblSRCC").innerText = isCompre ? "SRCC-Compre" : "SRCC-TLO";
+            document.getElementById("rateSRCC").value = (isCompre ? 0.05 : 0.035).toFixed(8);
+            document.getElementById("lblTS").innerText = isCompre ? "TS-Compre" : "TS-TLO";
+            document.getElementById("rateTS").value = (isCompre ? 0.05 : 0.035).toFixed(8);
+            document.getElementById("rateTPL").value = (isCompre ? 1.0 : 1.5).toFixed(8);
+
+            document.getElementById("rowWorkshop").style.display = isCompre ? "" : "none";
+            document.getElementById("rowLoading").style.display = isCompre ? "" : "none";
+
+            autoRateOJK();
+        }
+
+        function onTSIChange() {
+            const tsiFmt = formatIDR(val("tsiVehicle")).split(",")[0];
+            document.getElementById("tsiMain").innerText = tsiFmt;
+            document.querySelectorAll(".tsiVehicleCell").forEach(el => el.innerText = tsiFmt);
+            autoRateOJK();
+        }
+
+        function syncLoadingUsia() {
+            if (currentCover !== "COMPREHENSIVE") return;
+            const extra = val("loadingYears");
+            const r = extra * 5;
+            document.getElementById("rateLoading").value = Number(r).toFixed(8);
+            document.getElementById("lblLoadingKet").innerText = extra > 0 ? `+${extra} Thn (>5 thn: +${r}%)` : "Usia <= 5 Thn (0%)";
+            hitungMV();
+        }
+
+        function toggleRow(id) {
+            const row = document.getElementById("row" + id);
+            const isChecked = document.getElementById("check" + id).checked;
+            row.classList.toggle("row-disabled", !isChecked);
+            row.querySelectorAll("input[type='number']").forEach(inp => inp.disabled = !isChecked);
+            hitungMV();
+        }
+
+        function hitungMV() {
+            const tsi = val("tsiVehicle");
+            const tenor = val("tenorYear") || 1;
+            document.querySelectorAll(".outTahun").forEach(el => el.innerText = tenor);
+
+            // 1. Premi Pokok
+            const pMain = tsi * (val("rateMain") / 100) * tenor;
+            document.getElementById("premiMain").innerText = formatIDR(pMain);
+
+            // 2. PA & TPL (Klausul Khusus Berbasis Limit)
+            const calcCustom = (key, baseLimit, multiplier = 1) => {
+                const isChecked = document.getElementById("check" + key).checked;
+                const premi = isChecked ? (baseLimit * (val("rate" + key) / 100) * multiplier * tenor) : 0;
+                document.getElementById("premi" + key).innerText = isChecked ? formatIDR(premi) : "Dikecualikan";
+                return premi;
+            };
+
+            const pPass = calcCustom("PAPassenger", val("limitPAPassenger"), val("passCountInput"));
+            const pDriver = calcCustom("PADriver", val("limitPADriver"), 1);
+            const pTPL = calcCustom("TPL", val("limitTPL"), 1);
+
+            // 3. Perluasan Berbasis TSI Kendaraan (Iterasi Loop Cepat)
+            const clauses = ["FWWD", "EQ", "SRCC", "TS"];
+            if (currentCover === "COMPREHENSIVE") clauses.push("Workshop");
+
+            let pPerluasan = 0;
+            clauses.forEach(k => {
+                const isChecked = document.getElementById("check" + k).checked;
+                const p = isChecked ? (tsi * (val("rate" + k) / 100) * tenor) : 0;
+                document.getElementById("premi" + k).innerText = isChecked ? formatIDR(p) : "Dikecualikan";
+                pPerluasan += p;
+            });
+
+            // 4. Loading Usia (Hanya Comprehensive)
+            let pLoading = 0;
+            if (currentCover === "COMPREHENSIVE") {
+                document.getElementById("tsiLoading").innerText = formatIDR(pMain).split(",")[0];
+                const isLoading = document.getElementById("checkLoading").checked;
+                pLoading = isLoading ? (pMain * (val("rateLoading") / 100)) : 0;
+                document.getElementById("premiLoading").innerText = isLoading ? formatIDR(pLoading) : "Dikecualikan";
+            }
+
+            // Total & Link WhatsApp
+            const total = pMain + pPass + pDriver + pTPL + pPerluasan + pLoading;
+            document.getElementById("totalPremiMV").innerText = formatIDR(total);
+
+            const tier = document.querySelector('input[name="rateTier"]:checked').value === "BAWAH" ? "Batas Bawah" : "Batas Atas";
+            const textWA = `Halo Konsultan PT Kalibesar Raya Utama Cabang Palu,%0A%0ASaya melakukan simulasi Motor Vehicle (MV):%0A- Nopol: ${encodeURIComponent(document.getElementById("plateInput").value)}%0A- Wilayah: Wilayah ${detectedWilayah} (${tier})%0A- Unit: ${encodeURIComponent(document.getElementById("carDesc").value)}%0A- Nilai Pertanggungan: ${encodeURIComponent(formatIDR(tsi))}%0A- Jenis Polis: ${currentCover}%0A- Kursi Penumpang: ${val("passCountInput")} Orang%0A- Estimasi Total Premi: ${encodeURIComponent(formatIDR(total))} (Belum Admin)%0A%0AMohon bantuan audit penawaran resminya. Terima kasih.`;
+            document.getElementById("waBtnMV").href = `https://wa.me/6281234567890?text=${textWA}`;
+        }
+
+        // Inisialisasi awal
+        detectPlateZone();
+        syncLoadingUsia();
+    </script>
+</body>
+</html>
