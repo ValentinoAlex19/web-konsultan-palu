@@ -18,6 +18,9 @@
         .pdf-grid { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
         .btn-pdf { background:var(--p-red); color:#fff; text-decoration:none; padding:6px 12px; border-radius:4px; font-weight:600; font-size:.78rem; }
         .btn-pdf:hover { background:var(--d-red); }
+        .btn-kyc { background:#047857; }
+        .btn-kyc:hover { background:#065f46; }
+        .kyc-notice { background:#f0fdf4; border:1px solid #bbf7d0; border-left:4px solid #16a34a; padding:12px 16px; border-radius:6px; margin-bottom:18px; font-size:.84rem; color:#14532d; line-height:1.5; }
         .lob-box { background:#fff1f2; border:1px solid #fecaca; padding:12px; border-radius:6px; margin-bottom:18px; }
         .lob-select { width:100%; padding:9px; font-weight:700; color:var(--d-red); border:2px solid var(--p-red); border-radius:5px; outline:none; }
         .sec-title { font-size:.9rem; font-weight:700; color:var(--d-red); border-bottom:1px solid var(--bdr); padding-bottom:5px; margin:16px 0 12px; }
@@ -51,8 +54,9 @@
 
 <div class="container">
     <div class="doc-sec">
-        <h3 style="color:var(--d-red);font-size:.95rem">Dokumen Acuan & Ketentuan Order (PDF)</h3>
+        <h3 style="color:var(--d-red);font-size:.95rem">Dokumen Acuan, Persyaratan & Ketentuan Order (PDF)</h3>
         <div class="pdf-grid">
+            <a href="Persyaratan%20KYC.pdf" class="btn-pdf btn-kyc" target="_blank">Persyaratan KYC</a>
             <a href="Order%20Asuransi%20PAR.pdf" class="btn-pdf" target="_blank">Order PAR</a>
             <a href="Order%20Asuransi%20MV.pdf" class="btn-pdf" target="_blank">Order MV</a>
             <a href="Order%20Asuransi%20CPM.pdf" class="btn-pdf" target="_blank">Order CPM</a>
@@ -63,9 +67,15 @@
 
     <div class="card">
         <h2 style="color:var(--d-red);font-size:1.25rem;margin-bottom:4px">Form Permohonan Penawaran Asuransi (RFQ)</h2>
-        <span style="font-size:.8rem;color:var(--mut)">Pilih lini bisnis dan lengkapi data objek pertanggungan.</span>
+        <span style="font-size:.8rem;color:var(--mut);display:block;margin-bottom:14px">Pilih lini bisnis dan lengkapi data objek pertanggungan.</span>
 
-        <div class="lob-box" style="margin-top:14px">
+        <!-- Banner Informasi KYC -->
+        <div class="kyc-notice">
+            <strong>Pemberitahuan Persyaratan KYC (Know Your Customer):</strong><br>
+            Setelah penawaran sudah sesuai, tim KBRU Palu tentu diharuskan melengkapi data KYC (Know Your Customer) sebagai persyaratan penting dan juga untuk *release* invoice serta polis asuransi resmi. Mohon memeriksa ketentuan kelengkapan berkas pada file <strong>Persyaratan KYC (PDF)</strong> di atas.
+        </div>
+
+        <div class="lob-box">
             <label for="lobSelect">PILIH LINI BISNIS ASURANSI (LOB):</label>
             <select id="lobSelect" class="lob-select" onchange="switchLOB(this.value)">
                 <option value="PAR">Property All Risk (PAR - Properti / Gedung)</option>
@@ -224,52 +234,59 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzN7aM67e_bvtUfU09N6rM889N1uWEGddjYZWCMNPug8MX9l7s2wMsAAw179i8tZdMwUg/exec";
     let curLOB = "PAR";
 
-    // Helper functions
     const val = id => document.getElementById(id)?.value?.trim() || "";
     const fmt = n => Number(n || 0).toLocaleString('id-ID');
 
     function switchLOB(type) {
         curLOB = type;
         document.querySelectorAll(".lob-pane").forEach(el => el.style.display = "none");
-        document.getElementById("sec" + type).style.display = "block";
+        const target = document.getElementById("sec" + type);
+        if (target) target.style.display = "block";
     }
 
-    // Generator baris transit efisien
     function addTransit(lob) {
         const box = document.getElementById("boxTransit" + lob);
+        if (!box) return;
         const idx = box.children.length + 1;
         const card = document.createElement("div");
         card.className = "transit-card";
         card.innerHTML = `
-            <div style="margin-bottom:6px;font-weight:700;font-size:.78rem;color:var(--d-red)">
-                Segmen ${idx} ${idx > 1 ? '<button type="button" class="btn-del-transit" onclick="this.closest(\'.transit-card\').remove()">Hapus</button>' : ''}
+            <div style="margin-bottom:6px;font-weight:700;font-size:.78rem;color:var(--d-red);display:flex;justify-content:space-between;">
+                <span>Segmen ${idx} ${idx === 1 ? '(Rute Awal)' : '(Transit)'}</span>
+                ${idx > 1 ? '<button type="button" class="btn-del-transit" onclick="this.closest(\'.transit-card\').remove()">Hapus</button>' : ''}
             </div>
             <div class="form-row">
-                <div class="form-group"><input type="text" class="t-from" placeholder="Dari (Asal) *" required></div>
-                <div class="form-group"><input type="text" class="t-to" placeholder="Ke (Tujuan) *" required></div>
-                <div class="form-group"><select class="t-mode"><option>Laut (Kapal/Tongkang)</option><option>Darat (Truk Niaga)</option><option>Udara (Pesawat)</option></select></div>
-                <div class="form-group"><input type="text" class="t-ves" placeholder="Nama Armada / Kapal"></div>
+                <div class="form-group"><input type="text" class="t-from" placeholder="Dari (Titik Asal)"></div>
+                <div class="form-group"><input type="text" class="t-to" placeholder="Ke (Titik Tujuan/Transit)"></div>
+                <div class="form-group">
+                    <select class="t-mode">
+                        <option value="Laut (Kapal/Tongkang)">Laut (Kapal/Tongkang)</option>
+                        <option value="Darat (Truk Niaga)">Darat (Truk Niaga)</option>
+                        <option value="Udara (Pesawat Kargo)">Udara (Pesawat Kargo)</option>
+                    </select>
+                </div>
+                <div class="form-group"><input type="text" class="t-ves" placeholder="Nama Kapal / Plat Truk"></div>
             </div>`;
         box.appendChild(card);
     }
 
     function getTransitSummary(lob) {
         const box = document.getElementById("boxTransit" + lob);
+        if (!box) return "-";
         const segs = [];
         box.querySelectorAll(".transit-card").forEach((c, i) => {
-            const f = c.querySelector(".t-from").value.trim() || "-";
-            const t = c.querySelector(".t-to").value.trim() || "-";
-            const m = c.querySelector(".t-mode").value;
-            const v = c.querySelector(".t-ves").value.trim() || "Armada Belum Diisi";
-            segs.push(`[Segmen ${i+1}: ${f} -> ${t} | ${m} (${v})]`);
+            const f = c.querySelector(".t-from")?.value.trim() || "-";
+            const t = c.querySelector(".t-to")?.value.trim() || "-";
+            const m = c.querySelector(".t-mode")?.value || "-";
+            const v = c.querySelector(".t-ves")?.value.trim() || "Armada Belum Diisi";
+            segs.push(`[Segmen ${i+1}: ${f} -> ${t} via ${m} (${v})]`);
         });
-        return segs.join(" -> ");
+        return segs.length ? segs.join(" -> ") : "-";
     }
 
-    // Kompilasi data berdasarkan skema LOB secara modular
     function collect() {
         const name = val("clientName"), phone = val("clientPhone");
-        if (!name || !phone) { alert("Nama & Kontak Pemohon wajib diisi!"); return null; }
+        if (!name || !phone) { alert("Nama Tertanggung dan WhatsApp/Kontak wajib diisi!"); return null; }
 
         const payload = {
             lob: curLOB, client: name, contact: phone,
@@ -279,76 +296,87 @@
 
         if (curLOB === "PAR") {
             payload.details = {
-                "Alamat Objek": val("parLoc"), "APAR": val("parApar"), "Lantai": val("parFloor") + " Lantai",
-                "Konstruksi": val("parClass"), "Building": "Rp " + fmt(val("parBld")), "Content": "Rp " + fmt(val("parCnt")),
+                "Alamat Objek": val("parLoc") || "-", "APAR": val("parApar") || "-", "Lantai": (val("parFloor") || "1") + " Lantai",
+                "Konstruksi": val("parClass") || "-", "Building": "Rp " + fmt(val("parBld")), "Content": "Rp " + fmt(val("parCnt")),
                 "Stock": "Rp " + fmt(val("parStk")), "Machinery": "Rp " + fmt(val("parMch"))
             };
-            detailWA = `Lokasi: ${val("parLoc")}%0ABld: Rp ${fmt(val("parBld"))} | Isi: Rp ${fmt(val("parCnt"))}`;
+            detailWA = `Lokasi: ${val("parLoc")}%0ABuilding: Rp ${fmt(val("parBld"))} | Isi: Rp ${fmt(val("parCnt"))}`;
         } else if (curLOB === "MV") {
             payload.details = {
                 "Status Leasing": val("mvLeasing"), "Market Value": "Rp " + fmt(val("mvVal")), "Proteksi": val("mvCover"),
-                "Plat Nomor": val("mvPlate"), "Merek/Tipe": val("mvBrand"), "Tahun": val("mvYear"), "No Rangka/Mesin": val("mvChassis"), "Warna": val("mvColor")
+                "Plat Nomor": val("mvPlate") || "-", "Merek/Tipe": val("mvBrand") || "-", "Tahun": val("mvYear") || "-",
+                "No Rangka/Mesin": val("mvChassis") || "-", "Warna": val("mvColor") || "-"
             };
             detailWA = `Unit: ${val("mvBrand")} (${val("mvYear")}) - Plat: ${val("mvPlate")}%0ANilai: Rp ${fmt(val("mvVal"))} | Jaminan: ${val("mvCover")}`;
         } else if (curLOB === "CPM") {
             payload.details = {
                 "Status Finansial": val("cpmLeasing"), "NRV Baru": "Rp " + fmt(val("cpmNRV")), "Pengcoveran": val("cpmCover"),
-                "Jenis Alat": val("cpmType"), "Merek": val("cpmBrand"), "Tahun": val("cpmYear"), "Serial": val("cpmSerial") || "TBA",
-                "Operasi": val("cpmStatus"), "Site Kerja": val("cpmLoc")
+                "Jenis Alat": val("cpmType") || "-", "Merek": val("cpmBrand") || "-", "Tahun": val("cpmYear") || "-",
+                "Serial No": val("cpmSerial") || "TBA", "Operasi": val("cpmStatus"), "Site Kerja": val("cpmLoc") || "-"
             };
             detailWA = `Alat: ${val("cpmType")} ${val("cpmBrand")} (${val("cpmYear")})%0ANRV: Rp ${fmt(val("cpmNRV"))} | Site: ${val("cpmLoc")}`;
         } else if (curLOB === "MOP") {
             const rute = getTransitSummary("MOP");
             payload.details = {
-                "Kepentingan": val("mopCap"), "Alamat": val("mopAddr"), "Muatan": val("mopCargo"), "Packing": val("mopPack"),
-                "Rute Segmen": rute, "Limit/Shipment": "Rp " + fmt(val("mopLimit")), "Turnover": "Rp " + fmt(val("mopTurnover")), "Loss Record": val("mopLoss")
+                "Kepentingan": val("mopCap"), "Alamat Kantor": val("mopAddr") || "-", "Jenis Cargo": val("mopCargo") || "-",
+                "Kemasan/Packing": val("mopPack") || "-", "Rute & Moda Transit": rute, "Limit per Shipment": "Rp " + fmt(val("mopLimit")),
+                "Estimasi Turnover/Thn": "Rp " + fmt(val("mopTurnover")), "Loss Record 3 Thn": val("mopLoss")
             };
-            detailWA = `Kargo: ${val("mopCargo")} (${val("mopPack")})%0ARute: ${rute}%0ALimit: Rp ${fmt(val("mopLimit"))}`;
+            detailWA = `Kargo: ${val("mopCargo")} (${val("mopPack")})%0AAlur Rute: ${rute}%0ALimit/Kirim: Rp ${fmt(val("mopLimit"))}`;
         } else if (curLOB === "MCI") {
             const rute = getTransitSummary("MCI");
             payload.details = {
-                "Kepentingan": val("mciCap"), "Alamat": val("mciAddr"), "Nilai Barang": "Rp " + fmt(val("mciVal")),
-                "Komoditas": val("mciItem"), "Qty/Berat": val("mciQty"), "Packing": val("mciPack"), "ETD": val("mciETD"),
-                "Container": val("mciCont"), "Rute Segmen": rute, "Loss Record": val("mciLoss")
+                "Kepentingan": val("mciCap"), "Alamat Kantor": val("mciAddr") || "-", "Nilai Barang (Cover)": "Rp " + fmt(val("mciVal")),
+                "Komoditas Muatan": val("mciItem") || "-", "Qty/Berat": val("mciQty") || "-", "Kemasan/Packing": val("mciPack") || "-",
+                "ETD (Jadwal Kirim)": val("mciETD") || "-", "No. Container": val("mciCont") || "-", "Rute & Moda Transit": rute,
+                "Loss Record 3 Thn": val("mciLoss")
             };
-            detailWA = `Barang: ${val("mciItem")} (${val("mciQty")})%0ANilai: Rp ${fmt(val("mciVal"))}%0ARute: ${rute}`;
+            detailWA = `Barang: ${val("mciItem")} (${val("mciQty")})%0ANilai: Rp ${fmt(val("mciVal"))}%0AAlur Rute: ${rute}`;
         }
 
-        const fullWA = `*Order RFQ: [${curLOB}] - KBRU Palu*%0ATertanggung: ${name} (${phone})%0A${detailWA}%0ACatatan: ${payload.notes}`;
+        const fullWA = `*Order RFQ [${curLOB}] - KBRU Cabang Palu*%0A- Pemohon: ${name}%0A- Kontak/WA: ${phone}%0A${detailWA}%0A- Catatan: ${payload.notes}`;
         return { data: payload, wa: fullWA };
     }
 
-    // Eksekusi Simpan & Kirim
     function submitData(isWA) {
         const res = collect();
         if (!res) return;
 
-        // 1. Simpan Lokal Queue
-        const q = JSON.parse(localStorage.getItem("kbru_q") || "[]");
-        q.unshift(res.data);
-        localStorage.setItem("kbru_q", JSON.stringify(q));
-        renderQ();
+        try {
+            const q = JSON.parse(localStorage.getItem("kbru_q") || "[]");
+            q.unshift(res.data);
+            localStorage.setItem("kbru_q", JSON.stringify(q));
+            renderQ();
+        } catch(err) {
+            console.error("Local queue error:", err);
+        }
 
-        // 2. Kirim Background Google Sheets
         if (SCRIPT_URL) {
             fetch(SCRIPT_URL, {
-                method: "POST", mode: "no-cors",
+                method: "POST",
+                mode: "no-cors",
                 headers: { "Content-Type": "text/plain;charset=utf-8" },
                 body: JSON.stringify(res.data)
-            }).catch(e => console.error(e));
+            })
+            .then(() => console.log("Data order berhasil terkirim ke Google Sheets."))
+            .catch(e => console.error("Koneksi Google Sheets gagal:", e));
         }
 
         if (isWA) {
             window.open(`https://wa.me/6281234567890?text=${res.wa}`, "_blank");
         } else {
-            alert("Data pengajuan penawaran berhasil dicatat ke antrean sistem!");
+            alert(`Pengajuan penawaran [${curLOB}] berhasil dicatat ke antrean sistem dan Google Sheets!`);
         }
     }
 
     function renderQ() {
         const list = document.getElementById("qList");
+        if (!list) return;
         const q = JSON.parse(localStorage.getItem("kbru_q") || "[]");
-        if (!q.length) { list.innerHTML = `<span style="font-size:.8rem;color:var(--mut);font-style:italic">Belum ada antrean tersimpan.</span>`; return; }
+        if (!q.length) { 
+            list.innerHTML = `<span style="font-size:.8rem;color:var(--mut);font-style:italic">Belum ada antrean tersimpan.</span>`; 
+            return; 
+        }
         list.innerHTML = q.map((item, i) => `
             <div class="queue-item" onclick="showM(${i})">
                 <div style="display:flex;justify-content:space-between">
@@ -360,20 +388,22 @@
     }
 
     function showM(i) {
-        const data = JSON.parse(localStorage.getItem("kbru_q") || "[]")[i];
+        const q = JSON.parse(localStorage.getItem("kbru_q") || "[]");
+        const data = q[i];
         if (!data) return;
-        document.getElementById("mTitle").innerText = `[${data.lob}] - ${data.client}`;
-        let rows = `<tr><td>Waktu Pengajuan</td><td>${data.time}</td></tr><tr><td>Kontak</td><td>${data.contact}</td></tr>`;
-        for (const [k, v] of Object.entries(data.details)) rows += `<tr><td>${k}</td><td>${v}</td></tr>`;
-        rows += `<tr><td>Catatan</td><td>${data.notes}</td></tr>`;
+        document.getElementById("mTitle").innerText = `Detail RFQ [${data.lob}] - ${data.client}`;
+        let rows = `<tr><td>Waktu Pengajuan</td><td>${data.time}</td></tr><tr><td>Kontak/WA</td><td>${data.contact}</td></tr>`;
+        if (data.details) {
+            for (const [k, v] of Object.entries(data.details)) rows += `<tr><td>${k}</td><td>${v}</td></tr>`;
+        }
+        rows += `<tr><td>Catatan Kebutuhan</td><td>${data.notes}</td></tr>`;
         document.getElementById("mContent").innerHTML = rows;
         document.getElementById("modal").style.display = "flex";
     }
 
     function closeM(e) { if (!e || e.target.id === "modal") document.getElementById("modal").style.display = "none"; }
-    function clearQ() { if (confirm("Hapus seluruh daftar antrean di perangkat ini?")) { localStorage.removeItem("kbru_q"); renderQ(); } }
+    function clearQ() { if (confirm("Hapus seluruh daftar riwayat antrean di perangkat ini?")) { localStorage.removeItem("kbru_q"); renderQ(); } }
 
-    // Init Segmen Transit Pertama
     addTransit("MOP");
     addTransit("MCI");
     renderQ();
