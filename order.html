@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Order Asuransi - KBRU Palu</title>
+    <style>
+        :root { --p-red:#b91c1c; --d-red:#7f1d1d; --bg:#f8fafc; --txt:#1e293b; --mut:#64748b; --bdr:#cbd5e1; }
+        * { box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI',Arial,sans-serif; }
+        body { background:var(--bg); color:var(--txt); line-height:1.4; }
+        nav { background:#fff; border-bottom:3px solid var(--p-red); padding:12px 25px; display:flex; justify-content:space-between; align-items:center; }
+        .brand { font-weight:800; color:var(--p-red); font-size:1.1rem; }
+        .nav-back { text-decoration:none; color:var(--p-red); font-weight:600; font-size:.85rem; }
+        .container { max-width:900px; margin:20px auto; padding:0 15px; }
+        .card, .doc-sec, .queue-box { background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:20px; margin-bottom:20px; box-shadow:0 2px 4px rgba(0,0,0,.03); }
+        .card { border-top:4px solid var(--p-red); }
+        .doc-sec { border-left:5px solid var(--p-red); }
+        .pdf-grid { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+        .btn-pdf { background:var(--p-red); color:#fff; text-decoration:none; padding:6px 12px; border-radius:4px; font-weight:600; font-size:.78rem; }
+        .btn-pdf:hover { background:var(--d-red); }
+        .lob-box { background:#fff1f2; border:1px solid #fecaca; padding:12px; border-radius:6px; margin-bottom:18px; }
+        .lob-select { width:100%; padding:9px; font-weight:700; color:var(--d-red); border:2px solid var(--p-red); border-radius:5px; outline:none; }
+        .sec-title { font-size:.9rem; font-weight:700; color:var(--d-red); border-bottom:1px solid var(--bdr); padding-bottom:5px; margin:16px 0 12px; }
+        .form-row { display:flex; gap:12px; margin-bottom:12px; flex-wrap:wrap; }
+        .form-group { flex:1; min-width:200px; }
+        label { display:block; font-weight:600; font-size:.8rem; margin-bottom:4px; }
+        input, select, textarea { width:100%; padding:8px 10px; border:1px solid var(--bdr); border-radius:5px; font-size:.88rem; outline:none; }
+        input:focus, select:focus, textarea:focus { border-color:var(--p-red); }
+        .transit-card { background:#fdf2f2; border:1px dashed #f87171; padding:10px 14px; border-radius:6px; margin-bottom:10px; }
+        .btn-transit { background:#0284c7; color:#fff; border:none; padding:7px 12px; border-radius:4px; font-size:.8rem; font-weight:600; cursor:pointer; margin-bottom:12px; }
+        .btn-del-transit { background:none; border:none; color:#dc2626; font-size:.75rem; font-weight:700; cursor:pointer; float:right; }
+        .action-group { display:flex; flex-direction:column; gap:10px; margin-top:20px; }
+        .btn-act { width:100%; padding:12px; border:none; border-radius:6px; font-size:.92rem; font-weight:700; cursor:pointer; color:#fff; }
+        .btn-db { background:var(--p-red); }
+        .btn-wa { background:#16a34a; }
+        .queue-item { background:var(--bg); border-left:4px solid var(--p-red); padding:10px 14px; border-radius:4px; margin-bottom:8px; font-size:.85rem; cursor:pointer; }
+        .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:99; justify-content:center; align-items:center; padding:15px; }
+        .modal-body { background:#fff; max-width:600px; width:100%; max-height:85vh; border-radius:8px; border-top:5px solid var(--p-red); overflow-y:auto; padding:18px; }
+        .dt-tbl { width:100%; border-collapse:collapse; font-size:.85rem; }
+        .dt-tbl td { padding:8px 10px; border-bottom:1px solid #f1f5f9; vertical-align:top; }
+        .dt-tbl td:first-child { font-weight:600; width:40%; background:#f8fafc; border-right:1px solid #e2e8f0; }
+        @media(max-width:600px){ .container{padding:0 8px} .card{padding:14px} }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="brand">PT KALIBESAR RAYA UTAMA - CABANG PALU</div>
+    <a href="index.html" class="nav-back">&larr; Beranda</a>
+</nav>
+
+<div class="container">
+    <div class="doc-sec">
+        <h3 style="color:var(--d-red);font-size:.95rem">Dokumen Acuan & Ketentuan Order (PDF)</h3>
+        <div class="pdf-grid">
+            <a href="Order%20Asuransi%20PAR.pdf" class="btn-pdf" target="_blank">Order PAR</a>
+            <a href="Order%20Asuransi%20MV.pdf" class="btn-pdf" target="_blank">Order MV</a>
+            <a href="Order%20Asuransi%20CPM.pdf" class="btn-pdf" target="_blank">Order CPM</a>
+            <a href="Order%20Asuransi%20cargo%20Rutin%20(MOP).pdf" class="btn-pdf" target="_blank">Cargo MOP</a>
+            <a href="Order%20Asuransi%20cargo%20Tidak%20Rutin%20(MCI).pdf" class="btn-pdf" target="_blank">Cargo MCI</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2 style="color:var(--d-red);font-size:1.25rem;margin-bottom:4px">Form Permohonan Penawaran Asuransi (RFQ)</h2>
+        <span style="font-size:.8rem;color:var(--mut)">Pilih lini bisnis dan lengkapi data objek pertanggungan.</span>
+
+        <div class="lob-box" style="margin-top:14px">
+            <label for="lobSelect">PILIH LINI BISNIS ASURANSI (LOB):</label>
+            <select id="lobSelect" class="lob-select" onchange="switchLOB(this.value)">
+                <option value="PAR">Property All Risk (PAR - Properti / Gedung)</option>
+                <option value="MV">Motor Vehicle (MV - Kendaraan Bermotor)</option>
+                <option value="CPM">Civil Plant & Machinery (CPM - Alat Berat)</option>
+                <option value="MOP">Marine Cargo MOP (Pengiriman Rutin 1 Thn)</option>
+                <option value="MCI">Marine Cargo MCI (Single Shipment - Sekali Kirim)</option>
+            </select>
+        </div>
+
+        <form id="rfqForm" onsubmit="return false">
+            <div class="sec-title">1. Data Pemohon / Tertanggung</div>
+            <div class="form-row">
+                <div class="form-group"><label>Nama Tertanggung / Perusahaan *</label><input type="text" id="clientName" required placeholder="PT Sumber Makmur / Bpk. Rudi"></div>
+                <div class="form-group"><label>WhatsApp / Kontak *</label><input type="text" id="clientPhone" required placeholder="08123456789"></div>
+            </div>
+
+            <!-- TAB PAR -->
+            <div id="secPAR" class="lob-pane">
+                <div class="sec-title">2. Detail Objek Properti (PAR)</div>
+                <div class="form-row">
+                    <div class="form-group" style="flex:2"><label>Risk Location (Alamat Lengkap) *</label><input type="text" id="parLoc"></div>
+                    <div class="form-group"><label>Kondisi APAR *</label><select id="parApar"><option>Ada & Terawat</option><option>Tidak Ada</option></select></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Jumlah Lantai *</label><input type="number" id="parFloor" value="1" min="1"></div>
+                    <div class="form-group"><label>Konstruksi Gedung *</label><select id="parClass"><option>Kelas 1 (Permanen)</option><option>Kelas 2 (Semi Permanen)</option><option>Kelas 3 (Kayu)</option></select></div>
+                </div>
+                <div class="sec-title">Breakdown Nilai Pertanggungan / NRV (IDR)</div>
+                <div class="form-row">
+                    <div class="form-group"><label>Building</label><input type="number" id="parBld" placeholder="0"></div>
+                    <div class="form-group"><label>Content / Isi</label><input type="number" id="parCnt" placeholder="0"></div>
+                    <div class="form-group"><label>Stock Dagangan</label><input type="number" id="parStk" placeholder="0"></div>
+                    <div class="form-group"><label>Machinery</label><input type="number" id="parMch" placeholder="0"></div>
+                </div>
+            </div>
+
+            <!-- TAB MV -->
+            <div id="secMV" class="lob-pane" style="display:none">
+                <div class="sec-title">2. Detail Data Kendaraan (MV)</div>
+                <div class="form-row">
+                    <div class="form-group"><label>Status Leasing *</label><select id="mvLeasing"><option>Milik Sendiri</option><option>Kredit / Leasing</option></select></div>
+                    <div class="form-group"><label>Market Value (IDR) *</label><input type="number" id="mvVal" placeholder="Harga Pasar"></div>
+                    <div class="form-group"><label>Proteksi *</label><select id="mvCover"><option>Comprehensive (All Risk)</option><option>Total Loss Only (TLO)</option></select></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Plat Nomor *</label><input type="text" id="mvPlate" placeholder="DN 1234 AB"></div>
+                    <div class="form-group"><label>Merek & Tipe *</label><input type="text" id="mvBrand" placeholder="Toyota Innova"></div>
+                    <div class="form-group"><label>Tahun (YOB) *</label><input type="number" id="mvYear" placeholder="2022"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>No. Rangka/Mesin</label><input type="text" id="mvChassis" placeholder="Sesuai STNK"></div>
+                    <div class="form-group"><label>Warna Unit</label><input type="text" id="mvColor" placeholder="Hitam, Putih..."></div>
+                </div>
+            </div>
+
+            <!-- TAB CPM -->
+            <div id="secCPM" class="lob-pane" style="display:none">
+                <div class="sec-title">2. Detail Data Alat Berat (CPM)</div>
+                <div class="form-row">
+                    <div class="form-group"><label>Status Finansial *</label><select id="cpmLeasing"><option>Milik Sendiri</option><option>Leasing / Bank</option></select></div>
+                    <div class="form-group"><label>Nilai NRV (Beli Baru Thn Ini) (IDR) *</label><input type="number" id="cpmNRV"></div>
+                    <div class="form-group"><label>Pengcoveran *</label><select id="cpmCover"><option>Comprehensive (Unnamed Perils)</option><option>TLO (>75% Damage)</option></select></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Jenis Alat *</label><input type="text" id="cpmType" placeholder="Excavator, Dozer, Batching Plant..."></div>
+                    <div class="form-group"><label>Merek Unit</label><input type="text" id="cpmBrand" placeholder="Komatsu, CAT..."></div>
+                    <div class="form-group"><label>Tahun (YOB)</label><input type="number" id="cpmYear" placeholder="2023"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Serial/Chassis/Engine No</label><input type="text" id="cpmSerial" placeholder="No seri atau 'TBA'"></div>
+                    <div class="form-group"><label>Operasional *</label><select id="cpmStatus"><option>Operasikan Sendiri</option><option>Disewakan</option></select></div>
+                    <div class="form-group"><label>Lokasi Kerja (Site) *</label><input type="text" id="cpmLoc" placeholder="Site Morowali..."></div>
+                </div>
+            </div>
+
+            <!-- TAB MOP -->
+            <div id="secMOP" class="lob-pane" style="display:none">
+                <div class="sec-title">2. Detail Marine Cargo MOP (Rutin 1 Tahun)</div>
+                <div class="form-row">
+                    <div class="form-group"><label>Kepentingan (Interest) *</label><select id="mopCap"><option>Seller</option><option>Buyer</option><option>Shipper/Forwarder</option></select></div>
+                    <div class="form-group"><label>Alamat Kantor Tertanggung *</label><input type="text" id="mopAddr"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Jenis Cargo *</label><input type="text" id="mopCargo" placeholder="Semen, CPO, Beras..."></div>
+                    <div class="form-group"><label>Kemasan / Packing *</label><input type="text" id="mopPack" placeholder="Bags, FCL, Curah..."></div>
+                </div>
+                <div class="sec-title">Rute Pelayaran & Moda Angkut (Multimoda/Transit)</div>
+                <div id="boxTransitMOP"></div>
+                <button type="button" class="btn-transit" onclick="addTransit('MOP')">+ Tambah Titik Transit / Segmen Perjalanan</button>
+                <div class="form-row">
+                    <div class="form-group"><label>Limit per Shipment (IDR) *</label><input type="number" id="mopLimit"></div>
+                    <div class="form-group"><label>Estimasi Turnover/Thn (IDR) *</label><input type="number" id="mopTurnover"></div>
+                    <div class="form-group"><label>Loss Record 3 Thn *</label><select id="mopLoss"><option>NIL (Tanpa Klaim)</option><option>Pernah Ada Klaim</option></select></div>
+                </div>
+            </div>
+
+            <!-- TAB MCI -->
+            <div id="secMCI" class="lob-pane" style="display:none">
+                <div class="sec-title">2. Detail Marine Cargo MCI (Single Shipment)</div>
+                <div class="form-row">
+                    <div class="form-group"><label>Kepentingan *</label><select id="mciCap"><option>Seller</option><option>Buyer</option><option>Shipper</option></select></div>
+                    <div class="form-group"><label>Alamat Kantor *</label><input type="text" id="mciAddr"></div>
+                    <div class="form-group"><label>Nilai Barang (IDR) *</label><input type="number" id="mciVal"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group" style="flex:2"><label>Komoditas & Kode Produk *</label><input type="text" id="mciItem" placeholder="Deskripsi barang..."></div>
+                    <div class="form-group"><label>Jumlah/Qty (Kg/Ctn) *</label><input type="text" id="mciQty"></div>
+                    <div class="form-group"><label>Kemasan *</label><input type="text" id="mciPack"></div>
+                </div>
+                <div class="sec-title">Rute Pengiriman & Moda Angkut (Multimoda/Transit)</div>
+                <div id="boxTransitMCI"></div>
+                <button type="button" class="btn-transit" onclick="addTransit('MCI')">+ Tambah Titik Transit / Segmen Perjalanan</button>
+                <div class="form-row">
+                    <div class="form-group"><label>ETD (Tanggal Berangkat) *</label><input type="date" id="mciETD"></div>
+                    <div class="form-group"><label>No. Container</label><input type="text" id="mciCont" placeholder="Nomor kontainer atau '-'"></div>
+                    <div class="form-group"><label>Loss Record 3 Thn *</label><select id="mciLoss"><option>NIL (Tanpa Klaim)</option><option>Pernah Ada Klaim</option></select></div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group"><label>Catatan Tambahan</label><textarea id="notes" rows="2" placeholder="Catatan klausul khusus atau jadwal survei..."></textarea></div>
+            </div>
+
+            <div class="action-group">
+                <button type="button" class="btn-act btn-db" onclick="submitData(false)">Simpan ke Antrean Database Sistem &darr;</button>
+                <button type="button" class="btn-act btn-wa" onclick="submitData(true)">Kirim Pengajuan via WhatsApp Tim Palu &rarr;</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Antrean Masuk -->
+    <div class="queue-box">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+            <h3 style="color:var(--d-red);font-size:1rem">Antrean Order Penawaran Terdaftar</h3>
+            <button onclick="clearQ()" style="border:none;background:none;color:#dc2626;cursor:pointer;font-size:.8rem;font-weight:700">Hapus Riwayat</button>
+        </div>
+        <div id="qList"><span style="font-size:.8rem;color:var(--mut);font-style:italic">Belum ada antrean tersimpan.</span></div>
+    </div>
+</div>
+
+<!-- Modal Detail -->
+<div id="modal" class="modal" onclick="closeM(event)">
+    <div class="modal-body" onclick="event.stopPropagation()">
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--bdr);padding-bottom:8px">
+            <h3 id="mTitle" style="color:var(--d-red);font-size:1.05rem"></h3>
+            <button onclick="closeM(null)" style="border:none;background:none;font-size:1.4rem;cursor:pointer">&times;</button>
+        </div>
+        <table class="dt-tbl" id="mContent" style="margin-top:12px"></table>
+    </div>
+</div>
+
+<footer style="text-align:center;padding:15px;color:var(--mut);font-size:.8rem">&copy; 2026 PT Kalibesar Raya Utama - Cabang Palu. Terdaftar & Diawasi OJK.</footer>
+
+<script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzN7aM67e_bvtUfU09N6rM889N1uWEGddjYZWCMNPug8MX9l7s2wMsAAw179i8tZdMwUg/exec";
+    let curLOB = "PAR";
+
+    // Helper functions
+    const val = id => document.getElementById(id)?.value?.trim() || "";
+    const fmt = n => Number(n || 0).toLocaleString('id-ID');
+
+    function switchLOB(type) {
+        curLOB = type;
+        document.querySelectorAll(".lob-pane").forEach(el => el.style.display = "none");
+        document.getElementById("sec" + type).style.display = "block";
+    }
+
+    // Generator baris transit efisien
+    function addTransit(lob) {
+        const box = document.getElementById("boxTransit" + lob);
+        const idx = box.children.length + 1;
+        const card = document.createElement("div");
+        card.className = "transit-card";
+        card.innerHTML = `
+            <div style="margin-bottom:6px;font-weight:700;font-size:.78rem;color:var(--d-red)">
+                Segmen ${idx} ${idx > 1 ? '<button type="button" class="btn-del-transit" onclick="this.closest(\'.transit-card\').remove()">Hapus</button>' : ''}
+            </div>
+            <div class="form-row">
+                <div class="form-group"><input type="text" class="t-from" placeholder="Dari (Asal) *" required></div>
+                <div class="form-group"><input type="text" class="t-to" placeholder="Ke (Tujuan) *" required></div>
+                <div class="form-group"><select class="t-mode"><option>Laut (Kapal/Tongkang)</option><option>Darat (Truk Niaga)</option><option>Udara (Pesawat)</option></select></div>
+                <div class="form-group"><input type="text" class="t-ves" placeholder="Nama Armada / Kapal"></div>
+            </div>`;
+        box.appendChild(card);
+    }
+
+    function getTransitSummary(lob) {
+        const box = document.getElementById("boxTransit" + lob);
+        const segs = [];
+        box.querySelectorAll(".transit-card").forEach((c, i) => {
+            const f = c.querySelector(".t-from").value.trim() || "-";
+            const t = c.querySelector(".t-to").value.trim() || "-";
+            const m = c.querySelector(".t-mode").value;
+            const v = c.querySelector(".t-ves").value.trim() || "Armada Belum Diisi";
+            segs.push(`[Segmen ${i+1}: ${f} -> ${t} | ${m} (${v})]`);
+        });
+        return segs.join(" -> ");
+    }
+
+    // Kompilasi data berdasarkan skema LOB secara modular
+    function collect() {
+        const name = val("clientName"), phone = val("clientPhone");
+        if (!name || !phone) { alert("Nama & Kontak Pemohon wajib diisi!"); return null; }
+
+        const payload = {
+            lob: curLOB, client: name, contact: phone,
+            time: new Date().toLocaleString('id-ID'), notes: val("notes") || "-", details: {}
+        };
+        let detailWA = "";
+
+        if (curLOB === "PAR") {
+            payload.details = {
+                "Alamat Objek": val("parLoc"), "APAR": val("parApar"), "Lantai": val("parFloor") + " Lantai",
+                "Konstruksi": val("parClass"), "Building": "Rp " + fmt(val("parBld")), "Content": "Rp " + fmt(val("parCnt")),
+                "Stock": "Rp " + fmt(val("parStk")), "Machinery": "Rp " + fmt(val("parMch"))
+            };
+            detailWA = `Lokasi: ${val("parLoc")}%0ABld: Rp ${fmt(val("parBld"))} | Isi: Rp ${fmt(val("parCnt"))}`;
+        } else if (curLOB === "MV") {
+            payload.details = {
+                "Status Leasing": val("mvLeasing"), "Market Value": "Rp " + fmt(val("mvVal")), "Proteksi": val("mvCover"),
+                "Plat Nomor": val("mvPlate"), "Merek/Tipe": val("mvBrand"), "Tahun": val("mvYear"), "No Rangka/Mesin": val("mvChassis"), "Warna": val("mvColor")
+            };
+            detailWA = `Unit: ${val("mvBrand")} (${val("mvYear")}) - Plat: ${val("mvPlate")}%0ANilai: Rp ${fmt(val("mvVal"))} | Jaminan: ${val("mvCover")}`;
+        } else if (curLOB === "CPM") {
+            payload.details = {
+                "Status Finansial": val("cpmLeasing"), "NRV Baru": "Rp " + fmt(val("cpmNRV")), "Pengcoveran": val("cpmCover"),
+                "Jenis Alat": val("cpmType"), "Merek": val("cpmBrand"), "Tahun": val("cpmYear"), "Serial": val("cpmSerial") || "TBA",
+                "Operasi": val("cpmStatus"), "Site Kerja": val("cpmLoc")
+            };
+            detailWA = `Alat: ${val("cpmType")} ${val("cpmBrand")} (${val("cpmYear")})%0ANRV: Rp ${fmt(val("cpmNRV"))} | Site: ${val("cpmLoc")}`;
+        } else if (curLOB === "MOP") {
+            const rute = getTransitSummary("MOP");
+            payload.details = {
+                "Kepentingan": val("mopCap"), "Alamat": val("mopAddr"), "Muatan": val("mopCargo"), "Packing": val("mopPack"),
+                "Rute Segmen": rute, "Limit/Shipment": "Rp " + fmt(val("mopLimit")), "Turnover": "Rp " + fmt(val("mopTurnover")), "Loss Record": val("mopLoss")
+            };
+            detailWA = `Kargo: ${val("mopCargo")} (${val("mopPack")})%0ARute: ${rute}%0ALimit: Rp ${fmt(val("mopLimit"))}`;
+        } else if (curLOB === "MCI") {
+            const rute = getTransitSummary("MCI");
+            payload.details = {
+                "Kepentingan": val("mciCap"), "Alamat": val("mciAddr"), "Nilai Barang": "Rp " + fmt(val("mciVal")),
+                "Komoditas": val("mciItem"), "Qty/Berat": val("mciQty"), "Packing": val("mciPack"), "ETD": val("mciETD"),
+                "Container": val("mciCont"), "Rute Segmen": rute, "Loss Record": val("mciLoss")
+            };
+            detailWA = `Barang: ${val("mciItem")} (${val("mciQty")})%0ANilai: Rp ${fmt(val("mciVal"))}%0ARute: ${rute}`;
+        }
+
+        const fullWA = `*Order RFQ: [${curLOB}] - KBRU Palu*%0ATertanggung: ${name} (${phone})%0A${detailWA}%0ACatatan: ${payload.notes}`;
+        return { data: payload, wa: fullWA };
+    }
+
+    // Eksekusi Simpan & Kirim
+    function submitData(isWA) {
+        const res = collect();
+        if (!res) return;
+
+        // 1. Simpan Lokal Queue
+        const q = JSON.parse(localStorage.getItem("kbru_q") || "[]");
+        q.unshift(res.data);
+        localStorage.setItem("kbru_q", JSON.stringify(q));
+        renderQ();
+
+        // 2. Kirim Background Google Sheets
+        if (SCRIPT_URL) {
+            fetch(SCRIPT_URL, {
+                method: "POST", mode: "no-cors",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(res.data)
+            }).catch(e => console.error(e));
+        }
+
+        if (isWA) {
+            window.open(`https://wa.me/6281234567890?text=${res.wa}`, "_blank");
+        } else {
+            alert("Data pengajuan penawaran berhasil dicatat ke antrean sistem!");
+        }
+    }
+
+    function renderQ() {
+        const list = document.getElementById("qList");
+        const q = JSON.parse(localStorage.getItem("kbru_q") || "[]");
+        if (!q.length) { list.innerHTML = `<span style="font-size:.8rem;color:var(--mut);font-style:italic">Belum ada antrean tersimpan.</span>`; return; }
+        list.innerHTML = q.map((item, i) => `
+            <div class="queue-item" onclick="showM(${i})">
+                <div style="display:flex;justify-content:space-between">
+                    <strong>[${item.lob}] ${item.client}</strong>
+                    <span style="font-size:.72rem;background:#fee2e2;color:#b91c1c;padding:2px 6px;border-radius:4px;font-weight:700">Detail &rarr;</span>
+                </div>
+                <div style="font-size:.78rem;color:var(--mut);margin-top:2px">Kontak: ${item.contact} &bull; Waktu: ${item.time}</div>
+            </div>`).join("");
+    }
+
+    function showM(i) {
+        const data = JSON.parse(localStorage.getItem("kbru_q") || "[]")[i];
+        if (!data) return;
+        document.getElementById("mTitle").innerText = `[${data.lob}] - ${data.client}`;
+        let rows = `<tr><td>Waktu Pengajuan</td><td>${data.time}</td></tr><tr><td>Kontak</td><td>${data.contact}</td></tr>`;
+        for (const [k, v] of Object.entries(data.details)) rows += `<tr><td>${k}</td><td>${v}</td></tr>`;
+        rows += `<tr><td>Catatan</td><td>${data.notes}</td></tr>`;
+        document.getElementById("mContent").innerHTML = rows;
+        document.getElementById("modal").style.display = "flex";
+    }
+
+    function closeM(e) { if (!e || e.target.id === "modal") document.getElementById("modal").style.display = "none"; }
+    function clearQ() { if (confirm("Hapus seluruh daftar antrean di perangkat ini?")) { localStorage.removeItem("kbru_q"); renderQ(); } }
+
+    // Init Segmen Transit Pertama
+    addTransit("MOP");
+    addTransit("MCI");
+    renderQ();
+</script>
+</body>
+</html>
