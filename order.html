@@ -42,7 +42,31 @@
         .dt-tbl { width:100%; border-collapse:collapse; font-size:.85rem; }
         .dt-tbl td { padding:8px 10px; border-bottom:1px solid #f1f5f9; vertical-align:top; }
         .dt-tbl td:first-child { font-weight:600; width:40%; background:#f8fafc; border-right:1px solid #e2e8f0; }
-        @media(max-width:600px){ .container{padding:0 8px} .card{padding:14px} }
+
+        /* Bilah Sinkronisasi WhatsApp Lintas Device */
+        .sync-bar {
+            display: flex;
+            gap: 8px;
+            background: #f1f5f9;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+        .btn-sync {
+            background: #0284c7;
+            color: #fff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .btn-sync:hover { background: #0369a1; }
+
+        @media(max-width:600px){ .container{padding:0 8px} .card{padding:14px} .sync-bar{flex-direction:column; align-items:stretch;} }
     </style>
 </head>
 <body>
@@ -207,12 +231,19 @@
         </form>
     </div>
 
-    <!-- Antrean Masuk -->
+    <!-- Antrean Masuk + Fitur Sinkronisasi WhatsApp -->
     <div class="queue-box">
         <div style="display:flex;justify-content:space-between;margin-bottom:8px">
             <h3 style="color:var(--d-red);font-size:1rem">Antrean Order Penawaran Terdaftar</h3>
             <button onclick="clearQ()" style="border:none;background:none;color:#dc2626;cursor:pointer;font-size:.8rem;font-weight:700">Hapus Riwayat</button>
         </div>
+
+        <!-- Bilah Sinkronisasi Lintas Device -->
+        <div class="sync-bar">
+            <input type="text" id="syncPhone" placeholder="Masukkan No. WhatsApp untuk Sinkron Riwayat (Laptop/Device Lain)..." style="flex:1">
+            <button type="button" class="btn-sync" onclick="fetchCloudHistory()">Tarik Riwayat Saya</button>
+        </div>
+
         <div id="qList"><span style="font-size:.8rem;color:var(--mut);font-style:italic">Belum ada antrean tersimpan.</span></div>
     </div>
 </div>
@@ -367,6 +398,40 @@
         } else {
             alert(`Pengajuan penawaran [${curLOB}] berhasil dicatat ke antrean sistem dan Google Sheets!`);
         }
+    }
+
+    // Fungsi Menarik Riwayat dari Google Sheets Menggunakan No WhatsApp
+    function fetchCloudHistory() {
+        const phone = val("syncPhone") || val("clientPhone");
+        if (!phone) {
+            alert("Harap masukkan nomor WhatsApp terlebih dahulu!");
+            return;
+        }
+
+        const cleanPhone = phone.replace(/[^0-9]/g, '');
+        const btn = document.querySelector(".btn-sync");
+        btn.innerText = "Mengambil Data...";
+        btn.disabled = true;
+
+        fetch(`${SCRIPT_URL}?action=getHistory&phone=${encodeURIComponent(cleanPhone)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.length > 0) {
+                    localStorage.setItem("kbru_q", JSON.stringify(data));
+                    renderQ();
+                    alert(`Berhasil menemukan dan menampilkan ${data.length} riwayat pengajuan Anda.`);
+                } else {
+                    alert("Tidak ditemukan riwayat pengajuan dengan nomor WhatsApp tersebut di database.");
+                }
+            })
+            .catch(err => {
+                console.error("Gagal sinkron data cloud:", err);
+                alert("Gagal terhubung ke database. Pastikan koneksi internet aktif.");
+            })
+            .finally(() => {
+                btn.innerText = "Tarik Riwayat Saya";
+                btn.disabled = false;
+            });
     }
 
     function renderQ() {
