@@ -52,8 +52,19 @@
         .total-row { background-color: #fff1f2; font-weight: bold; }
         .total-row td { color: var(--dark-red); font-size: 1.05rem; border-top: 2px solid var(--primary-red); border-bottom: 2px solid var(--primary-red); }
         .info-pill { display: inline-block; background: #e2e8f0; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; color: var(--text-dark); }
-        .wa-btn { display: block; text-align: center; background-color: #16a34a; color: var(--pure-white); text-decoration: none; padding: 14px; border-radius: 6px; font-weight: bold; margin-top: 25px; transition: background-color 0.2s; }
-        .wa-btn:hover { background-color: #15803d; }
+        
+        .info-wa-notice {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-left: 4px solid #2563eb;
+            padding: 14px 18px;
+            border-radius: 6px;
+            margin-top: 22px;
+            font-size: 0.88rem;
+            color: #1e40af;
+            line-height: 1.5;
+        }
+
         footer { text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.85rem; }
 
         @media (max-width: 600px) {
@@ -77,7 +88,7 @@
         <div class="doc-section">
             <div>
                 <h3>Dokumen Referensi Tarif Kendaraan Bermotor OJK</h3>
-                <p>Surat Edaran OJK Nomor 6/SEOJK.05/2017 Lampiran IV: Tarif Premi Comprehensive, TLO, pembagian Wilayah 1–3, dan perluasan jaminan[cite: 2].</p>
+                <p>Surat Edaran OJK Nomor 6/SEOJK.05/2017 Lampiran IV: Tarif Premi Comprehensive, TLO, pembagian Wilayah 1–3, dan perluasan jaminan.</p>
             </div>
             <a href="SAL - Lampiran IV - KBM (Motor Vehicle).pdf" class="btn-download" target="_blank" download>Buka Lampiran IV (PDF)</a>
         </div>
@@ -85,7 +96,7 @@
         <div class="card">
             <div class="card-header">
                 <h2>Kalkulator Kendaraan Bermotor (Motor Vehicle)</h2>
-                <span style="font-size: 0.85rem; color: var(--text-muted);">Simulasi otomatis tarif OJK berdasarkan plat nomor, jenis unit, dan uang pertanggungan[cite: 2].</span>
+                <span style="font-size: 0.85rem; color: var(--text-muted);">Simulasi otomatis tarif OJK berdasarkan plat nomor, jenis unit, dan uang pertanggungan.</span>
             </div>
 
             <div class="coverage-selector">
@@ -270,7 +281,11 @@
                 * Estimasi premi belum termasuk biaya administrasi polis dan meterai.
             </p>
 
-            <a href="#" id="waBtnMV" class="wa-btn" target="_blank">Konsultasikan Penawaran MV via WhatsApp Palu</a>
+            <!-- Informasi Kontak WhatsApp Resmi -->
+            <div class="info-wa-notice">
+                <strong>Informasi & Konsultasi Langsung:</strong><br>
+                Untuk informasi dan komunikasi lebih lanjut via WhatsApp mengenai simulasi penawaran MV ini, silakan langsung menghubungi tim kami di nomor <strong>1234567890</strong>.
+            </div>
         </div>
     </div>
 
@@ -317,7 +332,7 @@
             "BE": ["Lampung", 1]
         };
 
-        // Matriks Tarif Resmi OJK (Lampiran IV SEOJK 6/2017)[cite: 2]
+        // Matriks Tarif Resmi OJK (Lampiran IV SEOJK 6/2017)
         const ojkRates = {
             COMPREHENSIVE: {
                 NON_BUS_TRUK: [
@@ -345,7 +360,6 @@
             }
         };
 
-        // Utility: Parser nilai elemen
         const val = id => parseFloat(document.getElementById(id)?.value) || 0;
         const formatIDR = n => "IDR " + Number(n).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -455,7 +469,7 @@
             const pDriver = calcCustom("PADriver", val("limitPADriver"), 1);
             const pTPL = calcCustom("TPL", val("limitTPL"), 1);
 
-            // 3. Perluasan Berbasis TSI Kendaraan (Iterasi Loop Cepat)
+            // 3. Perluasan Berbasis TSI Kendaraan
             const clauses = ["FWWD", "EQ", "SRCC", "TS"];
             if (currentCover === "COMPREHENSIVE") clauses.push("Workshop");
 
@@ -476,13 +490,9 @@
                 document.getElementById("premiLoading").innerText = isLoading ? formatIDR(pLoading) : "Dikecualikan";
             }
 
-            // Total & Link WhatsApp
+            // Total Estimasi Premi
             const total = pMain + pPass + pDriver + pTPL + pPerluasan + pLoading;
             document.getElementById("totalPremiMV").innerText = formatIDR(total);
-
-            const tier = document.querySelector('input[name="rateTier"]:checked').value === "BAWAH" ? "Batas Bawah" : "Batas Atas";
-            const textWA = `Halo Konsultan PT Kalibesar Raya Utama Cabang Palu,%0A%0ASaya melakukan simulasi Motor Vehicle (MV):%0A- Nopol: ${encodeURIComponent(document.getElementById("plateInput").value)}%0A- Wilayah: Wilayah ${detectedWilayah} (${tier})%0A- Unit: ${encodeURIComponent(document.getElementById("carDesc").value)}%0A- Nilai Pertanggungan: ${encodeURIComponent(formatIDR(tsi))}%0A- Jenis Polis: ${currentCover}%0A- Kursi Penumpang: ${val("passCountInput")} Orang%0A- Estimasi Total Premi: ${encodeURIComponent(formatIDR(total))} (Belum Admin)%0A%0AMohon bantuan audit penawaran resminya. Terima kasih.`;
-            document.getElementById("waBtnMV").href = `https://wa.me/6281234567890?text=${textWA}`;
         }
 
         // Inisialisasi awal
