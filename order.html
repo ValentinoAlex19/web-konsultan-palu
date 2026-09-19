@@ -59,11 +59,34 @@
         .btn-sync:hover { background:#0369a1; }
         .btn-reset { background:#475569; }
         .btn-reset:hover { background:#334155; }
+        
+        /* Modal General & Detail */
         .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:99; justify-content:center; align-items:center; padding:15px; }
         .modal-body { background:#fff; max-width:600px; width:100%; max-height:85vh; border-radius:8px; border-top:5px solid var(--p-red); overflow-y:auto; padding:18px; }
         .dt-tbl { width:100%; border-collapse:collapse; font-size:.85rem; }
         .dt-tbl td { padding:8px 10px; border-bottom:1px solid #f1f5f9; vertical-align:top; }
         .dt-tbl td:first-child { font-weight:600; width:40%; background:#f8fafc; border-right:1px solid #e2e8f0; }
+
+        /* Strict Confirmation Modal Box */
+        .confirm-modal-body {
+            background: #fff;
+            max-width: 460px;
+            width: 100%;
+            border-radius: 8px;
+            border-top: 5px solid var(--p-red);
+            padding: 22px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+            text-align: center;
+        }
+        .confirm-modal-title { font-size: 1.15rem; font-weight: 800; color: var(--d-red); margin-bottom: 10px; }
+        .confirm-modal-text { font-size: 0.9rem; color: #334155; line-height: 1.5; margin-bottom: 22px; }
+        .confirm-btn-row { display: flex; gap: 12px; justify-content: center; }
+        .btn-modal-action { flex: 1; padding: 11px; border: none; border-radius: 6px; font-weight: 700; font-size: 0.92rem; cursor: pointer; transition: all 0.2s; }
+        .btn-confirm-yes { background: #16a34a; color: #fff; }
+        .btn-confirm-yes:hover { background: #15803d; }
+        .btn-confirm-no { background: #64748b; color: #fff; }
+        .btn-confirm-no:hover { background: #475569; }
+
         @media(max-width:600px){ .container{padding:0 8px} .card{padding:14px} .sync-bar{flex-direction:column; align-items:stretch;} .sync-mode{width:100%} }
     </style>
 </head>
@@ -114,29 +137,39 @@
         </div>
 
         <form id="rfqForm" onsubmit="return false">
-            <div class="sec-title">1. Data Pemohon / Tertanggung</div>
+            <div class="sec-title">1. Data Pemohon & Ketentuan Mata Uang</div>
             <div class="form-row">
-                <div class="form-group"><label>Nama Tertanggung / Perusahaan *</label><input type="text" id="clientName" required placeholder="PT Sumber Makmur / Bpk. Rudi"></div>
+                <div class="form-group"><label>Nama Tertanggung / Perusahaan *</label><input type="text" id="clientName" required placeholder="Sesuai Nama di Polis Nantinya"></div>
                 <div class="form-group"><label>WhatsApp / Kontak *</label><input type="text" id="clientPhone" required placeholder="08123456789"></div>
+                <div class="form-group"><label>Alamat Email Aktif *</label><input type="email" id="clientEmail" required placeholder="perusahaan@email.com"></div>
+                <div class="form-group" style="max-width:180px;">
+                    <label>Mata Uang (Kurs) *</label>
+                    <select id="currencySelect" onchange="updateCurrencyLabels()" style="font-weight:700;color:var(--d-red)">
+                        <option value="IDR" selected>IDR - Rupiah</option>
+                        <option value="USD">USD - Dolar AS</option>
+                        <option value="SGD">SGD - Dolar Singapur</option>
+                        <option value="CNY">CNY - Yuan China</option>
+                    </select>
+                </div>
             </div>
 
             <!-- TAB PAR -->
             <div id="secPAR" class="lob-pane">
                 <div class="sec-title">2. Detail Objek Properti (PAR)</div>
                 <div class="form-row">
-                    <div class="form-group" style="flex:2"><label>Risk Location (Alamat Lengkap) *</label><input type="text" id="parLoc"></div>
+                    <div class="form-group" style="flex:2"><label>Risk Location (Alamat Lengkap) *</label><input type="text" id="parLoc" placeholder="Alamat lengkap lokasi aset"></div>
                     <div class="form-group"><label>Kondisi APAR *</label><select id="parApar"><option>Ada & Terawat</option><option>Tidak Ada</option></select></div>
                 </div>
                 <div class="form-row">
                     <div class="form-group"><label>Jumlah Lantai *</label><input type="number" id="parFloor" value="1" min="1"></div>
                     <div class="form-group"><label>Konstruksi Gedung *</label><select id="parClass"><option>Kelas 1 (Permanen)</option><option>Kelas 2 (Semi Permanen)</option><option>Kelas 3 (Kayu)</option></select></div>
                 </div>
-                <div class="sec-title">Breakdown Nilai Pertanggungan / NRV (IDR) * (Wajib isi minimal salah satu)</div>
+                <div class="sec-title">Breakdown Nilai Pertanggungan / NRV (<span class="curTag">IDR</span>) * (Wajib isi minimal salah satu)</div>
                 <div class="form-row">
-                    <div class="form-group"><label>Building</label><input type="number" id="parBld" placeholder="0"></div>
-                    <div class="form-group"><label>Content / Isi</label><input type="number" id="parCnt" placeholder="0"></div>
-                    <div class="form-group"><label>Stock Dagangan</label><input type="number" id="parStk" placeholder="0"></div>
-                    <div class="form-group"><label>Machinery</label><input type="number" id="parMch" placeholder="0"></div>
+                    <div class="form-group"><label>Building (<span class="curTag">IDR</span>)</label><input type="text" id="parBld" class="input-currency" placeholder="0"></div>
+                    <div class="form-group"><label>Content / Isi (<span class="curTag">IDR</span>)</label><input type="text" id="parCnt" class="input-currency" placeholder="0"></div>
+                    <div class="form-group"><label>Stock Dagangan (<span class="curTag">IDR</span>)</label><input type="text" id="parStk" class="input-currency" placeholder="0"></div>
+                    <div class="form-group"><label>Machinery (<span class="curTag">IDR</span>)</label><input type="text" id="parMch" class="input-currency" placeholder="0"></div>
                 </div>
             </div>
 
@@ -145,12 +178,12 @@
                 <div class="sec-title">2. Detail Data Kendaraan (MV)</div>
                 <div class="form-row">
                     <div class="form-group"><label>Status Leasing *</label><select id="mvLeasing"><option>Milik Sendiri</option><option>Kredit / Leasing</option></select></div>
-                    <div class="form-group"><label>Market Value (IDR) *</label><input type="number" id="mvVal" placeholder="Harga Pasar"></div>
+                    <div class="form-group"><label>Market Value / Harga Pasar (<span class="curTag">IDR</span>) *</label><input type="text" id="mvVal" class="input-currency" placeholder="Contoh: 350.000.000"></div>
                     <div class="form-group"><label>Proteksi *</label><select id="mvCover"><option>Comprehensive (All Risk)</option><option>Total Loss Only (TLO)</option></select></div>
                 </div>
                 <div class="form-row">
                     <div class="form-group"><label>Plat Nomor *</label><input type="text" id="mvPlate" placeholder="DN 1234 AB"></div>
-                    <div class="form-group"><label>Merek & Tipe *</label><input type="text" id="mvBrand" placeholder="Toyota Innova"></div>
+                    <div class="form-group"><label>Merek & Tipe *</label><input type="text" id="mvBrand" placeholder="Toyota Innova Zenix"></div>
                     <div class="form-group"><label>Tahun (YOB) *</label><input type="number" id="mvYear" placeholder="2022"></div>
                 </div>
                 <div class="form-row">
@@ -164,7 +197,7 @@
                 <div class="sec-title">2. Detail Data Alat Berat (CPM)</div>
                 <div class="form-row">
                     <div class="form-group"><label>Status Finansial *</label><select id="cpmLeasing"><option>Milik Sendiri</option><option>Leasing / Bank</option></select></div>
-                    <div class="form-group"><label>Nilai NRV (Beli Baru Thn Ini) (IDR) *</label><input type="number" id="cpmNRV"></div>
+                    <div class="form-group"><label>Nilai NRV / Beli Baru Thn Ini (<span class="curTag">IDR</span>) *</label><input type="text" id="cpmNRV" class="input-currency" placeholder="Contoh: 1.500.000.000"></div>
                     <div class="form-group"><label>Pengcoveran *</label><select id="cpmCover"><option>Comprehensive (Unnamed Perils)</option><option>TLO (>75% Damage)</option></select></div>
                 </div>
                 <div class="form-row">
@@ -184,7 +217,7 @@
                 <div class="sec-title">2. Detail Marine Cargo MOP (Rutin 1 Tahun)</div>
                 <div class="form-row">
                     <div class="form-group"><label>Kepentingan (Interest) *</label><select id="mopCap"><option>Seller</option><option>Buyer</option><option>Shipper/Forwarder</option></select></div>
-                    <div class="form-group"><label>Alamat Kantor Tertanggung *</label><input type="text" id="mopAddr"></div>
+                    <div class="form-group"><label>Alamat Kantor Tertanggung *</label><input type="text" id="mopAddr" placeholder="Alamat kantor perusahaan"></div>
                 </div>
                 <div class="form-row">
                     <div class="form-group"><label>Jenis Cargo *</label><input type="text" id="mopCargo" placeholder="Semen, CPO, Beras..."></div>
@@ -194,8 +227,8 @@
                 <div id="boxTransitMOP"></div>
                 <button type="button" class="btn-transit" onclick="addTransit('MOP')">+ Tambah Titik Transit / Segmen Perjalanan</button>
                 <div class="form-row">
-                    <div class="form-group"><label>Limit per Shipment (IDR) *</label><input type="number" id="mopLimit"></div>
-                    <div class="form-group"><label>Estimasi Turnover/Thn (IDR) *</label><input type="number" id="mopTurnover"></div>
+                    <div class="form-group"><label>Limit per Shipment (<span class="curTag">IDR</span>) *</label><input type="text" id="mopLimit" class="input-currency" placeholder="Maksimal nilai 1x kirim"></div>
+                    <div class="form-group"><label>Estimasi Turnover / Thn (<span class="curTag">IDR</span>) *</label><input type="text" id="mopTurnover" class="input-currency" placeholder="Total estimasi kirim setahun"></div>
                     <div class="form-group"><label>Loss Record 3 Thn *</label><select id="mopLoss"><option>NIL (Tanpa Klaim)</option><option>Pernah Ada Klaim</option></select></div>
                 </div>
             </div>
@@ -205,13 +238,13 @@
                 <div class="sec-title">2. Detail Marine Cargo MCI (Single Shipment)</div>
                 <div class="form-row">
                     <div class="form-group"><label>Kepentingan *</label><select id="mciCap"><option>Seller</option><option>Buyer</option><option>Shipper</option></select></div>
-                    <div class="form-group"><label>Alamat Kantor *</label><input type="text" id="mciAddr"></div>
-                    <div class="form-group"><label>Nilai Barang (IDR) *</label><input type="number" id="mciVal"></div>
+                    <div class="form-group"><label>Alamat Kantor *</label><input type="text" id="mciAddr" placeholder="Alamat kantor"></div>
+                    <div class="form-group"><label>Nilai Barang / Cover (<span class="curTag">IDR</span>) *</label><input type="text" id="mciVal" class="input-currency" placeholder="Harga total barang yang dikirim"></div>
                 </div>
                 <div class="form-row">
                     <div class="form-group" style="flex:2"><label>Komoditas & Kode Produk *</label><input type="text" id="mciItem" placeholder="Deskripsi barang..."></div>
-                    <div class="form-group"><label>Jumlah/Qty (Kg/Ctn) *</label><input type="text" id="mciQty"></div>
-                    <div class="form-group"><label>Kemasan *</label><input type="text" id="mciPack"></div>
+                    <div class="form-group"><label>Jumlah/Qty (Kg/Ctn) *</label><input type="text" id="mciQty" placeholder="10.000 KG / 500 Dus"></div>
+                    <div class="form-group"><label>Kemasan *</label><input type="text" id="mciPack" placeholder="Karung, Pallet, Kontainer..."></div>
                 </div>
                 <div class="sec-title">Rute Pengiriman & Moda Angkut (Multimoda/Transit) *</div>
                 <div id="boxTransitMCI"></div>
@@ -227,11 +260,11 @@
                 <div class="form-group"><label>Catatan Tambahan</label><textarea id="notes" rows="2" placeholder="Catatan klausul khusus atau jadwal survei..."></textarea></div>
             </div>
 
-            <!-- Tombol Batal Mode Revisi (Muncul Tepat di Atas Tombol Simpan) -->
+            <!-- Tombol Batal Mode Revisi (Tepat di Atas Tombol Simpan) -->
             <button type="button" id="btnCancelEditBottom" class="btn-cancel-edit" onclick="cancelEditMode()">&larr; Batalkan Revisi (Kembali ke Input Baru)</button>
 
             <!-- Tombol Simpan Tunggal -->
-            <button type="button" id="btnSubmitForm" class="btn-act btn-db" onclick="submitData()">Simpan Inputan ke Database &darr;</button>
+            <button type="button" id="btnSubmitForm" class="btn-act btn-db" onclick="initiateSubmission()">Simpan dan Ajukan ke KBRU Palu &darr;</button>
 
             <!-- Notes Informasi WhatsApp -->
             <div class="info-wa-notice">
@@ -267,7 +300,7 @@
     </div>
 </div>
 
-<!-- Modal Detail -->
+<!-- Modal Detail Riwayat -->
 <div id="modal" class="modal" onclick="closeM(event)">
     <div class="modal-body" onclick="event.stopPropagation()">
         <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--bdr);padding-bottom:8px">
@@ -282,17 +315,100 @@
     </div>
 </div>
 
+<!-- Modal Strict Confirmation (Terkunci Ketat Tanpa Klik Luar) -->
+<div id="confirmModal" class="modal">
+    <div class="confirm-modal-body" onclick="event.stopPropagation()">
+        <div class="confirm-modal-title">Konfirmasi Pengajuan Order</div>
+        <div class="confirm-modal-text">
+            Tolong diperiksa kembali.<br>Apakah Anda yakin data yang diinput sudah sesuai dan ingin melanjutkan pengajuan ini ke KBRU Cabang Palu?
+        </div>
+        <div class="confirm-btn-row">
+            <button type="button" class="btn-modal-action btn-confirm-yes" onclick="executeConfirmedSubmission()">Lanjutkan</button>
+            <button type="button" class="btn-modal-action btn-confirm-no" onclick="closeConfirmModal()">Tidak</button>
+        </div>
+    </div>
+</div>
+
 <footer style="text-align:center;padding:15px;color:var(--mut);font-size:.8rem">&copy; 2026 PT Kalibesar Raya Utama - Cabang Palu. Terdaftar & Diawasi OJK.</footer>
 
 <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzN7aM67e_bvtUfU09N6rM889N1uWEGddjYZWCMNPug8MX9l7s2wMsAAw179i8tZdMwUg/exec";
+    const API_KEY = "KBRU_PALU_2026";
     let curLOB = "PAR";
     let isEditMode = false;
     let editOriginalTime = "";
+    let pendingPayload = null; // Penampung data saat menunggu konfirmasi modal
 
     const val = id => document.getElementById(id)?.value?.trim() || "";
-    const fmt = n => Number(n || 0).toLocaleString('id-ID');
-    const parseNum = str => Number(String(str || "0").replace(/[^0-9]/g, '')) || 0;
+
+    // 1. Parser & Formatter Pemisah Ribuan Otomatis (Titik) & Desimal Manual (Koma)
+    function cleanNumericString(str) {
+        if (!str) return "";
+        let cleaned = String(str).replace(/[^0-9,]/g, '');
+        const parts = cleaned.split(',');
+        if (parts.length > 2) {
+            cleaned = parts[0] + ',' + parts.slice(1).join('');
+        }
+        return cleaned;
+    }
+
+    function formatLiveCurrency(inputElement) {
+        const cursorPosition = inputElement.selectionStart;
+        const originalLength = inputElement.value.length;
+
+        const raw = cleanNumericString(inputElement.value);
+        if (!raw) {
+            inputElement.value = "";
+            return;
+        }
+
+        const parts = raw.split(',');
+        let integerPart = parts[0];
+        const decimalPart = parts.length > 1 ? ',' + parts[1] : '';
+
+        integerPart = integerPart.replace(/\./g, '');
+        if (integerPart) {
+            integerPart = Number(integerPart).toLocaleString('id-ID');
+        }
+
+        inputElement.value = integerPart + decimalPart;
+
+        const newLength = inputElement.value.length;
+        const newPosition = cursorPosition + (newLength - originalLength);
+        inputElement.setSelectionRange(newPosition, newPosition);
+    }
+
+    function parseAmountToNumber(valStr) {
+        if (!valStr) return 0;
+        const clean = String(valStr).replace(/\./g, '').replace(',', '.');
+        return parseFloat(clean) || 0;
+    }
+
+    function formatAmountOutput(valStr) {
+        const raw = cleanNumericString(valStr);
+        if (!raw) return "0";
+        const parts = raw.split(',');
+        let intPart = parts[0].replace(/\./g, '');
+        if (intPart) {
+            intPart = Number(intPart).toLocaleString('id-ID');
+        } else {
+            intPart = "0";
+        }
+        return parts.length > 1 ? intPart + ',' + parts[1] : intPart;
+    }
+
+    // Pasang listener format pada seluruh kolom nominal
+    document.querySelectorAll(".input-currency").forEach(input => {
+        input.addEventListener("input", function() {
+            formatLiveCurrency(this);
+        });
+    });
+
+    // 2. Pembaruan Label Mata Uang Global
+    function updateCurrencyLabels() {
+        const cur = val("currencySelect") || "IDR";
+        document.querySelectorAll(".curTag").forEach(el => el.innerText = cur);
+    }
 
     function switchLOB(type) {
         curLOB = type;
@@ -352,20 +468,137 @@
     }
 
     function collect() {
-        const name = val("clientName"), phone = val("clientPhone");
-        if (!name || !phone) { alert("Nama Tertanggung dan WhatsApp/Kontak wajib diisi!"); return null; }
-
-        if (curLOB === "PAR") {
-            const bld = parseNum(val("parBld")), cnt = parseNum(val("parCnt")), stk = parseNum(val("parStk")), mch = parseNum(val("parMch"));
-            if (bld <= 0 && cnt <= 0 && stk <= 0 && mch <= 0) {
-                alert("Untuk LOB PAR, nilai pertanggungan wajib diisi minimal salah satu (Building, Content, Stock, atau Machinery)!");
-                return null;
-            }
+        const name = val("clientName"), phone = val("clientPhone"), email = val("clientEmail");
+        const cur = val("currencySelect") || "IDR";
+        
+        // Validasi Identitas Pemohon
+        if (!name) { 
+            alert("Nama Tertanggung / Perusahaan wajib diisi!"); 
+            document.getElementById("clientName").focus();
+            return null; 
+        }
+        if (!phone) { 
+            alert("Nomor WhatsApp / Kontak wajib diisi!"); 
+            document.getElementById("clientPhone").focus();
+            return null; 
+        }
+        if (!email || email.indexOf("@") === -1 || email.indexOf(".") === -1) { 
+            alert("Alamat Email Aktif wajib diisi dengan format yang benar (contoh: nama@perusahaan.com)!"); 
+            document.getElementById("clientEmail").focus();
+            return null; 
         }
 
-        if ((curLOB === "MOP" || curLOB === "MCI") && !checkTransitValid(curLOB)) {
-            alert(`Untuk LOB ${curLOB}, rute perjalanan (Dari dan Ke) wajib diisi lengkap pada segmen awal!`);
-            return null;
+        // Validasi Nilai Pertanggungan dan Kolom Kritis Seluruh LOB
+        if (curLOB === "PAR") {
+            if (!val("parLoc")) {
+                alert("Untuk LOB PAR, Risk Location (Alamat Lengkap) wajib diisi!");
+                document.getElementById("parLoc").focus();
+                return null;
+            }
+            const bld = parseAmountToNumber(val("parBld")), cnt = parseAmountToNumber(val("parCnt"));
+            const stk = parseAmountToNumber(val("parStk")), mch = parseAmountToNumber(val("parMch"));
+            if (bld <= 0 && cnt <= 0 && stk <= 0 && mch <= 0) {
+                alert(`Untuk LOB PAR, Nilai Pertanggungan wajib diisi minimal salah satu (Building, Content, Stock, atau Machinery) lebih dari 0!`);
+                document.getElementById("parBld").focus();
+                return null;
+            }
+        } else if (curLOB === "MV") {
+            const mvVal = parseAmountToNumber(val("mvVal"));
+            if (mvVal <= 0) {
+                alert("Untuk LOB Kendaraan Bermotor (MV), Market Value (Harga Pasar Kendaraan) wajib diisi lebih dari 0!");
+                document.getElementById("mvVal").focus();
+                return null;
+            }
+            if (!val("mvPlate")) {
+                alert("Untuk LOB MV, Plat Nomor Kendaraan wajib diisi!");
+                document.getElementById("mvPlate").focus();
+                return null;
+            }
+            if (!val("mvBrand")) {
+                alert("Untuk LOB MV, Merek & Tipe Kendaraan wajib diisi!");
+                document.getElementById("mvBrand").focus();
+                return null;
+            }
+            if (!val("mvYear") || parseAmountToNumber(val("mvYear")) <= 1900) {
+                alert("Untuk LOB MV, Tahun Pembuatan (YOB) wajib diisi dengan tahun yang valid!");
+                document.getElementById("mvYear").focus();
+                return null;
+            }
+        } else if (curLOB === "CPM") {
+            const cpmNRV = parseAmountToNumber(val("cpmNRV"));
+            if (cpmNRV <= 0) {
+                alert("Untuk LOB Alat Berat (CPM), Nilai NRV (Harga Beli Baru Tahun Ini) wajib diisi lebih dari 0!");
+                document.getElementById("cpmNRV").focus();
+                return null;
+            }
+            if (!val("cpmType")) {
+                alert("Untuk LOB CPM, Jenis Alat Berat wajib diisi!");
+                document.getElementById("cpmType").focus();
+                return null;
+            }
+            if (!val("cpmLoc")) {
+                alert("Untuk LOB CPM, Lokasi Kerja (Site) alat berat wajib diisi!");
+                document.getElementById("cpmLoc").focus();
+                return null;
+            }
+        } else if (curLOB === "MOP") {
+            if (!val("mopAddr")) {
+                alert("Untuk LOB Marine Cargo MOP, Alamat Kantor Tertanggung wajib diisi!");
+                document.getElementById("mopAddr").focus();
+                return null;
+            }
+            if (!val("mopCargo")) {
+                alert("Untuk LOB Marine Cargo MOP, Jenis Cargo / Muatan wajib diisi!");
+                document.getElementById("mopCargo").focus();
+                return null;
+            }
+            if (!checkTransitValid("MOP")) {
+                alert("Untuk LOB Marine Cargo MOP, Rute Pengiriman (Titik Asal dan Titik Tujuan) wajib diisi lengkap!");
+                return null;
+            }
+            const mopLimit = parseAmountToNumber(val("mopLimit"));
+            if (mopLimit <= 0) {
+                alert("Untuk LOB Marine Cargo MOP, Limit per Shipment (Maksimal Nilai 1x Kirim) wajib diisi lebih dari 0!");
+                document.getElementById("mopLimit").focus();
+                return null;
+            }
+            const mopTurnover = parseAmountToNumber(val("mopTurnover"));
+            if (mopTurnover <= 0) {
+                alert("Untuk LOB Marine Cargo MOP, Estimasi Turnover / Total Pengiriman per Tahun wajib diisi lebih dari 0!");
+                document.getElementById("mopTurnover").focus();
+                return null;
+            }
+        } else if (curLOB === "MCI") {
+            if (!val("mciAddr")) {
+                alert("Untuk LOB Marine Cargo MCI, Alamat Kantor Tertanggung wajib diisi!");
+                document.getElementById("mciAddr").focus();
+                return null;
+            }
+            const mciVal = parseAmountToNumber(val("mciVal"));
+            if (mciVal <= 0) {
+                alert("Untuk LOB Marine Cargo MCI, Nilai Barang (Harga Total Barang yang Di-cover) wajib diisi lebih dari 0!");
+                document.getElementById("mciVal").focus();
+                return null;
+            }
+            if (!val("mciItem")) {
+                alert("Untuk LOB Marine Cargo MCI, Komoditas Muatan & Deskripsi Produk wajib diisi!");
+                document.getElementById("mciItem").focus();
+                return null;
+            }
+            if (!val("mciQty")) {
+                alert("Untuk LOB Marine Cargo MCI, Jumlah / Qty (Berat / Dus) wajib diisi!");
+                document.getElementById("mciQty").focus();
+                return null;
+            }
+            if (!checkTransitValid("MCI")) {
+                alert("Untuk LOB Marine Cargo MCI, Rute Pengiriman (Titik Asal dan Titik Tujuan) wajib diisi lengkap!");
+                return null;
+            }
+            if (!val("mciETD")) {
+                alert("Untuk LOB Marine Cargo MCI, Jadwal Pengiriman (ETD) wajib dipilih!");
+                document.getElementById("mciETD").focus();
+                return null;
+            }
         }
 
         let userNote = val("notes") || "-";
@@ -374,37 +607,48 @@
         }
 
         const payload = {
-            lob: curLOB, client: name, contact: phone,
+            apiKey: API_KEY,
+            lob: curLOB, client: name, contact: phone, email: email, currency: cur,
             time: new Date().toLocaleString('id-ID'), notes: userNote, details: {}
         };
 
         if (curLOB === "PAR") {
             payload.details = {
                 "Alamat Objek": val("parLoc") || "-", "APAR": val("parApar") || "-", "Lantai": (val("parFloor") || "1") + " Lantai",
-                "Konstruksi": val("parClass") || "-", "Building": "Rp " + fmt(val("parBld")), "Content": "Rp " + fmt(val("parCnt")),
-                "Stock": "Rp " + fmt(val("parStk")), "Machinery": "Rp " + fmt(val("parMch"))
+                "Konstruksi": val("parClass") || "-", 
+                "Building": cur + " " + formatAmountOutput(val("parBld")), 
+                "Content": cur + " " + formatAmountOutput(val("parCnt")),
+                "Stock": cur + " " + formatAmountOutput(val("parStk")), 
+                "Machinery": cur + " " + formatAmountOutput(val("parMch"))
             };
         } else if (curLOB === "MV") {
             payload.details = {
-                "Status Leasing": val("mvLeasing"), "Market Value": "Rp " + fmt(val("mvVal")), "Proteksi": val("mvCover"),
+                "Status Leasing": val("mvLeasing"), 
+                "Market Value": cur + " " + formatAmountOutput(val("mvVal")), 
+                "Proteksi": val("mvCover"),
                 "Plat Nomor": val("mvPlate") || "-", "Merek/Tipe": val("mvBrand") || "-", "Tahun": val("mvYear") || "-",
                 "No Rangka/Mesin": val("mvChassis") || "-", "Warna": val("mvColor") || "-"
             };
         } else if (curLOB === "CPM") {
             payload.details = {
-                "Status Finansial": val("cpmLeasing"), "NRV Baru": "Rp " + fmt(val("cpmNRV")), "Pengcoveran": val("cpmCover"),
+                "Status Finansial": val("cpmLeasing"), 
+                "NRV Baru": cur + " " + formatAmountOutput(val("cpmNRV")), 
+                "Pengcoveran": val("cpmCover"),
                 "Jenis Alat": val("cpmType") || "-", "Merek": val("cpmBrand") || "-", "Tahun": val("cpmYear") || "-",
                 "Serial No": val("cpmSerial") || "TBA", "Operasi": val("cpmStatus"), "Site Kerja": val("cpmLoc") || "-"
             };
         } else if (curLOB === "MOP") {
             payload.details = {
                 "Kepentingan": val("mopCap"), "Alamat Kantor": val("mopAddr") || "-", "Jenis Cargo": val("mopCargo") || "-",
-                "Kemasan/Packing": val("mopPack") || "-", "Rute & Moda Transit": getTransitSummary("MOP"), "Limit per Shipment": "Rp " + fmt(val("mopLimit")),
-                "Estimasi Turnover/Thn": "Rp " + fmt(val("mopTurnover")), "Loss Record 3 Thn": val("mopLoss")
+                "Kemasan/Packing": val("mopPack") || "-", "Rute & Moda Transit": getTransitSummary("MOP"), 
+                "Limit per Shipment": cur + " " + formatAmountOutput(val("mopLimit")),
+                "Estimasi Turnover/Thn": cur + " " + formatAmountOutput(val("mopTurnover")), 
+                "Loss Record 3 Thn": val("mopLoss")
             };
         } else if (curLOB === "MCI") {
             payload.details = {
-                "Kepentingan": val("mciCap"), "Alamat Kantor": val("mciAddr") || "-", "Nilai Barang (Cover)": "Rp " + fmt(val("mciVal")),
+                "Kepentingan": val("mciCap"), "Alamat Kantor": val("mciAddr") || "-", 
+                "Nilai Barang (Cover)": cur + " " + formatAmountOutput(val("mciVal")),
                 "Komoditas Muatan": val("mciItem") || "-", "Qty/Berat": val("mciQty") || "-", "Kemasan/Packing": val("mciPack") || "-",
                 "ETD (Jadwal Kirim)": val("mciETD") || "-", "No. Container": val("mciCont") || "-", "Rute & Moda Transit": getTransitSummary("MCI"),
                 "Loss Record 3 Thn": val("mciLoss")
@@ -414,9 +658,26 @@
         return payload;
     }
 
-    function submitData() {
+    // 3. Konsep Pop-up Konfirmasi Modal Terkunci (Strict Modal Dialog)
+    function initiateSubmission() {
         const payload = collect();
-        if (!payload) return;
+        if (!payload) return; // Batal jika data wajib belum lengkap
+
+        pendingPayload = payload;
+        // Buka modal konfirmasi
+        document.getElementById("confirmModal").style.display = "flex";
+    }
+
+    function closeConfirmModal() {
+        pendingPayload = null;
+        document.getElementById("confirmModal").style.display = "none";
+    }
+
+    function executeConfirmedSubmission() {
+        if (!pendingPayload) return;
+
+        const payload = pendingPayload;
+        closeConfirmModal();
 
         try {
             const q = JSON.parse(localStorage.getItem("kbru_q") || "[]");
@@ -459,8 +720,17 @@
         document.getElementById("lobSelect").value = item.lob;
         switchLOB(item.lob);
 
+        // Muat mata uang
+        if (item.currency) {
+            document.getElementById("currencySelect").value = item.currency;
+        } else {
+            document.getElementById("currencySelect").value = "IDR";
+        }
+        updateCurrencyLabels();
+
         document.getElementById("clientName").value = item.client || "";
         document.getElementById("clientPhone").value = item.contact || "";
+        document.getElementById("clientEmail").value = item.email && item.email !== "-" ? item.email : "";
         document.getElementById("notes").value = (item.notes || "").replace(/\[REVISI dari pengajuan:.*?\]\s*/g, '');
 
         const dt = item.details || {};
@@ -468,15 +738,15 @@
         if (item.lob === "PAR") {
             document.getElementById("parLoc").value = dt["Alamat Objek"] !== "-" ? (dt["Alamat Objek"] || "") : "";
             document.getElementById("parApar").value = dt["APAR"] || "Ada & Terawat";
-            document.getElementById("parFloor").value = parseNum(dt["Lantai"]) || 1;
+            document.getElementById("parFloor").value = parseAmountToNumber(dt["Lantai"]) || 1;
             document.getElementById("parClass").value = dt["Konstruksi"] || "Kelas 1 (Permanen)";
-            document.getElementById("parBld").value = parseNum(dt["Building"]) || "";
-            document.getElementById("parCnt").value = parseNum(dt["Content"]) || "";
-            document.getElementById("parStk").value = parseNum(dt["Stock"]) || "";
-            document.getElementById("parMch").value = parseNum(dt["Machinery"]) || "";
+            document.getElementById("parBld").value = formatAmountOutput(dt["Building"]);
+            document.getElementById("parCnt").value = formatAmountOutput(dt["Content"]);
+            document.getElementById("parStk").value = formatAmountOutput(dt["Stock"]);
+            document.getElementById("parMch").value = formatAmountOutput(dt["Machinery"]);
         } else if (item.lob === "MV") {
             document.getElementById("mvLeasing").value = dt["Status Leasing"] || "Milik Sendiri";
-            document.getElementById("mvVal").value = parseNum(dt["Market Value"]) || "";
+            document.getElementById("mvVal").value = formatAmountOutput(dt["Market Value"]);
             document.getElementById("mvCover").value = dt["Proteksi"] || "Comprehensive (All Risk)";
             document.getElementById("mvPlate").value = dt["Plat Nomor"] !== "-" ? (dt["Plat Nomor"] || "") : "";
             document.getElementById("mvBrand").value = dt["Merek/Tipe"] !== "-" ? (dt["Merek/Tipe"] || "") : "";
@@ -485,7 +755,7 @@
             document.getElementById("mvColor").value = dt["Warna"] !== "-" ? (dt["Warna"] || "") : "";
         } else if (item.lob === "CPM") {
             document.getElementById("cpmLeasing").value = dt["Status Finansial"] || "Milik Sendiri";
-            document.getElementById("cpmNRV").value = parseNum(dt["NRV Baru"]) || "";
+            document.getElementById("cpmNRV").value = formatAmountOutput(dt["NRV Baru"]);
             document.getElementById("cpmCover").value = dt["Pengcoveran"] || "Comprehensive (Unnamed Perils)";
             document.getElementById("cpmType").value = dt["Jenis Alat"] !== "-" ? (dt["Jenis Alat"] || "") : "";
             document.getElementById("cpmBrand").value = dt["Merek"] !== "-" ? (dt["Merek"] || "") : "";
@@ -498,13 +768,13 @@
             document.getElementById("mopAddr").value = dt["Alamat Kantor"] !== "-" ? (dt["Alamat Kantor"] || "") : "";
             document.getElementById("mopCargo").value = dt["Jenis Cargo"] !== "-" ? (dt["Jenis Cargo"] || "") : "";
             document.getElementById("mopPack").value = dt["Kemasan/Packing"] !== "-" ? (dt["Kemasan/Packing"] || "") : "";
-            document.getElementById("mopLimit").value = parseNum(dt["Limit per Shipment"]) || "";
-            document.getElementById("mopTurnover").value = parseNum(dt["Estimasi Turnover/Thn"]) || "";
+            document.getElementById("mopLimit").value = formatAmountOutput(dt["Limit per Shipment"]);
+            document.getElementById("mopTurnover").value = formatAmountOutput(dt["Estimasi Turnover/Thn"]);
             document.getElementById("mopLoss").value = dt["Loss Record 3 Thn"] || "NIL (Tanpa Klaim)";
         } else if (item.lob === "MCI") {
             document.getElementById("mciCap").value = dt["Kepentingan"] || "Seller";
             document.getElementById("mciAddr").value = dt["Alamat Kantor"] !== "-" ? (dt["Alamat Kantor"] || "") : "";
-            document.getElementById("mciVal").value = parseNum(dt["Nilai Barang (Cover)"]) || "";
+            document.getElementById("mciVal").value = formatAmountOutput(dt["Nilai Barang (Cover)"]);
             document.getElementById("mciItem").value = dt["Komoditas Muatan"] !== "-" ? (dt["Komoditas Muatan"] || "") : "";
             document.getElementById("mciQty").value = dt["Qty/Berat"] !== "-" ? (dt["Qty/Berat"] || "") : "";
             document.getElementById("mciPack").value = dt["Kemasan/Packing"] !== "-" ? (dt["Kemasan/Packing"] || "") : "";
@@ -555,7 +825,7 @@
         fetch(SCRIPT_URL, {
             method: "POST",
             headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify({ action: "getHistory", mode: mode, query: query.trim() })
+            body: JSON.stringify({ apiKey: API_KEY, action: "getHistory", mode: mode, query: query.trim() })
         })
         .then(res => res.json())
         .then(cloudData => {
@@ -636,7 +906,7 @@
                         <button type="button" class="btn-del-item" title="Hapus dari perangkat ini" onclick="deleteQueueItem(event, ${i})">&#128465;</button>
                     </div>
                 </div>
-                <div style="font-size:.78rem;color:var(--mut);margin-top:3px">Kontak: ${item.contact} &bull; Waktu: ${item.time}</div>
+                <div style="font-size:.78rem;color:var(--mut);margin-top:3px">Kontak: ${item.contact} &bull; Email: ${item.email || '-'} &bull; Waktu: ${item.time}</div>
             </div>`).join("");
     }
 
@@ -672,7 +942,10 @@
         const data = q[i];
         if (!data) return;
         document.getElementById("mTitle").innerText = `Detail RFQ [${data.lob}] - ${data.client}`;
-        let rows = `<tr><td>Waktu Pengajuan</td><td>${data.time}</td></tr><tr><td>Kontak/WA</td><td>${data.contact}</td></tr>`;
+        let rows = `<tr><td>Waktu Pengajuan</td><td>${data.time}</td></tr>
+                    <tr><td>Kontak/WA</td><td>${data.contact}</td></tr>
+                    <tr><td>Email Klien</td><td>${data.email || '-'}</td></tr>
+                    <tr><td>Mata Uang (Kurs)</td><td>${data.currency || 'IDR'}</td></tr>`;
         if (data.details) {
             for (const [k, v] of Object.entries(data.details)) rows += `<tr><td>${k}</td><td>${v}</td></tr>`;
         }
@@ -698,6 +971,7 @@
     addTransit("MOP");
     addTransit("MCI");
     resetQueueView();
+    updateCurrencyLabels();
 </script>
 </body>
 </html>
