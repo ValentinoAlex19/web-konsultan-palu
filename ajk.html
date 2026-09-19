@@ -35,7 +35,6 @@
             margin-bottom: 24px;
         }
 
-        /* Forms */
         .form-group { margin-bottom: 14px; }
         label { display: block; font-size: .84rem; font-weight: 700; margin-bottom: 4px; }
         select, input {
@@ -56,11 +55,10 @@
         .btn-blue { background: var(--blu-p); color: #fff; box-shadow: 0 3px 8px rgba(2,132,199,.2); }
         .btn-blue:hover { background: #0369a1; }
 
-        #workspaceArea, #tenorWarning, #errorAlert, #pendingBox { display: none; }
+        #workspaceArea, #errorAlert, #pendingBox { display: none; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
         .full-span { grid-column: span 2; }
 
-        /* Notes Box */
         .card-note { padding: 12px 14px; border-radius: 6px; font-size: .83rem; margin-bottom: 16px; line-height: 1.45; }
         .note-amber { background: var(--amb-s); border: 1px solid var(--amb-b); border-left: 4px solid var(--amb-p); color: var(--amb-p); }
         .note-red { background: var(--red-s); border: 1px solid var(--red-b); border-left: 4px solid var(--red-p); color: #4c0519; }
@@ -79,13 +77,13 @@
             background: #fff; border: 2px solid var(--red-p); border-radius: 6px;
             padding: 10px; text-align: center; margin-top: 8px;
         }
-        .res-total div { font-size: 1.5rem; font-weight: 800; color: var(--red-p); }
+        .res-total div { font-size: 1.35rem; font-weight: 800; color: var(--red-p); }
 
         .uw-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; margin-top: 8px; }
         .uw-item { background: #fff; border: 1px solid var(--red-b); border-radius: 4px; padding: 8px; font-size: .78rem; }
         .uw-item strong { display: block; color: var(--red-d); }
 
-        /* History Section */
+        /* History Panel */
         .history-panel {
             background: #fff; border-radius: 8px; border: 1px solid var(--bdr);
             border-top: 4px solid var(--red-p); padding: 22px; box-shadow: 0 4px 10px rgba(0,0,0,.04);
@@ -97,7 +95,6 @@
         .q-clear-all:hover { text-decoration: underline; }
 
         .q-search-bar { margin-bottom: 14px; }
-
         .q-list { display: flex; flex-direction: column; gap: 10px; }
         .q-item {
             background: #fff; border: 1px solid var(--bdr); border-left: 4px solid var(--red-p);
@@ -105,15 +102,19 @@
         }
         .q-item-info strong { display: block; font-size: 0.94rem; color: var(--txt); }
         .q-item-info span { font-size: 0.8rem; color: var(--mut); }
-        .q-actions { display: flex; align-items: center; gap: 10px; }
-        .btn-detail {
-            background: var(--red-s); border: 1px solid var(--red-b); color: var(--red-p);
-            padding: 5px 12px; border-radius: 4px; font-size: 0.82rem; font-weight: 700; cursor: pointer;
+        .q-actions { display: flex; align-items: center; gap: 8px; }
+        
+        .btn-action-sm {
+            border: 1px solid var(--bdr); padding: 5px 10px; border-radius: 4px;
+            font-size: 0.82rem; font-weight: 700; cursor: pointer;
         }
+        .btn-detail { background: var(--red-s); border-color: var(--red-b); color: var(--red-p); }
         .btn-detail:hover { background: #fee2e2; }
+        .btn-edit { background: #f1f5f9; color: #334155; }
+        .btn-edit:hover { background: #e2e8f0; color: #0f172a; }
         .btn-del-item { background: transparent; border: none; cursor: pointer; color: #ef4444; font-size: 1.1rem; padding: 2px 6px; }
 
-        /* Modal Sembulan Popup */
+        /* Modal Sembulan */
         .modal-overlay {
             display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
             z-index: 999; justify-content: center; align-items: center; padding: 16px;
@@ -191,7 +192,7 @@
         <!-- 2. WORKSPACE AREA -->
         <div id="workspaceArea">
             
-            <div class="portal-card">
+            <div class="portal-card" id="calcCardSection">
                 <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #f1f5f9;padding-bottom:10px;margin-bottom:16px;">
                     <div>
                         <h2 id="clientTitle" style="font-size:1.15rem;color:var(--red-d);font-weight:800;">-</h2>
@@ -236,7 +237,7 @@
                 <div id="calcContainer">
                     <div class="grid-2">
                         <div class="full-span">
-                            <label for="custName">Nama Lengkap Debitur:</label>
+                            <label for="custName">Nama Lengkap Debitur: <span style="color:var(--red-p)">*</span></label>
                             <input type="text" id="custName" placeholder="Nama calon debitur...">
                         </div>
                         <div>
@@ -274,50 +275,47 @@
                             </select>
                         </div>
 
-                        <!-- INPUT PERIODE ASURANSI -->
-                        <div>
-                            <label for="startDate">Tanggal Awal Periode:</label>
-                            <input type="date" id="startDate" onchange="calcPeriodDuration()">
+                        <!-- INPUT TANGGAL PERIODE ASURANSI (WAJIB TERLEBIH DAHULU) -->
+                        <div style="background:#fff7ed;padding:10px;border-radius:6px;border:1px solid #fed7aa;">
+                            <label for="startDate" style="color:var(--red-d);">Tanggal Awal Periode: <span style="color:var(--red-p)">*</span></label>
+                            <input type="date" id="startDate" onchange="calcPeriodDuration()" required>
                         </div>
-                        <div>
-                            <label for="endDate">Tanggal Akhir Periode:</label>
-                            <input type="date" id="endDate" onchange="calcPeriodDuration()">
+                        <div style="background:#fff7ed;padding:10px;border-radius:6px;border:1px solid #fed7aa;">
+                            <label for="endDate" style="color:var(--red-d);">Tanggal Akhir Periode: <span style="color:var(--red-p)">*</span></label>
+                            <input type="date" id="endDate" onchange="calcPeriodDuration()" required>
                         </div>
 
                         <div class="full-span">
                             <label>Durasi Periode Masa Asuransi:</label>
-                            <input type="text" id="txtDuration" value="-" readonly style="background:#f1f5f9;font-weight:700;">
+                            <input type="text" id="txtDuration" value="Silakan pilih tanggal awal & akhir terlebih dahulu" readonly style="background:#f1f5f9;font-weight:700;color:var(--mut);">
                             <div id="durationWarning" class="card-note note-red" style="display:none;margin-top:8px;font-weight:700;">
                                 Masa Asuransi ini harus dihitung pakai fitur resmi Asuransi Simas Jiwa. Silakan unduh kalkulator premi pada file Excel kalkulator premi Asuransi Simas Jiwa di atas.
                             </div>
                         </div>
 
+                        <!-- PARAMETER PLAFON UP & RATE WAJIB DIISI -->
                         <div>
-                            <label for="numTSI">Plafon Pinjaman / TSI (Rp):</label>
-                            <input type="number" id="numTSI" value="100000000" step="5000000" oninput="runCalc()">
+                            <label for="numTSI">Plafon Uang Pertanggungan / UP (Rp): <span style="color:var(--red-p)">*</span></label>
+                            <input type="number" id="numTSI" value="100000000" step="5000000" min="1" oninput="runCalc()" disabled required>
                         </div>
                         <div>
-                            <label for="numTenor">Tenor Simulasi (Tahun):</label>
-                            <input type="number" id="numTenor" value="1" min="1" max="20" step="1" oninput="runCalc()">
-                        </div>
-                        <div class="full-span">
-                            <label for="numRate">Input Rate (per Rp1.000):</label>
-                            <input type="number" id="numRate" value="1.55" step="0.01" oninput="runCalc()">
-                            <span style="font-size:.74rem;color:var(--mut);">*Lihat pada lampiran tabel PDF di atas sesuai usia dan tenor bulat</span>
+                            <label for="numRate">Input Rate (per Rp1.000): <span style="color:var(--red-p)">*</span></label>
+                            <input type="number" id="numRate" value="1.55" step="0.01" min="0.001" oninput="runCalc()" disabled required>
+                            <span style="font-size:.74rem;color:var(--mut);">*Lihat pada lampiran tabel PDF di atas sesuai usia dan durasi tahun bulat</span>
                         </div>
                     </div>
 
                     <!-- OUTPUT PREMI -->
                     <div class="res-box">
-                        <div class="res-row"><span style="color:var(--mut);">Plafon Pinjaman:</span><strong id="outTSI">Rp 100.000.000</strong></div>
-                        <div class="res-row"><span style="color:var(--mut);">Rate Diterapkan:</span><strong id="outRate">1,55 (per 1.000)</strong></div>
+                        <div class="res-row"><span style="color:var(--mut);">Plafon Uang Pertanggungan (UP):</span><strong id="outTSI">-</strong></div>
+                        <div class="res-row"><span style="color:var(--mut);">Rate Diterapkan:</span><strong id="outRate">-</strong></div>
                         <div class="res-total">
                             <span style="font-size:.76rem;color:var(--mut);font-weight:700;text-transform:uppercase;">Estimasi Premi Bruto</span>
-                            <div id="outPremi">Rp 155.000,00</div>
+                            <div id="outPremi" style="font-size:1.15rem;color:var(--mut);">Menunggu Input Periode Asuransi</div>
                         </div>
                     </div>
 
-                    <!-- NOTES MEDIS UNDERWRITING -->
+                    <!-- NOTES UNDERWRITING -->
                     <div class="card-note note-red">
                         <strong style="color:var(--red-d);font-size:.9rem;display:block;margin-bottom:4px;">Ketentuan Akseptasi Underwriting Simas Jiwa</strong>
                         Klasifikasi persyaratan akseptasi debitur ditentukan berdasarkan kombinasi usia dan besarnya Uang Pertanggungan:
@@ -329,7 +327,7 @@
                     </div>
 
                     <!-- TOMBOL SIMPAN KE HISTORY -->
-                    <button type="button" id="btnSaveQueue" class="btn-ui btn-red" onclick="saveToQueue()" style="margin-bottom:16px;">
+                    <button type="button" id="btnSaveQueue" class="btn-ui btn-red" onclick="saveToQueue()" style="margin-bottom:16px;" disabled>
                         + Simpan ke History Perhitungan Bank Ini
                     </button>
 
@@ -339,14 +337,13 @@
                         Apabila estimasi rincian perhitungan premi telah sesuai, silakan mengajukan penerbitan penawaran resmi secara mandiri melalui portal Smart Premi KBRU dengan menekan tombol di bawah ini:
                     </div>
 
-                    <!-- TOMBOL MENUJU SMARTPREMI -->
                     <a href="http://smartpremi.com/corporate-report" target="_blank" class="btn-ui btn-blue">
                         Buka Dashboard Smart Premi KBRU &rarr;
                     </a>
                 </div>
             </div>
 
-            <!-- 3. PANEL HISTORY DATA PERHITUNGAN PREMI NASABAH -->
+            <!-- 3. PANEL HISTORY -->
             <div class="history-panel">
                 <div class="q-header">
                     <div class="q-title">History Data Perhitungan Premi Nasabah</div>
@@ -357,19 +354,17 @@
                     <strong>Catatan Pemeliharaan Riwayat:</strong> Riwayat di bawah ini tersimpan eksklusif untuk institusi bank yang sedang aktif di perangkat ini. Data perhitungan ini bersifat sementara sebagai referensi internal marketing sebelum diajukan secara resmi melalui portal Smart Premi KBRU.
                 </div>
 
-                <!-- SEARCH BAR REALTIME MURNI BY NAMA -->
                 <div class="q-search-bar">
                     <input type="text" id="searchClientName" placeholder="Ketik nama calon debitur untuk filter history otomatis..." oninput="filterQueueByName()">
                 </div>
 
-                <!-- DAFTAR KARTU HISTORY KHUSUS BANK AKTIF -->
                 <div id="queueListContainer" class="q-list"></div>
             </div>
 
         </div>
     </main>
 
-    <!-- 4. MODAL POPUP RINCIAN DETAIL -->
+    <!-- 4. MODAL DETAIL -->
     <div id="detailModal" class="modal-overlay" onclick="closeModalOnBackdrop(event)">
         <div class="modal-card">
             <div class="modal-header">
@@ -380,7 +375,7 @@
         </div>
     </div>
 
-    <footer>&copy; 2026 PT Kalibesar Raya Utama - Cabang Palu. Terdaftar & Diawasi OJK.</footer>
+    <footer>&copy; 2026 PT Kalibesar Raya Utama - Cabang Palu. Terdaftar & Diawasi OJK[cite: 1].</footer>
 
     <script>
         const DB = {
@@ -393,11 +388,13 @@
 
         const STORAGE_KEY = "kbru_ajk_queue_palu";
         let activeBankKey = "sulman";
-        let isTenorValidYearly = true;
+        let isTenorValidYearly = false;
+        let detectedDurationYears = 0; // Durasi tahun murni dari hasil periode
 
         const ui = {
             gate: document.getElementById("gateArea"),
             work: document.getElementById("workspaceArea"),
+            calcSection: document.getElementById("calcCardSection"),
             bank: document.getElementById("bankSelect"),
             pin: document.getElementById("pinInput"),
             err: document.getElementById("errorAlert"),
@@ -419,7 +416,6 @@
             durTxt: document.getElementById("txtDuration"),
             durWarn: document.getElementById("durationWarning"),
             tsi: document.getElementById("numTSI"),
-            tenor: document.getElementById("numTenor"),
             rate: document.getElementById("numRate"),
             btnSave: document.getElementById("btnSaveQueue"),
             outTSI: document.getElementById("outTSI"),
@@ -454,8 +450,8 @@
 
             ui.searchName.value = "";
             renderQueue();
-
-            if (isReady) runCalc();
+            
+            blockFormInputs(true, "Silakan isi tanggal awal & akhir periode terlebih dahulu");
         }
 
         function runLock() {
@@ -475,7 +471,15 @@
         function calcPeriodDuration() {
             const sVal = ui.startD.value;
             const eVal = ui.endD.value;
-            if (!sVal || !eVal) return;
+
+            if (!sVal || !eVal) {
+                ui.durTxt.value = "Kedua tanggal periode asuransi wajib diisi";
+                ui.durTxt.style.color = "var(--mut)";
+                ui.durWarn.style.display = "none";
+                detectedDurationYears = 0;
+                blockFormInputs(true, "Wajib mengisi tanggal awal dan akhir periode");
+                return;
+            }
 
             const start = new Date(sVal);
             const end = new Date(eVal);
@@ -483,7 +487,9 @@
             if (end < start) {
                 ui.durTxt.value = "Tanggal akhir tidak valid (kurang dari tanggal awal)";
                 ui.durTxt.style.color = "var(--red-p)";
-                blockFormInputs(true);
+                ui.durWarn.style.display = "none";
+                detectedDurationYears = 0;
+                blockFormInputs(true, "Periode tanggal tidak valid");
                 return;
             }
 
@@ -506,45 +512,62 @@
 
             if (!isExactYearly) {
                 isTenorValidYearly = false;
+                detectedDurationYears = 0;
                 ui.durTxt.style.color = "var(--red-p)";
                 ui.durWarn.style.display = "block";
-                blockFormInputs(true);
+                blockFormInputs(true, "Ditolak (Masa asuransi ganjil, gunakan Excel Simas Jiwa)");
             } else {
                 isTenorValidYearly = true;
+                detectedDurationYears = y;
                 ui.durTxt.style.color = "var(--grn-p)";
                 ui.durWarn.style.display = "none";
-                ui.tenor.value = y;
                 blockFormInputs(false);
                 runCalc();
             }
         }
 
-        function blockFormInputs(shouldBlock) {
+        function blockFormInputs(shouldBlock, customMessage = "") {
             ui.tsi.disabled = shouldBlock;
-            ui.tenor.disabled = shouldBlock;
             ui.rate.disabled = shouldBlock;
             ui.btnSave.disabled = shouldBlock;
 
             if (shouldBlock) {
                 ui.outTSI.innerText = "-";
                 ui.outRate.innerText = "-";
-                ui.outPremi.innerText = "Ditolak (Gunakan Excel Simas Jiwa)";
+                ui.outPremi.innerText = customMessage || "Terkunci";
+                ui.outPremi.style.fontSize = "1rem";
+                ui.outPremi.style.color = "var(--mut)";
+            } else {
+                ui.outPremi.style.fontSize = "1.5rem";
+                ui.outPremi.style.color = "var(--red-p)";
             }
         }
 
         function runCalc() {
             if (!isTenorValidYearly) return;
 
-            const tsi = parseFloat(ui.tsi.value) || 0;
+            const up = parseFloat(ui.tsi.value) || 0;
             const rate = parseFloat(ui.rate.value) || 0;
 
-            const premi = (rate * tsi) / 1000;
-            ui.outTSI.innerText = fmtIDR.format(tsi).split(",")[0];
+            if (up <= 0 || rate <= 0) {
+                ui.outTSI.innerText = up > 0 ? fmtIDR.format(up).split(",")[0] : "-";
+                ui.outRate.innerText = rate > 0 ? rate.toLocaleString('id-ID') + " (per 1.000)" : "-";
+                ui.outPremi.innerText = "Wajib isi Plafon UP & Rate > 0";
+                ui.outPremi.style.fontSize = "1rem";
+                ui.btnSave.disabled = true;
+                return;
+            }
+
+            ui.btnSave.disabled = false;
+            ui.outPremi.style.fontSize = "1.5rem";
+
+            // Rumus: (Rate * UP) / 1000
+            const premi = (rate * up) / 1000;
+            ui.outTSI.innerText = fmtIDR.format(up).split(",")[0];
             ui.outRate.innerText = rate.toLocaleString('id-ID') + " (per 1.000)";
             ui.outPremi.innerText = fmtIDR.format(premi);
         }
 
-        // --- MANAJEMEN HISTORY STORAGE ---
         function getAllRawStorage() {
             return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
         }
@@ -554,6 +577,12 @@
         }
 
         function saveToQueue() {
+            if (!ui.startD.value || !ui.endD.value) {
+                alert("Pengajuan ditolak! Tanggal awal dan tanggal akhir periode asuransi wajib diisi.");
+                ui.startD.focus();
+                return;
+            }
+
             if (!isTenorValidYearly) {
                 alert("Pengajuan ditolak! Masa asuransi yang tidak bulat tahunan wajib dihitung menggunakan kalkulator resmi Excel Simas Jiwa.");
                 return;
@@ -566,9 +595,15 @@
                 return;
             }
 
-            const tsi = parseFloat(ui.tsi.value) || 0;
+            const up = parseFloat(ui.tsi.value) || 0;
             const rate = parseFloat(ui.rate.value) || 0;
-            const premi = (rate * tsi) / 1000;
+
+            if (up <= 0 || rate <= 0) {
+                alert("Plafon Uang Pertanggungan (UP) dan Rate wajib diisi angka yang valid (lebih dari 0).");
+                return;
+            }
+
+            const premi = (rate * up) / 1000;
 
             const newItem = {
                 id: "AJK-" + Date.now(),
@@ -578,16 +613,21 @@
                 client: clientName,
                 contact: ui.contact.value.trim() || "-",
                 gender: ui.gender.value,
-                dob: ui.dob.value || "-",
+                dob: ui.dob.value || "",
                 age: ui.ageTxt.value,
                 addr: ui.addr.value.trim() || "-",
                 credit: ui.credit.value,
                 cover: ui.cover.value,
-                period: `${ui.startD.value || '-'} s.d. ${ui.endD.value || '-'} (${ui.durTxt.value})`,
-                tsi: fmtIDR.format(tsi).split(",")[0],
-                rate: rate.toLocaleString('id-ID') + " (per 1.000)",
-                tenor: ui.tenor.value + " Tahun",
-                premi: fmtIDR.format(premi)
+                startDate: ui.startD.value,
+                endDate: ui.endD.value,
+                periodDesc: `${ui.startD.value} s.d. ${ui.endD.value} (${ui.durTxt.value})`,
+                rawTSI: up,
+                rawRate: rate,
+                tenorTahun: detectedDurationYears,
+                tsiFmt: fmtIDR.format(up).split(",")[0],
+                rateFmt: rate.toLocaleString('id-ID') + " (per 1.000)",
+                tenorFmt: detectedDurationYears + " Tahun",
+                premiFmt: fmtIDR.format(premi)
             };
 
             const allData = getAllRawStorage();
@@ -610,14 +650,40 @@
                 <div class="q-item">
                     <div class="q-item-info">
                         <strong>[AJK] ${escapeHtml(item.client)}</strong>
-                        <span>TSI: ${item.tsi} &bull; Tenor: ${item.tenor} &bull; Waktu: ${item.timestamp}</span>
+                        <span>UP: ${item.tsiFmt} &bull; Durasi: ${item.tenorFmt} &bull; Waktu: ${item.timestamp}</span>
                     </div>
                     <div class="q-actions">
-                        <button type="button" class="btn-detail" onclick="openDetail('${item.id}')">Detail &rarr;</button>
+                        <button type="button" class="btn-action-sm btn-edit" onclick="loadItemToForm('${item.id}')" title="Muat Ulang ke Kalkulator">&#9998; Edit</button>
+                        <button type="button" class="btn-action-sm btn-detail" onclick="openDetail('${item.id}')">Detail &rarr;</button>
                         <button type="button" class="btn-del-item" onclick="deleteQueueItem('${item.id}')" title="Hapus Data Ini">&times;</button>
                     </div>
                 </div>
             `).join("");
+        }
+
+        function loadItemToForm(id) {
+            const allData = getAllRawStorage();
+            const item = allData.find(x => x.id === id);
+            if (!item) return;
+
+            ui.name.value = item.client || "";
+            ui.contact.value = item.contact !== "-" ? item.contact : "";
+            ui.gender.value = item.gender || "Laki-laki";
+            ui.dob.value = item.dob || "";
+            ui.addr.value = item.addr !== "-" ? item.addr : "";
+            ui.credit.value = item.credit || "Modal Kerja";
+            ui.cover.value = item.cover || "Berjangka Menurun Bulanan";
+
+            ui.startD.value = item.startDate || "";
+            ui.endD.value = item.endDate || "";
+
+            ui.tsi.value = item.rawTSI || 100000000;
+            ui.rate.value = item.rawRate || 1.55;
+
+            if (ui.dob.value) calcAge(ui.dob.value);
+            calcPeriodDuration();
+
+            ui.calcSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         function openDetail(id) {
@@ -632,15 +698,15 @@
                 <tr><td class="col-lbl">Nama Calon Debitur</td><td class="col-val" style="font-weight:700;color:var(--red-d);">${escapeHtml(item.client)}</td></tr>
                 <tr><td class="col-lbl">Kontak / WhatsApp PIC</td><td class="col-val">${escapeHtml(item.contact)}</td></tr>
                 <tr><td class="col-lbl">Jenis Kelamin</td><td class="col-val">${item.gender}</td></tr>
-                <tr><td class="col-lbl">Tanggal Lahir & Usia</td><td class="col-val">${item.dob} (${item.age})</td></tr>
+                <tr><td class="col-lbl">Tanggal Lahir & Usia</td><td class="col-val">${item.dob || '-'} (${item.age})</td></tr>
                 <tr><td class="col-lbl">Alamat Domisili/Usaha</td><td class="col-val">${escapeHtml(item.addr)}</td></tr>
                 <tr><td class="col-lbl">Jenis Kredit</td><td class="col-val">${item.credit}</td></tr>
                 <tr><td class="col-lbl">Jenis Pertanggungan</td><td class="col-val">${item.cover}</td></tr>
-                <tr><td class="col-lbl">Periode Asuransi</td><td class="col-val">${item.period}</td></tr>
-                <tr><td class="col-lbl">Plafon Pinjaman (TSI)</td><td class="col-val">${item.tsi}</td></tr>
-                <tr><td class="col-lbl">Tenor Asuransi</td><td class="col-val">${item.tenor}</td></tr>
-                <tr><td class="col-lbl">Rate Diterapkan</td><td class="col-val">${item.rate}</td></tr>
-                <tr><td class="col-lbl" style="color:var(--red-d);">Estimasi Premi Bruto</td><td class="col-val" style="font-weight:800;color:var(--red-p);">${item.premi}</td></tr>
+                <tr><td class="col-lbl">Periode Asuransi</td><td class="col-val">${item.periodDesc}</td></tr>
+                <tr><td class="col-lbl">Plafon Uang Pertanggungan (UP)</td><td class="col-val">${item.tsiFmt}</td></tr>
+                <tr><td class="col-lbl">Durasi Masa Asuransi</td><td class="col-val">${item.tenorFmt}</td></tr>
+                <tr><td class="col-lbl">Rate Diterapkan</td><td class="col-val">${item.rateFmt}</td></tr>
+                <tr><td class="col-lbl" style="color:var(--red-d);">Estimasi Premi Bruto</td><td class="col-val" style="font-weight:800;color:var(--red-p);">${item.premiFmt}</td></tr>
             `;
 
             ui.modal.style.display = "flex";
@@ -667,7 +733,6 @@
             }
         }
 
-        // PENCARIAN REALTIME OTOMATIS BERDASARKAN NAMA
         function filterQueueByName() {
             const query = ui.searchName.value.trim().toLowerCase();
             const bankQueue = getActiveBankQueue();

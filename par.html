@@ -13,13 +13,18 @@
             --text-dark: #1e293b;
             --text-muted: #64748b;
             --border-color: #cbd5e1;
+            --soft-red: #fee2e2;
+            --border-red: #fecaca;
+            --amber-bg: #fffbeb;
+            --amber-border: #fef3c7;
+            --amber-text: #b45309;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg-light); color: var(--text-dark); line-height: 1.5; }
         nav { background: var(--pure-white); border-bottom: 3px solid var(--primary-red); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
         .brand-logo { font-size: 1.15rem; font-weight: 800; color: var(--primary-red); }
         .nav-back { text-decoration: none; color: var(--primary-red); font-weight: 600; font-size: 0.9rem; }
-        .container { max-width: 1150px; margin: 25px auto; padding: 0 20px; }
+        .container { max-width: 1150px; margin: 25px auto 40px; padding: 0 20px; }
 
         .doc-section { background: var(--pure-white); border-left: 5px solid var(--primary-red); padding: 16px 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
         .doc-section h3 { color: var(--dark-red); font-size: 1.05rem; margin-bottom: 4px; }
@@ -33,35 +38,18 @@
         .card { background: var(--pure-white); border-top: 4px solid var(--primary-red); border-radius: 8px; padding: 22px; box-shadow: 0 4px 6px rgba(0,0,0,0.03); margin-bottom: 25px; }
         .card-header h2 { color: var(--dark-red); font-size: 1.35rem; }
         
-        /* Tabel Notes Panduan Gempa & Banjir */
         .notes-table-box {
-            background-color: #fffbeb;
+            background-color: var(--amber-bg);
             border: 1px solid #fde68a;
             border-left: 4px solid #d97706;
             border-radius: 6px;
             margin: 15px 0 20px 0;
             overflow: hidden;
         }
-        .notes-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.83rem;
-        }
-        .notes-table td {
-            padding: 9px 14px;
-            border-bottom: 1px solid #fef3c7;
-            color: #92400e;
-            vertical-align: middle;
-        }
-        .notes-table tr:last-child td {
-            border-bottom: none;
-        }
-        .notes-table td.tag-col {
-            font-weight: 700;
-            width: 22%;
-            background-color: #fef3c7;
-            white-space: nowrap;
-        }
+        .notes-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+        .notes-table td { padding: 9px 14px; border-bottom: 1px solid #fef3c7; color: #92400e; vertical-align: middle; }
+        .notes-table tr:last-child td { border-bottom: none; }
+        .notes-table td.tag-col { font-weight: 700; width: 22%; background-color: #fef3c7; white-space: nowrap; }
 
         .form-row { display: flex; gap: 15px; margin: 15px 0; flex-wrap: wrap; }
         .form-group { flex: 1; min-width: 200px; }
@@ -86,17 +74,79 @@
         tr.row-disabled td.td-premi { color: #94a3b8; text-decoration: line-through; }
         .total-row td { color: var(--dark-red); font-size: 1.05rem; font-weight: bold; background: #fff1f2; border-top: 2px solid var(--primary-red); border-bottom: 2px solid var(--primary-red); }
 
+        .btn-ui {
+            display: block; width: 100%; border: none; padding: 12px; border-radius: 6px;
+            font-weight: 800; font-size: .92rem; text-align: center; text-decoration: none; cursor: pointer;
+            margin-top: 18px;
+        }
+        .btn-red { background: var(--primary-red); color: #fff; }
+        .btn-red:hover { background: var(--dark-red); }
+
         .info-wa-notice {
             background-color: #eff6ff;
             border: 1px solid #bfdbfe;
             border-left: 4px solid #2563eb;
             padding: 14px 18px;
             border-radius: 6px;
-            margin-top: 22px;
+            margin-top: 18px;
             font-size: 0.88rem;
             color: #1e40af;
             line-height: 1.5;
         }
+
+        /* History Panel */
+        .history-panel {
+            background: #fff; border-radius: 8px; border: 1px solid var(--border-color);
+            border-top: 4px solid var(--primary-red); padding: 22px; box-shadow: 0 4px 10px rgba(0,0,0,.04);
+            margin-top: 25px;
+        }
+        .q-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .q-title { font-size: 1.15rem; font-weight: 800; color: var(--dark-red); }
+        .q-clear-all { color: var(--primary-red); font-size: 0.84rem; font-weight: 700; cursor: pointer; text-decoration: none; }
+        .q-clear-all:hover { text-decoration: underline; }
+
+        .card-note { padding: 12px 14px; border-radius: 6px; font-size: .83rem; margin-bottom: 16px; line-height: 1.45; }
+        .note-amber { background: var(--amber-bg); border: 1px solid var(--amber-border); border-left: 4px solid var(--amber-text); color: var(--amber-text); }
+
+        .q-search-bar { margin-bottom: 14px; }
+        .q-list { display: flex; flex-direction: column; gap: 10px; }
+        .q-item {
+            background: #fff; border: 1px solid var(--border-color); border-left: 4px solid var(--primary-red);
+            border-radius: 6px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .q-item-info strong { display: block; font-size: 0.94rem; color: var(--text-dark); }
+        .q-item-info span { font-size: 0.8rem; color: var(--text-muted); }
+        .q-actions { display: flex; align-items: center; gap: 8px; }
+        
+        .btn-action-sm {
+            border: 1px solid var(--border-color); padding: 5px 10px; border-radius: 4px;
+            font-size: 0.82rem; font-weight: 700; cursor: pointer;
+        }
+        .btn-detail { background: var(--soft-red); border-color: var(--border-red); color: var(--primary-red); }
+        .btn-detail:hover { background: #fee2e2; }
+        .btn-edit { background: #f1f5f9; color: #334155; }
+        .btn-edit:hover { background: #e2e8f0; color: #0f172a; }
+        .btn-del-item { background: transparent; border: none; cursor: pointer; color: #ef4444; font-size: 1.1rem; padding: 2px 6px; }
+
+        /* Modal Sembulan */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+            z-index: 999; justify-content: center; align-items: center; padding: 16px;
+        }
+        .modal-card {
+            background: #fff; border-radius: 10px; max-width: 600px; width: 100%;
+            max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .modal-header {
+            background: #fff; border-bottom: 2px solid #f1f5f9; padding: 16px 20px;
+            display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0;
+        }
+        .modal-header h3 { font-size: 1.15rem; color: var(--dark-red); font-weight: 800; }
+        .modal-close { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-muted); }
+        .modal-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        .modal-table td { padding: 10px 16px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+        .modal-table td.col-lbl { width: 40%; font-weight: 700; color: var(--text-dark); background: #fafafa; }
+        .modal-table td.col-val { color: var(--text-dark); }
 
         footer { text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.85rem; }
 
@@ -108,6 +158,8 @@
             input[type="text"], input[type="number"], select { font-size: 15px; }
             input[type="checkbox"] { transform: scale(1.2); }
             .notes-table td.tag-col { width: 30%; }
+            .q-item { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .q-actions { width: 100%; justify-content: space-between; }
         }
     </style>
 </head>
@@ -122,43 +174,43 @@
         <!-- Dokumen Regulasi OJK -->
         <div class="doc-section">
             <h3>Dokumen Referensi Tarif & Okupasi OJK</h3>
-            <p>Silakan periksa dokumen acuan resmi di bawah ini untuk melihat kriteria zona banjir (Lampiran II), tabel zona dan kelas konstruksi gempa bumi (Lampiran III), serta tarif dasar okupasi untuk Flexas (Lampiran I). Juga untuk file Okupasi Properti Umum, khusus tarif banjir (TSFWD) disesuaikan wilayah Palu standard Zona 1 dan tarif gempa (EQVET) disesuaikan dengan Palu Zona 5:</p>
+            <p>Silahkan periksa dokumen acuan resmi di bawah ini untuk melihat kriteria zona banjir (Lampiran II), tabel zona dan kelas konstruksi gempa bumi (Lampiran III), serta tarif dasar okupasi untuk Flexas (Lampiran I)[cite: 6]. Untuk dokumen pdf Okupasi Property Umum, khusus tarif banjir (TSFWD) disesuaikan wilayah Palu standard Zona 1 dan tarif gempa (EQVET) disesuaikan dengan Palu Zona 5[cite: 6]:</p>
             <div class="doc-grid">
                 <div class="doc-card">
                     <div>
                         <div class="doc-title">Lampiran I - Harta Benda</div>
-                        <div class="doc-desc">Tarif FLEXAS per mil (%0) & ratusan kode okupasi.</div>
+                        <div class="doc-desc">Tarif FLEXAS per mil (%0) & ratusan kode okupasi[cite: 6].</div>
                     </div>
                     <a href="SAL - Lampiran I - Property Amandemen.pdf" class="btn-download" target="_blank" download>Buka PDF</a>
                 </div>
                 <div class="doc-card">
                     <div>
                         <div class="doc-title">Lampiran II - Banjir</div>
-                        <div class="doc-desc">Tabel II.A kriteria zona 1–4 & tarif risiko banjir (TSFWD).</div>
+                        <div class="doc-desc">Tabel II.A kriteria zona 1–4 & tarif risiko banjir (TSFWD)[cite: 6].</div>
                     </div>
                     <a href="SAL - Lampiran II - Banjir.pdf" class="btn-download" target="_blank" download>Buka PDF</a>
                 </div>
                 <div class="doc-card">
                     <div>
                         <div class="doc-title">Lampiran III - Gempa</div>
-                        <div class="doc-desc">Tabel III.A.1 & III.A.2 tarif EQVET sesuai kelas konstruksi.</div>
+                        <div class="doc-desc">Tabel III.A.1 & III.A.2 tarif EQVET sesuai kelas konstruksi[cite: 6].</div>
                     </div>
                     <a href="SAL - Lampiran III - Earth Quake.pdf" class="btn-download" target="_blank" download>Buka PDF</a>
                 </div>
                 <div class="doc-card">
                     <div>
                         <div class="doc-title">Okupasi Properti Umum</div>
-                        <div class="doc-desc">Katalog kode penggunaan bangunan komersial & industri.</div>
+                        <div class="doc-desc">Katalog kode penggunaan bangunan komersial & industri[cite: 6].</div>
                     </div>
                     <a href="Okupasi Property Umum.pdf" class="btn-download" target="_blank" download>Buka PDF</a>
                 </div>
             </div>
         </div>
 
-        <div class="card">
+        <div class="card" id="calcCardPAR">
             <div class="card-header">
                 <h2>Kalkulator Property All Risk (PAR)</h2>
-                <span style="font-size: 0.85rem; color: var(--text-muted);">Perhitungan tertentu mengacu pada regulasi Surat Edaran OJK. Semua kolom rate pada tabel HARUS dicek kembali kesesuaiannya dan dapat diubah manual.</span>
+                <span style="font-size: 0.85rem; color: var(--text-muted);">Perhitungan mengacu pada regulasi Surat Edaran OJK[cite: 8]. Semua kolom rate pada tabel dapat disesuaikan manual[cite: 6, 8].</span>
             </div>
 
             <!-- Tabel Notes Petunjuk Gempa & Banjir -->
@@ -166,13 +218,25 @@
                 <table class="notes-table">
                     <tr>
                         <td class="tag-col">Ketentuan Gempa (EQVET)</td>
-                        <td>Perhatikan untuk <strong>zona wilayah</strong> dan <strong>kelas konstruksinya</strong>. Silakan lihat rincian lengkapnya pada file <strong>Lampiran III (PDF)</strong> di atas.</td>
+                        <td>Perhatikan untuk <strong>zona wilayah</strong> dan <strong>kelas konstruksinya</strong>[cite: 6]. Silakan lihat rincian lengkapnya pada file <strong>Lampiran III (PDF)</strong> di atas[cite: 6].</td>
                     </tr>
                     <tr>
                         <td class="tag-col">Ketentuan Banjir (TSFWD)</td>
-                        <td>Untuk rate banjir, mohon perhatikan <strong>zona dan wilayahnya</strong>. Silakan lihat rincian ketentuannya pada file <strong>Lampiran II (PDF)</strong> di atas.</td>
+                        <td>Untuk rate banjir, mohon perhatikan <strong>zona dan wilayahnya</strong>[cite: 6]. Silakan lihat rincian ketentuannya pada file <strong>Lampiran II (PDF)</strong> di atas[cite: 6].</td>
                     </tr>
                 </table>
+            </div>
+
+            <!-- Identitas Pemohon untuk History -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="parClientName">Nama Tertanggung / Perusahaan: <span style="color:var(--primary-red)">*</span></label>
+                    <input type="text" id="parClientName" placeholder="Contoh: PT Palu Jaya Sentosa / Bpk. Hendra">
+                </div>
+                <div class="form-group">
+                    <label for="parClientPhone">Kontak / No. WhatsApp PIC:</label>
+                    <input type="text" id="parClientPhone" placeholder="08xxxxxxxxxx">
+                </div>
             </div>
 
             <!-- Baris 1: Parameter Okupasi & Nilai Pertanggungan -->
@@ -180,7 +244,7 @@
                 <div class="form-group">
                     <label for="occCodeInput">Kode Okupasi (Ketik angka)</label>
                     <input type="text" id="occCodeInput" value="29411" placeholder="Contoh: 2976, 2934, 29411" oninput="syncOccupationCode()">
-                    <div id="occAlert" class="alert-notif">Kode okupasi tidak tersimpan otomatis. Silakan cek Lampiran I (PDF) di atas, lalu isi deskripsi & rate FLEXAS manual.</div>
+                    <div id="occAlert" class="alert-notif">Kode okupasi tidak tersimpan otomatis. Silakan cek Lampiran I (PDF) di atas, lalu isi deskripsi & rate FLEXAS manual[cite: 6].</div>
                 </div>
                 <div class="form-group">
                     <label for="objectDesc">Deskripsi Penggunaan Objek</label>
@@ -310,23 +374,56 @@
             </div>
 
             <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 12px; font-style: italic;">
-                * Rate diisi dalam persen (%). Jika merujuk tabel Lampiran I & III OJK yang menggunakan per mil (%0), bagi angka tersebut dengan 10 (misal: 1,90 %0 = 0,19%). Rate TSFWD disetel default ke 0,045% (Kota Palu / Luar DKI Zona 1) juga rate EQVET disetel default ke 0.19% (kota Palu Zona V); jika kriteria atau lokasi berbeda, silakan ubah kolom rate secara manual dengan merujuk ke Lampiran II untuk TSFWD dan Lampiran III untuk EQVET (PDF).
+                * Rate diisi dalam persen (%)[cite: 6]. Jika merujuk tabel Lampiran I & III OJK yang menggunakan per mil (%0), bagi angka tersebut dengan 10 (misal: 1,90 %0 = 0,19%)[cite: 6]. Rate TSFWD disetel default ke 0,045% (Kota Palu / Luar DKI Zona 1) juga rate EQVET disetel default ke 0.19% (kota Palu Zona V); jika kriteria atau lokasi berbeda, silakan ubah kolom rate secara manual dengan merujuk ke Lampiran II untuk TSFWD dan Lampiran III untuk EQVET (PDF)[cite: 6].
             </p>
+
+            <!-- Tombol Simpan ke History -->
+            <button type="button" class="btn-ui btn-red" onclick="savePARToHistory()">
+                + Simpan ke History Perhitungan PAR
+            </button>
 
             <!-- Informasi Kontak Konsultasi Langsung -->
             <div class="info-wa-notice">
                 <strong>Informasi & Konsultasi Langsung:</strong><br>
-                Untuk informasi dan komunikasi lebih lanjut via WhatsApp mengenai simulasi penawaran PAR ini, silakan langsung menghubungi tim kami di nomor <strong>1234567890</strong>.
+                Untuk informasi dan komunikasi lebih lanjut via WhatsApp mengenai simulasi penawaran PAR ini, silakan langsung menghubungi tim kami di nomor <strong>1234567890</strong>[cite: 6].
             </div>
+        </div>
+
+        <!-- Panel History Data Perhitungan PAR -->
+        <div class="history-panel">
+            <div class="q-header">
+                <div class="q-title">History Data Perhitungan Premi PAR</div>
+                <a href="javascript:void(0)" class="q-clear-all" onclick="clearAllPARHistory()">Hapus Seluruh Riwayat Perangkat Ini</a>
+            </div>
+
+            <div class="card-note note-amber">
+                <strong>Catatan Pemeliharaan Riwayat:</strong> Riwayat di bawah ini tersimpan lokal di perangkat ini sebagai referensi simulasi sebelum diajukan ke form RFQ resmi atau dikonsultasikan ke konsultan KBRU Palu.
+            </div>
+
+            <div class="q-search-bar">
+                <input type="text" id="searchClientName" placeholder="Ketik nama tertanggung / perusahaan untuk filter history otomatis..." oninput="filterPARHistory()">
+            </div>
+
+            <div id="parQueueList" class="q-list"></div>
+        </div>
+    </div>
+
+    <!-- Modal Popup Detail Riwayat PAR -->
+    <div id="parDetailModal" class="modal-overlay" onclick="closePARModalOnBackdrop(event)">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="parModalTitle">Detail Perhitungan PAR</h3>
+                <button type="button" class="modal-close" onclick="closePARModal()">&times;</button>
+            </div>
+            <table class="modal-table" id="parModalBody"></table>
         </div>
     </div>
 
     <footer>
-        <p>&copy; 2026 PT Kalibesar Raya Utama - Cabang Palu. Terdaftar & Diawasi Otoritas Jasa Keuangan (OJK).</p>
+        <p>&copy; 2026 PT Kalibesar Raya Utama - Cabang Palu. Terdaftar & Diawasi Otoritas Jasa Keuangan (OJK)[cite: 6, 8].</p>
     </footer>
 
     <script>
-        // Database ringkas kode okupasi umum
         const occLookup = {
             "2976":  { desc: "Rumah Tinggal (Dwelling House)", rate: 0.0294 },
             "29761": { desc: "Kos-kosan / Asrama Hunian", rate: 0.0478 },
@@ -351,24 +448,21 @@
             "200":   { desc: "Industri / Manufaktur Ringan", rate: 0.1350 }
         };
 
-        // Matriks Lengkap Tarif Gempa OJK (Tabel III.A.1 & III.A.2: Nilai %0 dibagi 10 -> %)
         const eqMatrix = {
-            // III.A.1 Commercial & Industrial
-            COM_LE9: [0.075, 0.076, 0.100, 0.143, 0.190], // Steel, Wood, RC <= 9
-            COM_GT9: [0.112, 0.115, 0.122, 0.153, 0.200], // Steel, Wood, RC > 9
-            COM_OTH: [0.080, 0.104, 0.155, 0.246, 0.470], // Others
-            // III.A.2 Dwelling House (2976)
-            DW_STD:  [0.076, 0.079, 0.104, 0.135, 0.160], // Steel, Wood, RC
-            DW_OTH:  [0.080, 0.100, 0.155, 0.224, 0.450]  // Others
+            COM_LE9: [0.075, 0.076, 0.100, 0.143, 0.190],
+            COM_GT9: [0.112, 0.115, 0.122, 0.153, 0.200],
+            COM_OTH: [0.080, 0.104, 0.155, 0.246, 0.470],
+            DW_STD:  [0.076, 0.079, 0.104, 0.135, 0.160],
+            DW_OTH:  [0.080, 0.100, 0.155, 0.224, 0.450]
         };
 
         const romanZones = ["I", "II", "III", "IV", "V"];
+        const PAR_STORAGE_KEY = "kbru_history_par_palu";
 
         const $ = id => document.getElementById(id);
         const val = id => parseFloat($(id)?.value) || 0;
         const formatIDR = n => "IDR " + Number(n).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-        // 1. Logika Kode Okupasi + Notifikasi Teks Merah
         function syncOccupationCode() {
             const code = $("occCodeInput").value.trim();
             const alertEl = $("occAlert");
@@ -395,7 +489,6 @@
             syncEarthquakeRate();
         }
 
-        // 2. Sinkronisasi Rate Gempa Berdasarkan Zona (1-5) & Kelas Konstruksi (Tabel III.A)
         function syncEarthquakeRate() {
             const zoneIdx = parseInt($("eqZoneSelect").value) - 1;
             const constructType = $("eqConstructSelect").value;
@@ -413,8 +506,6 @@
         function syncLokasi() {
             const loc = $("cityInput").value.trim() || "Kota Palu";
             const zoneEq = $("eqZoneSelect").value;
-
-            // Keterangan bersih: hanya mencantumkan kota/wilayah objek
             $("zoneTSFWD").value = loc;
             $("zoneEQVET").value = `Zona ${romanZones[zoneEq - 1]} (${loc})`;
         }
@@ -452,8 +543,194 @@
             $("totalPremi").innerText = formatIDR(totalPremi);
         }
 
+        // --- SISTEM HISTORY PAR ---
+        function getPARHistory() {
+            return JSON.parse(localStorage.getItem(PAR_STORAGE_KEY) || "[]");
+        }
+
+        function setPARHistory(data) {
+            localStorage.setItem(PAR_STORAGE_KEY, JSON.stringify(data));
+            renderPARHistory();
+        }
+
+        function savePARToHistory() {
+            const client = $("parClientName").value.trim();
+            if (!client) {
+                alert("Harap masukkan Nama Tertanggung / Perusahaan terlebih dahulu.");
+                $("parClientName").focus();
+                return;
+            }
+
+            const tsi = val("tsiInput");
+            const tenor = val("tenorInput") || 1;
+            const totalPremi = $("totalPremi").innerText;
+            const totalRate = $("totalRate").innerText;
+
+            const hasTSFWD = $("checkTSFWD").checked;
+            const hasEQVET = $("checkEQVET").checked;
+
+            // Logika Paket: PAR Only vs PAR + TSFWD + EQVET
+            let packageType = "";
+            if (hasTSFWD && hasEQVET) {
+                packageType = "PAR + TSFWD + EQVET";
+            } else if (!hasTSFWD && !hasEQVET) {
+                packageType = "PAR Only (FLEXAS, RSMDCC, OTHERS)";
+            } else if (hasTSFWD && !hasEQVET) {
+                packageType = "PAR + TSFWD (Tanpa Gempa)";
+            } else {
+                packageType = "PAR + EQVET (Tanpa Banjir)";
+            }
+
+            const newItem = {
+                id: "PAR-" + Date.now(),
+                timestamp: new Date().toLocaleString('id-ID'),
+                client: client,
+                contact: $("parClientPhone").value.trim() || "-",
+                packageType: packageType,
+                occCode: $("occCodeInput").value.trim() || "-",
+                objectDesc: $("objectDesc").value.trim() || "-",
+                tsi: tsi,
+                tsiFmt: formatIDR(tsi).split(",")[0],
+                tenor: tenor,
+                city: $("cityInput").value.trim() || "Kota Palu",
+                eqZone: $("eqZoneSelect").value,
+                eqConstruct: $("eqConstructSelect").value,
+                rateFLEXAS: val("rateFLEXAS"),
+                rateTSFWD: val("rateTSFWD"),
+                rateRSMDCC: val("rateRSMDCC"),
+                rateOTHERS: val("rateOTHERS"),
+                rateEQVET: val("rateEQVET"),
+                checkTSFWD: hasTSFWD,
+                checkEQVET: hasEQVET,
+                totalRate: totalRate,
+                totalPremi: totalPremi
+            };
+
+            const list = getPARHistory();
+            list.unshift(newItem);
+            setPARHistory(list);
+
+            $("searchClientName").value = "";
+            alert(`Perhitungan ${packageType} untuk "${client}" berhasil disimpan ke history!`);
+        }
+
+        function renderPARHistory(customList = null) {
+            const list = customList !== null ? customList : getPARHistory();
+            const container = $("parQueueList");
+            if (!container) return;
+
+            if (list.length === 0) {
+                container.innerHTML = `<div style="text-align:center;padding:22px;color:var(--text-muted);font-size:0.86rem;">Belum ada history data perhitungan PAR di perangkat ini.</div>`;
+                return;
+            }
+
+            container.innerHTML = list.map(item => `
+                <div class="q-item">
+                    <div class="q-item-info">
+                        <strong>[${escapeHtml(item.packageType || 'PAR')}] ${escapeHtml(item.client)}</strong>
+                        <span>TSI: ${item.tsiFmt} &bull; Tenor: ${item.tenor} Thn &bull; Premi: ${item.totalPremi} &bull; Waktu: ${item.timestamp}</span>
+                    </div>
+                    <div class="q-actions">
+                        <button type="button" class="btn-action-sm btn-edit" onclick="loadPARItem('${item.id}')" title="Muat Ulang ke Kalkulator">&#9998; Edit</button>
+                        <button type="button" class="btn-action-sm btn-detail" onclick="openPARDetail('${item.id}')">Detail &rarr;</button>
+                        <button type="button" class="btn-del-item" onclick="deletePARItem('${item.id}')" title="Hapus Data Ini">&times;</button>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        function loadPARItem(id) {
+            const list = getPARHistory();
+            const item = list.find(x => x.id === id);
+            if (!item) return;
+
+            $("parClientName").value = item.client || "";
+            $("parClientPhone").value = item.contact !== "-" ? item.contact : "";
+            $("occCodeInput").value = item.occCode !== "-" ? item.occCode : "";
+            $("objectDesc").value = item.objectDesc !== "-" ? item.objectDesc : "";
+            $("tsiInput").value = item.tsi || 270000000;
+            $("tenorInput").value = item.tenor || 1;
+            $("cityInput").value = item.city || "Kota Palu";
+            $("eqZoneSelect").value = item.eqZone || "5";
+            $("eqConstructSelect").value = item.eqConstruct || "COM_LE9";
+
+            syncOccupationCode();
+
+            if (item.rateFLEXAS) $("rateFLEXAS").value = item.rateFLEXAS.toFixed(8);
+            if (item.rateTSFWD) $("rateTSFWD").value = item.rateTSFWD.toFixed(8);
+            if (item.rateEQVET) $("rateEQVET").value = item.rateEQVET.toFixed(8);
+
+            if (item.checkTSFWD !== undefined && $("checkTSFWD").checked !== item.checkTSFWD) {
+                $("checkTSFWD").checked = item.checkTSFWD;
+                toggleRow("TSFWD");
+            }
+            if (item.checkEQVET !== undefined && $("checkEQVET").checked !== item.checkEQVET) {
+                $("checkEQVET").checked = item.checkEQVET;
+                toggleRow("EQVET");
+            }
+
+            hitungPAR();
+            $("calcCardPAR").scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function openPARDetail(id) {
+            const list = getPARHistory();
+            const item = list.find(x => x.id === id);
+            if (!item) return;
+
+            $("parModalTitle").innerText = `Detail Perhitungan PAR - ${item.client}`;
+            $("parModalBody").innerHTML = `
+                <tr><td class="col-lbl">Waktu Perhitungan</td><td class="col-val">${item.timestamp}</td></tr>
+                <tr><td class="col-lbl">Nama Tertanggung</td><td class="col-val" style="font-weight:700;color:var(--dark-red);">${escapeHtml(item.client)}</td></tr>
+                <tr><td class="col-lbl">Kontak / WhatsApp PIC</td><td class="col-val">${escapeHtml(item.contact)}</td></tr>
+                <tr><td class="col-lbl">Paket Perhitungan PAR</td><td class="col-val" style="font-weight:800;color:var(--primary-red);">${escapeHtml(item.packageType || 'PAR')}</td></tr>
+                <tr><td class="col-lbl">Kode & Deskripsi Okupasi</td><td class="col-val">${item.occCode} - ${escapeHtml(item.objectDesc)}</td></tr>
+                <tr><td class="col-lbl">Alamat / Lokasi Risiko</td><td class="col-val">${escapeHtml(item.city)}</td></tr>
+                <tr><td class="col-lbl">Zona Gempa & Konstruksi</td><td class="col-val">Zona ${item.eqZone} (${item.eqConstruct})</td></tr>
+                <tr><td class="col-lbl">Total TSI Objek</td><td class="col-val">${item.tsiFmt}</td></tr>
+                <tr><td class="col-lbl">Jangka Waktu (Tenor)</td><td class="col-val">${item.tenor} Tahun</td></tr>
+                <tr><td class="col-lbl">Total Rate PAR</td><td class="col-val">${item.totalRate}</td></tr>
+                <tr><td class="col-lbl" style="color:var(--dark-red);">Estimasi Premi Bruto</td><td class="col-val" style="font-weight:800;color:var(--primary-red);">${item.totalPremi}</td></tr>
+            `;
+
+            $("parDetailModal").style.display = "flex";
+        }
+
+        function closePARModal() { $("parDetailModal").style.display = "none"; }
+        function closePARModalOnBackdrop(e) { if (e.target === $("parDetailModal")) closePARModal(); }
+
+        function deletePARItem(id) {
+            if (confirm("Hapus rincian perhitungan PAR ini dari riwayat?")) {
+                const list = getPARHistory().filter(x => x.id !== id);
+                setPARHistory(list);
+            }
+        }
+
+        function clearAllPARHistory() {
+            if (confirm("Apakah Anda yakin ingin menghapus seluruh riwayat perhitungan PAR pada perangkat ini?")) {
+                localStorage.removeItem(PAR_STORAGE_KEY);
+                renderPARHistory();
+            }
+        }
+
+        function filterPARHistory() {
+            const query = $("searchClientName").value.trim().toLowerCase();
+            const list = getPARHistory();
+            if (!query) {
+                renderPARHistory(list);
+                return;
+            }
+            const filtered = list.filter(x => x.client.toLowerCase().includes(query));
+            renderPARHistory(filtered);
+        }
+
+        function escapeHtml(str) {
+            return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m]);
+        }
+
         // Inisialisasi awal
         syncOccupationCode();
+        renderPARHistory();
     </script>
 </body>
 </html>

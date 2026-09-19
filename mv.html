@@ -14,13 +14,17 @@
             --text-muted: #64748b;
             --border-color: #cbd5e1;
             --soft-red: #fee2e2;
+            --border-red: #fecaca;
+            --amber-bg: #fffbeb;
+            --amber-border: #fef3c7;
+            --amber-text: #b45309;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--bg-light); color: var(--text-dark); line-height: 1.5; }
         nav { background-color: var(--pure-white); border-bottom: 3px solid var(--primary-red); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
         .brand-logo { font-size: 1.15rem; font-weight: 800; color: var(--primary-red); }
         .nav-back { text-decoration: none; color: var(--primary-red); font-weight: 600; font-size: 0.9rem; }
-        .container { max-width: 1150px; margin: 30px auto; padding: 0 20px; }
+        .container { max-width: 1150px; margin: 30px auto 40px; padding: 0 20px; }
         .doc-section { background-color: var(--pure-white); border: 1px solid #e2e8f0; border-left: 5px solid var(--primary-red); padding: 16px 20px; border-radius: 8px; margin-bottom: 25px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
         .doc-section h3 { color: var(--dark-red); font-size: 1.05rem; margin-bottom: 4px; }
         .doc-section p { font-size: 0.88rem; color: var(--text-muted); max-width: 750px; }
@@ -53,17 +57,79 @@
         .total-row td { color: var(--dark-red); font-size: 1.05rem; border-top: 2px solid var(--primary-red); border-bottom: 2px solid var(--primary-red); }
         .info-pill { display: inline-block; background: #e2e8f0; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; color: var(--text-dark); }
         
+        .btn-ui {
+            display: block; width: 100%; border: none; padding: 12px; border-radius: 6px;
+            font-weight: 800; font-size: .92rem; text-align: center; text-decoration: none; cursor: pointer;
+            margin-top: 20px;
+        }
+        .btn-red { background: var(--primary-red); color: #fff; }
+        .btn-red:hover { background: var(--dark-red); }
+
         .info-wa-notice {
             background-color: #eff6ff;
             border: 1px solid #bfdbfe;
             border-left: 4px solid #2563eb;
             padding: 14px 18px;
             border-radius: 6px;
-            margin-top: 22px;
+            margin-top: 18px;
             font-size: 0.88rem;
             color: #1e40af;
             line-height: 1.5;
         }
+
+        /* History Panel */
+        .history-panel {
+            background: #fff; border-radius: 8px; border: 1px solid var(--border-color);
+            border-top: 4px solid var(--primary-red); padding: 22px; box-shadow: 0 4px 10px rgba(0,0,0,.04);
+            margin-top: 25px;
+        }
+        .q-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .q-title { font-size: 1.15rem; font-weight: 800; color: var(--dark-red); }
+        .q-clear-all { color: var(--primary-red); font-size: 0.84rem; font-weight: 700; cursor: pointer; text-decoration: none; }
+        .q-clear-all:hover { text-decoration: underline; }
+
+        .card-note { padding: 12px 14px; border-radius: 6px; font-size: .83rem; margin-bottom: 16px; line-height: 1.45; }
+        .note-amber { background: var(--amber-bg); border: 1px solid var(--amber-border); border-left: 4px solid var(--amber-text); color: var(--amber-text); }
+
+        .q-search-bar { margin-bottom: 14px; }
+        .q-list { display: flex; flex-direction: column; gap: 10px; }
+        .q-item {
+            background: #fff; border: 1px solid var(--border-color); border-left: 4px solid var(--primary-red);
+            border-radius: 6px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .q-item-info strong { display: block; font-size: 0.94rem; color: var(--text-dark); }
+        .q-item-info span { font-size: 0.8rem; color: var(--text-muted); }
+        .q-actions { display: flex; align-items: center; gap: 8px; }
+        
+        .btn-action-sm {
+            border: 1px solid var(--border-color); padding: 5px 10px; border-radius: 4px;
+            font-size: 0.82rem; font-weight: 700; cursor: pointer;
+        }
+        .btn-detail { background: var(--soft-red); border-color: var(--border-red); color: var(--primary-red); }
+        .btn-detail:hover { background: #fee2e2; }
+        .btn-edit { background: #f1f5f9; color: #334155; }
+        .btn-edit:hover { background: #e2e8f0; color: #0f172a; }
+        .btn-del-item { background: transparent; border: none; cursor: pointer; color: #ef4444; font-size: 1.1rem; padding: 2px 6px; }
+
+        /* Modal Sembulan */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+            z-index: 999; justify-content: center; align-items: center; padding: 16px;
+        }
+        .modal-card {
+            background: #fff; border-radius: 10px; max-width: 600px; width: 100%;
+            max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .modal-header {
+            background: #fff; border-bottom: 2px solid #f1f5f9; padding: 16px 20px;
+            display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0;
+        }
+        .modal-header h3 { font-size: 1.15rem; color: var(--dark-red); font-weight: 800; }
+        .modal-close { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-muted); }
+        .modal-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        .modal-table td { padding: 10px 16px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+        .modal-table td.col-lbl { width: 40%; font-weight: 700; color: var(--text-dark); background: #fafafa; }
+        .modal-table td.col-val { color: var(--text-dark); }
 
         footer { text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.85rem; }
 
@@ -74,6 +140,8 @@
             .td-input input { min-width: 100px; font-size: 14px; padding: 6px 4px; }
             input[type="text"], input[type="number"], select { font-size: 15px; }
             input[type="checkbox"] { transform: scale(1.2); }
+            .q-item { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .q-actions { width: 100%; justify-content: space-between; }
         }
     </style>
 </head>
@@ -88,20 +156,32 @@
         <div class="doc-section">
             <div>
                 <h3>Dokumen Referensi Tarif Kendaraan Bermotor OJK</h3>
-                <p>Surat Edaran OJK Nomor 6/SEOJK.05/2017 Lampiran IV: Tarif Premi Comprehensive, TLO, pembagian Wilayah 1–3, dan perluasan jaminan.</p>
+                <p>Surat Edaran OJK Nomor 6/SEOJK.05/2017 Lampiran IV: Tarif Premi Comprehensive, TLO, pembagian Wilayah 1–3, dan perluasan jaminan[cite: 2].</p>
             </div>
             <a href="SAL - Lampiran IV - KBM (Motor Vehicle).pdf" class="btn-download" target="_blank" download>Buka Lampiran IV (PDF)</a>
         </div>
 
-        <div class="card">
+        <div class="card" id="calcCardMV">
             <div class="card-header">
                 <h2>Kalkulator Kendaraan Bermotor (Motor Vehicle)</h2>
-                <span style="font-size: 0.85rem; color: var(--text-muted);">Simulasi otomatis tarif OJK berdasarkan plat nomor, jenis unit, dan uang pertanggungan.</span>
+                <span style="font-size: 0.85rem; color: var(--text-muted);">Simulasi otomatis tarif OJK berdasarkan plat nomor, jenis unit, dan uang pertanggungan[cite: 2].</span>
             </div>
 
             <div class="coverage-selector">
                 <button type="button" class="coverage-btn active" id="btnCompre" onclick="setCoverType('COMPREHENSIVE')">COMPREHENSIVE (ALL RISK)</button>
                 <button type="button" class="coverage-btn" id="btnTLO" onclick="setCoverType('TLO')">TOTAL LOSS ONLY (TLO)</button>
+            </div>
+
+            <!-- Identitas Pemohon untuk History -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="mvClientName">Nama Tertanggung / Pemilik: <span style="color:var(--primary-red)">*</span></label>
+                    <input type="text" id="mvClientName" placeholder="Contoh: PT Sumber Anugerah / Ibu Ratna">
+                </div>
+                <div class="form-group">
+                    <label for="mvClientPhone">Kontak / No. WhatsApp PIC:</label>
+                    <input type="text" id="mvClientPhone" placeholder="08xxxxxxxxxx">
+                </div>
             </div>
 
             <div class="plate-box">
@@ -281,23 +361,57 @@
                 * Estimasi premi belum termasuk biaya administrasi polis dan meterai.
             </p>
 
+            <!-- Tombol Simpan ke History -->
+            <button type="button" class="btn-ui btn-red" onclick="saveMVToHistory()">
+                + Simpan ke History Perhitungan MV
+            </button>
+
             <!-- Informasi Kontak WhatsApp Resmi -->
             <div class="info-wa-notice">
                 <strong>Informasi & Konsultasi Langsung:</strong><br>
                 Untuk informasi dan komunikasi lebih lanjut via WhatsApp mengenai simulasi penawaran MV ini, silakan langsung menghubungi tim kami di nomor <strong>1234567890</strong>.
             </div>
         </div>
+
+        <!-- Panel History Data Perhitungan MV -->
+        <div class="history-panel">
+            <div class="q-header">
+                <div class="q-title">History Data Perhitungan Premi MV</div>
+                <a href="javascript:void(0)" class="q-clear-all" onclick="clearAllMVHistory()">Hapus Seluruh Riwayat Perangkat Ini</a>
+            </div>
+
+            <div class="card-note note-amber">
+                <strong>Catatan Pemeliharaan Riwayat:</strong> Riwayat di bawah ini tersimpan lokal di perangkat ini sebagai referensi simulasi sebelum diajukan ke form RFQ resmi atau dikonsultasikan ke konsultan KBRU Palu.
+            </div>
+
+            <div class="q-search-bar">
+                <input type="text" id="searchClientName" placeholder="Ketik nama tertanggung / pemilik untuk filter history otomatis..." oninput="filterMVHistory()">
+            </div>
+
+            <div id="mvQueueList" class="q-list"></div>
+        </div>
+    </div>
+
+    <!-- Modal Popup Detail Riwayat MV -->
+    <div id="mvDetailModal" class="modal-overlay" onclick="closeMVModalOnBackdrop(event)">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="mvModalTitle">Detail Perhitungan MV</h3>
+                <button type="button" class="modal-close" onclick="closeMVModal()">&times;</button>
+            </div>
+            <table class="modal-table" id="mvModalBody"></table>
+        </div>
     </div>
 
     <footer>
-        <p>&copy; 2026 PT Kalibesar Raya Utama - Cabang Palu. Terdaftar & Diawasi Otoritas Jasa Keuangan (OJK).</p>
+        <p>&copy; 2026 PT Kalibesar Raya Utama - Cabang Palu. Terdaftar & Diawasi Otoritas Jasa Keuangan (OJK)[cite: 1].</p>
     </footer>
 
     <script>
         let currentCover = "COMPREHENSIVE";
         let detectedWilayah = 3;
+        const MV_STORAGE_KEY = "kbru_history_mv_palu";
 
-        // Basis Data Prefix Plat Nomor
         const plateDB = {
             "DN": ["Sulawesi Tengah (Kota Palu / Sekitarnya)", 3],
             "B":  ["DKI Jakarta, Bekasi, Depok", 2],
@@ -332,7 +446,6 @@
             "BE": ["Lampung", 1]
         };
 
-        // Matriks Tarif Resmi OJK (Lampiran IV SEOJK 6/2017)
         const ojkRates = {
             COMPREHENSIVE: {
                 NON_BUS_TRUK: [
@@ -453,11 +566,9 @@
             const tenor = val("tenorYear") || 1;
             document.querySelectorAll(".outTahun").forEach(el => el.innerText = tenor);
 
-            // 1. Premi Pokok
             const pMain = tsi * (val("rateMain") / 100) * tenor;
             document.getElementById("premiMain").innerText = formatIDR(pMain);
 
-            // 2. PA & TPL (Klausul Khusus Berbasis Limit)
             const calcCustom = (key, baseLimit, multiplier = 1) => {
                 const isChecked = document.getElementById("check" + key).checked;
                 const premi = isChecked ? (baseLimit * (val("rate" + key) / 100) * multiplier * tenor) : 0;
@@ -469,7 +580,6 @@
             const pDriver = calcCustom("PADriver", val("limitPADriver"), 1);
             const pTPL = calcCustom("TPL", val("limitTPL"), 1);
 
-            // 3. Perluasan Berbasis TSI Kendaraan
             const clauses = ["FWWD", "EQ", "SRCC", "TS"];
             if (currentCover === "COMPREHENSIVE") clauses.push("Workshop");
 
@@ -481,7 +591,6 @@
                 pPerluasan += p;
             });
 
-            // 4. Loading Usia (Hanya Comprehensive)
             let pLoading = 0;
             if (currentCover === "COMPREHENSIVE") {
                 document.getElementById("tsiLoading").innerText = formatIDR(pMain).split(",")[0];
@@ -490,14 +599,178 @@
                 document.getElementById("premiLoading").innerText = isLoading ? formatIDR(pLoading) : "Dikecualikan";
             }
 
-            // Total Estimasi Premi
             const total = pMain + pPass + pDriver + pTPL + pPerluasan + pLoading;
             document.getElementById("totalPremiMV").innerText = formatIDR(total);
+        }
+
+        // --- SISTEM HISTORY MV ---
+        function getMVHistory() {
+            return JSON.parse(localStorage.getItem(MV_STORAGE_KEY) || "[]");
+        }
+
+        function setMVHistory(data) {
+            localStorage.setItem(MV_STORAGE_KEY, JSON.stringify(data));
+            renderMVHistory();
+        }
+
+        function saveMVToHistory() {
+            const client = document.getElementById("mvClientName").value.trim();
+            if (!client) {
+                alert("Harap masukkan Nama Tertanggung / Pemilik kendaraan terlebih dahulu.");
+                document.getElementById("mvClientName").focus();
+                return;
+            }
+
+            const tsi = val("tsiVehicle");
+            const totalPremi = document.getElementById("totalPremiMV").innerText;
+
+            const newItem = {
+                id: "MV-" + Date.now(),
+                timestamp: new Date().toLocaleString('id-ID'),
+                client: client,
+                contact: document.getElementById("mvClientPhone").value.trim() || "-",
+                coverType: currentCover,
+                plate: document.getElementById("plateInput").value.trim(),
+                rateTier: document.querySelector('input[name="rateTier"]:checked').value,
+                vehicleType: document.getElementById("vehicleType").value,
+                carDesc: document.getElementById("carDesc").value.trim() || "-",
+                tsi: tsi,
+                tsiFmt: formatIDR(tsi).split(",")[0],
+                loadingYears: val("loadingYears"),
+                tenor: val("tenorYear") || 1,
+                passCount: val("passCountInput"),
+                limitPAPassenger: val("limitPAPassenger"),
+                limitPADriver: val("limitPADriver"),
+                limitTPL: val("limitTPL"),
+                rateMain: val("rateMain"),
+                totalPremi: totalPremi
+            };
+
+            const list = getMVHistory();
+            list.unshift(newItem);
+            setMVHistory(list);
+
+            document.getElementById("searchClientName").value = "";
+            alert(`Perhitungan MV untuk "${client}" berhasil disimpan ke history!`);
+        }
+
+        function renderMVHistory(customList = null) {
+            const list = customList !== null ? customList : getMVHistory();
+            const container = document.getElementById("mvQueueList");
+            if (!container) return;
+
+            if (list.length === 0) {
+                container.innerHTML = `<div style="text-align:center;padding:22px;color:var(--text-muted);font-size:0.86rem;">Belum ada history data perhitungan MV di perangkat ini.</div>`;
+                return;
+            }
+
+            container.innerHTML = list.map(item => `
+                <div class="q-item">
+                    <div class="q-item-info">
+                        <strong>[MV - ${item.coverType}] ${escapeHtml(item.client)}</strong>
+                        <span>Plat: ${escapeHtml(item.plate)} &bull; Unit: ${escapeHtml(item.carDesc)} &bull; Premi: ${item.totalPremi} &bull; Waktu: ${item.timestamp}</span>
+                    </div>
+                    <div class="q-actions">
+                        <button type="button" class="btn-action-sm btn-edit" onclick="loadMVItem('${item.id}')" title="Muat Ulang ke Kalkulator">&#9998; Edit</button>
+                        <button type="button" class="btn-action-sm btn-detail" onclick="openMVDetail('${item.id}')">Detail &rarr;</button>
+                        <button type="button" class="btn-del-item" onclick="deleteMVItem('${item.id}')" title="Hapus Data Ini">&times;</button>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        function loadMVItem(id) {
+            const list = getMVHistory();
+            const item = list.find(x => x.id === id);
+            if (!item) return;
+
+            document.getElementById("mvClientName").value = item.client || "";
+            document.getElementById("mvClientPhone").value = item.contact !== "-" ? item.contact : "";
+            document.getElementById("plateInput").value = item.plate || "DN 1234 AB";
+            document.getElementById("vehicleType").value = item.vehicleType || "NON_BUS_TRUK";
+            document.getElementById("carDesc").value = item.carDesc !== "-" ? item.carDesc : "";
+            document.getElementById("tsiVehicle").value = item.tsi || 350000000;
+            document.getElementById("loadingYears").value = item.loadingYears || 0;
+            document.getElementById("tenorYear").value = item.tenor || 1;
+
+            if (item.passCount) document.getElementById("passCountInput").value = item.passCount;
+            if (item.limitPAPassenger) document.getElementById("limitPAPassenger").value = item.limitPAPassenger;
+            if (item.limitPADriver) document.getElementById("limitPADriver").value = item.limitPADriver;
+            if (item.limitTPL) document.getElementById("limitTPL").value = item.limitTPL;
+
+            if (item.rateTier) {
+                const radios = document.querySelectorAll('input[name="rateTier"]');
+                radios.forEach(r => r.checked = (r.value === item.rateTier));
+            }
+
+            setCoverType(item.coverType || "COMPREHENSIVE");
+            detectPlateZone();
+            syncLoadingUsia();
+
+            if (item.rateMain) document.getElementById("rateMain").value = Number(item.rateMain).toFixed(8);
+            hitungMV();
+
+            document.getElementById("calcCardMV").scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function openMVDetail(id) {
+            const list = getMVHistory();
+            const item = list.find(x => x.id === id);
+            if (!item) return;
+
+            document.getElementById("mvModalTitle").innerText = `Detail Perhitungan MV - ${item.client}`;
+            document.getElementById("mvModalBody").innerHTML = `
+                <tr><td class="col-lbl">Waktu Perhitungan</td><td class="col-val">${item.timestamp}</td></tr>
+                <tr><td class="col-lbl">Nama Tertanggung</td><td class="col-val" style="font-weight:700;color:var(--dark-red);">${escapeHtml(item.client)}</td></tr>
+                <tr><td class="col-lbl">Kontak / WhatsApp PIC</td><td class="col-val">${escapeHtml(item.contact)}</td></tr>
+                <tr><td class="col-lbl">Jenis Jaminan (Cover)</td><td class="col-val">${item.coverType} (${item.rateTier === 'BAWAH' ? 'Batas Bawah' : 'Batas Atas'})</td></tr>
+                <tr><td class="col-lbl">Plat Nomor</td><td class="col-val">${escapeHtml(item.plate)}</td></tr>
+                <tr><td class="col-lbl">Jenis & Merek Unit</td><td class="col-val">${item.vehicleType} - ${escapeHtml(item.carDesc)}</td></tr>
+                <tr><td class="col-lbl">Nilai Pertanggungan (TSI)</td><td class="col-val">${item.tsiFmt}</td></tr>
+                <tr><td class="col-lbl">Usia Tambahan / Tenor</td><td class="col-val">Usia > 5th: ${item.loadingYears} Thn &bull; Tenor: ${item.tenor} Thn</td></tr>
+                <tr><td class="col-lbl">Kursi Penumpang / PA</td><td class="col-val">${item.passCount} Orang</td></tr>
+                <tr><td class="col-lbl" style="color:var(--dark-red);">Estimasi Total Premi</td><td class="col-val" style="font-weight:800;color:var(--primary-red);">${item.totalPremi}</td></tr>
+            `;
+
+            document.getElementById("mvDetailModal").style.display = "flex";
+        }
+
+        function closeMVModal() { document.getElementById("mvDetailModal").style.display = "none"; }
+        function closeMVModalOnBackdrop(e) { if (e.target === document.getElementById("mvDetailModal")) closeMVModal(); }
+
+        function deleteMVItem(id) {
+            if (confirm("Hapus data perhitungan MV ini dari history?")) {
+                const list = getMVHistory().filter(x => x.id !== id);
+                setMVHistory(list);
+            }
+        }
+
+        function clearAllMVHistory() {
+            if (confirm("Apakah Anda yakin ingin menghapus seluruh riwayat perhitungan MV pada perangkat ini?")) {
+                localStorage.removeItem(MV_STORAGE_KEY);
+                renderMVHistory();
+            }
+        }
+
+        function filterMVHistory() {
+            const query = document.getElementById("searchClientName").value.trim().toLowerCase();
+            const list = getMVHistory();
+            if (!query) {
+                renderMVHistory(list);
+                return;
+            }
+            const filtered = list.filter(x => x.client.toLowerCase().includes(query) || x.plate.toLowerCase().includes(query));
+            renderMVHistory(filtered);
+        }
+
+        function escapeHtml(str) {
+            return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m]);
         }
 
         // Inisialisasi awal
         detectPlateZone();
         syncLoadingUsia();
+        renderMVHistory();
     </script>
 </body>
 </html>
