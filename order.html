@@ -23,6 +23,10 @@
         .kyc-notice { background:#f0fdf4; border:1px solid #bbf7d0; border-left:4px solid #16a34a; padding:12px 16px; border-radius:6px; margin-bottom:18px; font-size:.84rem; color:#14532d; line-height:1.5; }
         .info-wa-notice { background:#eff6ff; border:1px solid #bfdbfe; border-left:4px solid #2563eb; padding:12px 16px; border-radius:6px; margin-top:15px; font-size:.84rem; color:#1e40af; line-height:1.5; }
         .archive-notice { background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #d97706; padding:10px 14px; border-radius:6px; margin-bottom:14px; font-size:.8rem; color:#92400e; line-height:1.45; }
+        
+        /* Banner Mode Edit */
+        .edit-banner { display:none; background:#fef3c7; border:1px solid #f59e0b; border-left:4px solid #d97706; padding:10px 14px; border-radius:6px; margin-bottom:14px; font-size:.85rem; color:#92400e; }
+        
         .lob-box { background:#fff1f2; border:1px solid #fecaca; padding:12px; border-radius:6px; margin-bottom:18px; }
         .lob-select { width:100%; padding:9px; font-weight:700; color:var(--d-red); border:2px solid var(--p-red); border-radius:5px; outline:none; }
         .sec-title { font-size:.9rem; font-weight:700; color:var(--d-red); border-bottom:1px solid var(--bdr); padding-bottom:5px; margin:16px 0 12px; }
@@ -34,13 +38,23 @@
         .transit-card { background:#fdf2f2; border:1px dashed #f87171; padding:10px 14px; border-radius:6px; margin-bottom:10px; }
         .btn-transit { background:#0284c7; color:#fff; border:none; padding:7px 12px; border-radius:4px; font-size:.8rem; font-weight:600; cursor:pointer; margin-bottom:12px; }
         .btn-del-transit { background:none; border:none; color:#dc2626; font-size:.75rem; font-weight:700; cursor:pointer; float:right; }
-        .btn-act { width:100%; padding:13px; border:none; border-radius:6px; font-size:.95rem; font-weight:700; cursor:pointer; color:#fff; margin-top:15px; }
+        
+        /* Tombol Aksi */
+        .btn-cancel-edit { display:none; width:100%; padding:10px; border:1px solid #cbd5e1; background:#f1f5f9; color:#475569; border-radius:6px; font-size:.88rem; font-weight:700; cursor:pointer; margin-top:14px; }
+        .btn-cancel-edit:hover { background:#e2e8f0; color:#1e293b; }
+        
+        .btn-act { width:100%; padding:13px; border:none; border-radius:6px; font-size:.95rem; font-weight:700; cursor:pointer; color:#fff; margin-top:8px; }
         .btn-db { background:var(--p-red); }
         .btn-db:hover { background:var(--d-red); }
+        
         .queue-item { background:var(--bg); border-left:4px solid var(--p-red); padding:10px 14px; border-radius:4px; margin-bottom:8px; font-size:.85rem; cursor:pointer; }
-        .btn-del-item { background:none; border:none; color:#dc2626; font-size:1.1rem; cursor:pointer; padding:4px 8px; border-radius:4px; line-height:1; transition:background-color .2s; }
+        .item-actions { display:flex; align-items:center; gap:6px; }
+        .btn-edit-item { background:#e0f2fe; border:1px solid #bae6fd; color:#0369a1; font-size:.76rem; font-weight:700; padding:4px 8px; border-radius:4px; cursor:pointer; }
+        .btn-edit-item:hover { background:#bae6fd; }
+        .btn-del-item { background:none; border:none; color:#dc2626; font-size:1.1rem; cursor:pointer; padding:4px 8px; border-radius:4px; line-height:1; }
         .btn-del-item:hover { background-color:#fee2e2; }
-        .sync-bar { display:flex; gap:8px; background:#f1f5f9; padding:10px; border-radius:6px; margin-bottom:12px; align-items:center; }
+        .sync-bar { display:flex; gap:8px; background:#f1f5f9; padding:10px; border-radius:6px; margin-bottom:12px; align-items:center; flex-wrap:wrap; }
+        .sync-mode { width:auto; padding:8px; font-weight:600; font-size:.8rem; background:#fff; border:1px solid var(--bdr); border-radius:4px; }
         .btn-sync { background:#0284c7; color:#fff; border:none; padding:8px 14px; border-radius:4px; font-weight:600; font-size:.8rem; cursor:pointer; white-space:nowrap; }
         .btn-sync:hover { background:#0369a1; }
         .btn-reset { background:#475569; }
@@ -50,7 +64,7 @@
         .dt-tbl { width:100%; border-collapse:collapse; font-size:.85rem; }
         .dt-tbl td { padding:8px 10px; border-bottom:1px solid #f1f5f9; vertical-align:top; }
         .dt-tbl td:first-child { font-weight:600; width:40%; background:#f8fafc; border-right:1px solid #e2e8f0; }
-        @media(max-width:600px){ .container{padding:0 8px} .card{padding:14px} .sync-bar{flex-direction:column; align-items:stretch;} }
+        @media(max-width:600px){ .container{padding:0 8px} .card{padding:14px} .sync-bar{flex-direction:column; align-items:stretch;} .sync-mode{width:100%} }
     </style>
 </head>
 <body>
@@ -73,9 +87,15 @@
         </div>
     </div>
 
-    <div class="card">
+    <div class="card" id="formCard">
         <h2 style="color:var(--d-red);font-size:1.25rem;margin-bottom:4px">Form Permohonan Penawaran Asuransi (RFQ)</h2>
         <span style="font-size:.8rem;color:var(--mut);display:block;margin-bottom:14px">Pilih lini bisnis dan lengkapi data objek pertanggungan.</span>
+
+        <!-- Indikator Banner Mode Edit -->
+        <div id="editBanner" class="edit-banner">
+            <strong>Mode Revisi Data Aktif:</strong> Memuat pengajuan dari <span id="editSourceLabel" style="font-weight:700"></span>.
+            <span style="display:block;font-size:.78rem;margin-top:2px">Saat disimpan, data akan dicatat sebagai riwayat baru berstempel waktu terkini tanpa menghapus data sebelumnya.</span>
+        </div>
 
         <div class="kyc-notice">
             <strong>Pemberitahuan Persyaratan KYC (Know Your Customer):</strong><br>
@@ -111,7 +131,7 @@
                     <div class="form-group"><label>Jumlah Lantai *</label><input type="number" id="parFloor" value="1" min="1"></div>
                     <div class="form-group"><label>Konstruksi Gedung *</label><select id="parClass"><option>Kelas 1 (Permanen)</option><option>Kelas 2 (Semi Permanen)</option><option>Kelas 3 (Kayu)</option></select></div>
                 </div>
-                <div class="sec-title">Breakdown Nilai Pertanggungan / NRV (IDR)</div>
+                <div class="sec-title">Breakdown Nilai Pertanggungan / NRV (IDR) * (Wajib isi minimal salah satu)</div>
                 <div class="form-row">
                     <div class="form-group"><label>Building</label><input type="number" id="parBld" placeholder="0"></div>
                     <div class="form-group"><label>Content / Isi</label><input type="number" id="parCnt" placeholder="0"></div>
@@ -170,7 +190,7 @@
                     <div class="form-group"><label>Jenis Cargo *</label><input type="text" id="mopCargo" placeholder="Semen, CPO, Beras..."></div>
                     <div class="form-group"><label>Kemasan / Packing *</label><input type="text" id="mopPack" placeholder="Bags, FCL, Curah..."></div>
                 </div>
-                <div class="sec-title">Rute Pelayaran & Moda Angkut (Multimoda/Transit)</div>
+                <div class="sec-title">Rute Pelayaran & Moda Angkut (Multimoda/Transit) *</div>
                 <div id="boxTransitMOP"></div>
                 <button type="button" class="btn-transit" onclick="addTransit('MOP')">+ Tambah Titik Transit / Segmen Perjalanan</button>
                 <div class="form-row">
@@ -193,7 +213,7 @@
                     <div class="form-group"><label>Jumlah/Qty (Kg/Ctn) *</label><input type="text" id="mciQty"></div>
                     <div class="form-group"><label>Kemasan *</label><input type="text" id="mciPack"></div>
                 </div>
-                <div class="sec-title">Rute Pengiriman & Moda Angkut (Multimoda/Transit)</div>
+                <div class="sec-title">Rute Pengiriman & Moda Angkut (Multimoda/Transit) *</div>
                 <div id="boxTransitMCI"></div>
                 <button type="button" class="btn-transit" onclick="addTransit('MCI')">+ Tambah Titik Transit / Segmen Perjalanan</button>
                 <div class="form-row">
@@ -207,7 +227,11 @@
                 <div class="form-group"><label>Catatan Tambahan</label><textarea id="notes" rows="2" placeholder="Catatan klausul khusus atau jadwal survei..."></textarea></div>
             </div>
 
-            <button type="button" class="btn-act btn-db" onclick="submitData()">Simpan ke Antrean Database Sistem &darr;</button>
+            <!-- Tombol Batal Mode Revisi (Muncul Tepat di Atas Tombol Simpan) -->
+            <button type="button" id="btnCancelEditBottom" class="btn-cancel-edit" onclick="cancelEditMode()">&larr; Batalkan Revisi (Kembali ke Input Baru)</button>
+
+            <!-- Tombol Simpan Tunggal -->
+            <button type="button" id="btnSubmitForm" class="btn-act btn-db" onclick="submitData()">Simpan Inputan ke Database &darr;</button>
 
             <!-- Notes Informasi WhatsApp -->
             <div class="info-wa-notice">
@@ -230,7 +254,11 @@
         </div>
 
         <div class="sync-bar">
-            <input type="text" id="syncPhone" placeholder="Ketik No. WhatsApp untuk filter / tarik data dari cloud..." style="flex:1">
+            <select id="searchMode" class="sync-mode">
+                <option value="phone">Cari via No. WhatsApp</option>
+                <option value="name">Cari via Nama Lengkap</option>
+            </select>
+            <input type="text" id="syncQuery" placeholder="Ketik nomor WA lengkap (min 10 digit) atau nama lengkap..." style="flex:1">
             <button type="button" class="btn-sync" onclick="filterOrFetchHistory()">Cari / Tarik Riwayat</button>
             <button type="button" class="btn-sync btn-reset" onclick="resetQueueView()">Tampilkan Semua</button>
         </div>
@@ -247,6 +275,10 @@
             <button onclick="closeM(null)" style="border:none;background:none;font-size:1.4rem;cursor:pointer">&times;</button>
         </div>
         <table class="dt-tbl" id="mContent" style="margin-top:12px"></table>
+        <div style="margin-top:14px;display:flex;justify-content:flex-end;gap:8px">
+            <button type="button" id="btnModalEdit" class="btn-edit-item" style="padding:7px 14px;font-size:.84rem">Muat ke Formulir untuk Diedit</button>
+            <button type="button" onclick="closeM(null)" style="background:#475569;color:#fff;border:none;padding:7px 14px;border-radius:4px;font-size:.84rem;cursor:pointer">Tutup</button>
+        </div>
     </div>
 </div>
 
@@ -255,9 +287,12 @@
 <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzN7aM67e_bvtUfU09N6rM889N1uWEGddjYZWCMNPug8MX9l7s2wMsAAw179i8tZdMwUg/exec";
     let curLOB = "PAR";
+    let isEditMode = false;
+    let editOriginalTime = "";
 
     const val = id => document.getElementById(id)?.value?.trim() || "";
     const fmt = n => Number(n || 0).toLocaleString('id-ID');
+    const parseNum = str => Number(String(str || "0").replace(/[^0-9]/g, '')) || 0;
 
     function switchLOB(type) {
         curLOB = type;
@@ -266,7 +301,7 @@
         if (target) target.style.display = "block";
     }
 
-    function addTransit(lob) {
+    function addTransit(lob, fromVal = "", toVal = "", modeVal = "Laut (Kapal/Tongkang)", vesVal = "") {
         const box = document.getElementById("boxTransit" + lob);
         if (!box) return;
         const idx = box.children.length + 1;
@@ -278,16 +313,16 @@
                 ${idx > 1 ? '<button type="button" class="btn-del-transit" onclick="this.closest(\'.transit-card\').remove()">Hapus</button>' : ''}
             </div>
             <div class="form-row">
-                <div class="form-group"><input type="text" class="t-from" placeholder="Dari (Titik Asal)"></div>
-                <div class="form-group"><input type="text" class="t-to" placeholder="Ke (Titik Tujuan/Transit)"></div>
+                <div class="form-group"><input type="text" class="t-from" placeholder="Dari (Titik Asal) *" value="${fromVal}"></div>
+                <div class="form-group"><input type="text" class="t-to" placeholder="Ke (Titik Tujuan/Transit) *" value="${toVal}"></div>
                 <div class="form-group">
                     <select class="t-mode">
-                        <option value="Laut (Kapal/Tongkang)">Laut (Kapal/Tongkang)</option>
-                        <option value="Darat (Truk Niaga)">Darat (Truk Niaga)</option>
-                        <option value="Udara (Pesawat Kargo)">Udara (Pesawat Kargo)</option>
+                        <option value="Laut (Kapal/Tongkang)" ${modeVal === 'Laut (Kapal/Tongkang)' ? 'selected' : ''}>Laut (Kapal/Tongkang)</option>
+                        <option value="Darat (Truk Niaga)" ${modeVal === 'Darat (Truk Niaga)' ? 'selected' : ''}>Darat (Truk Niaga)</option>
+                        <option value="Udara (Pesawat Kargo)" ${modeVal === 'Udara (Pesawat Kargo)' ? 'selected' : ''}>Udara (Pesawat Kargo)</option>
                     </select>
                 </div>
-                <div class="form-group"><input type="text" class="t-ves" placeholder="Nama Kapal / Plat Truk"></div>
+                <div class="form-group"><input type="text" class="t-ves" placeholder="Nama Kapal / Plat Truk" value="${vesVal}"></div>
             </div>`;
         box.appendChild(card);
     }
@@ -306,13 +341,41 @@
         return segs.length ? segs.join(" -> ") : "-";
     }
 
+    function checkTransitValid(lob) {
+        const box = document.getElementById("boxTransit" + lob);
+        if (!box) return false;
+        const firstCard = box.querySelector(".transit-card");
+        if (!firstCard) return false;
+        const f = firstCard.querySelector(".t-from")?.value.trim() || "";
+        const t = firstCard.querySelector(".t-to")?.value.trim() || "";
+        return f !== "" && t !== "";
+    }
+
     function collect() {
         const name = val("clientName"), phone = val("clientPhone");
         if (!name || !phone) { alert("Nama Tertanggung dan WhatsApp/Kontak wajib diisi!"); return null; }
 
+        if (curLOB === "PAR") {
+            const bld = parseNum(val("parBld")), cnt = parseNum(val("parCnt")), stk = parseNum(val("parStk")), mch = parseNum(val("parMch"));
+            if (bld <= 0 && cnt <= 0 && stk <= 0 && mch <= 0) {
+                alert("Untuk LOB PAR, nilai pertanggungan wajib diisi minimal salah satu (Building, Content, Stock, atau Machinery)!");
+                return null;
+            }
+        }
+
+        if ((curLOB === "MOP" || curLOB === "MCI") && !checkTransitValid(curLOB)) {
+            alert(`Untuk LOB ${curLOB}, rute perjalanan (Dari dan Ke) wajib diisi lengkap pada segmen awal!`);
+            return null;
+        }
+
+        let userNote = val("notes") || "-";
+        if (isEditMode) {
+            userNote = `[REVISI dari pengajuan: ${editOriginalTime}] ${userNote}`;
+        }
+
         const payload = {
             lob: curLOB, client: name, contact: phone,
-            time: new Date().toLocaleString('id-ID'), notes: val("notes") || "-", details: {}
+            time: new Date().toLocaleString('id-ID'), notes: userNote, details: {}
         };
 
         if (curLOB === "PAR") {
@@ -375,17 +438,114 @@
             .catch(e => console.error("Koneksi Google Sheets gagal:", e));
         }
 
-        alert(`Pengajuan penawaran [${curLOB}] berhasil dicatat ke antrean sistem dan Google Sheets!`);
+        const msg = isEditMode
+            ? `Revisi pengajuan [${curLOB}] berhasil dicatat sebagai data baru ke antrean dan Google Sheets!`
+            : `Pengajuan penawaran [${curLOB}] berhasil dicatat ke antrean sistem dan Google Sheets!`;
+        alert(msg);
+
+        cancelEditMode();
+    }
+
+    function loadItemToForm(item) {
+        if (!item) return;
+
+        isEditMode = true;
+        editOriginalTime = item.time || "";
+
+        document.getElementById("editBanner").style.display = "block";
+        document.getElementById("editSourceLabel").innerText = `[${item.lob}] ${item.client} (${item.time})`;
+        document.getElementById("btnCancelEditBottom").style.display = "block";
+
+        document.getElementById("lobSelect").value = item.lob;
+        switchLOB(item.lob);
+
+        document.getElementById("clientName").value = item.client || "";
+        document.getElementById("clientPhone").value = item.contact || "";
+        document.getElementById("notes").value = (item.notes || "").replace(/\[REVISI dari pengajuan:.*?\]\s*/g, '');
+
+        const dt = item.details || {};
+
+        if (item.lob === "PAR") {
+            document.getElementById("parLoc").value = dt["Alamat Objek"] !== "-" ? (dt["Alamat Objek"] || "") : "";
+            document.getElementById("parApar").value = dt["APAR"] || "Ada & Terawat";
+            document.getElementById("parFloor").value = parseNum(dt["Lantai"]) || 1;
+            document.getElementById("parClass").value = dt["Konstruksi"] || "Kelas 1 (Permanen)";
+            document.getElementById("parBld").value = parseNum(dt["Building"]) || "";
+            document.getElementById("parCnt").value = parseNum(dt["Content"]) || "";
+            document.getElementById("parStk").value = parseNum(dt["Stock"]) || "";
+            document.getElementById("parMch").value = parseNum(dt["Machinery"]) || "";
+        } else if (item.lob === "MV") {
+            document.getElementById("mvLeasing").value = dt["Status Leasing"] || "Milik Sendiri";
+            document.getElementById("mvVal").value = parseNum(dt["Market Value"]) || "";
+            document.getElementById("mvCover").value = dt["Proteksi"] || "Comprehensive (All Risk)";
+            document.getElementById("mvPlate").value = dt["Plat Nomor"] !== "-" ? (dt["Plat Nomor"] || "") : "";
+            document.getElementById("mvBrand").value = dt["Merek/Tipe"] !== "-" ? (dt["Merek/Tipe"] || "") : "";
+            document.getElementById("mvYear").value = dt["Tahun"] !== "-" ? (dt["Tahun"] || "") : "";
+            document.getElementById("mvChassis").value = dt["No Rangka/Mesin"] !== "-" ? (dt["No Rangka/Mesin"] || "") : "";
+            document.getElementById("mvColor").value = dt["Warna"] !== "-" ? (dt["Warna"] || "") : "";
+        } else if (item.lob === "CPM") {
+            document.getElementById("cpmLeasing").value = dt["Status Finansial"] || "Milik Sendiri";
+            document.getElementById("cpmNRV").value = parseNum(dt["NRV Baru"]) || "";
+            document.getElementById("cpmCover").value = dt["Pengcoveran"] || "Comprehensive (Unnamed Perils)";
+            document.getElementById("cpmType").value = dt["Jenis Alat"] !== "-" ? (dt["Jenis Alat"] || "") : "";
+            document.getElementById("cpmBrand").value = dt["Merek"] !== "-" ? (dt["Merek"] || "") : "";
+            document.getElementById("cpmYear").value = dt["Tahun"] !== "-" ? (dt["Tahun"] || "") : "";
+            document.getElementById("cpmSerial").value = dt["Serial No"] !== "TBA" ? (dt["Serial No"] || "") : "";
+            document.getElementById("cpmStatus").value = dt["Operasi"] || "Operasikan Sendiri";
+            document.getElementById("cpmLoc").value = dt["Site Kerja"] !== "-" ? (dt["Site Kerja"] || "") : "";
+        } else if (item.lob === "MOP") {
+            document.getElementById("mopCap").value = dt["Kepentingan"] || "Seller";
+            document.getElementById("mopAddr").value = dt["Alamat Kantor"] !== "-" ? (dt["Alamat Kantor"] || "") : "";
+            document.getElementById("mopCargo").value = dt["Jenis Cargo"] !== "-" ? (dt["Jenis Cargo"] || "") : "";
+            document.getElementById("mopPack").value = dt["Kemasan/Packing"] !== "-" ? (dt["Kemasan/Packing"] || "") : "";
+            document.getElementById("mopLimit").value = parseNum(dt["Limit per Shipment"]) || "";
+            document.getElementById("mopTurnover").value = parseNum(dt["Estimasi Turnover/Thn"]) || "";
+            document.getElementById("mopLoss").value = dt["Loss Record 3 Thn"] || "NIL (Tanpa Klaim)";
+        } else if (item.lob === "MCI") {
+            document.getElementById("mciCap").value = dt["Kepentingan"] || "Seller";
+            document.getElementById("mciAddr").value = dt["Alamat Kantor"] !== "-" ? (dt["Alamat Kantor"] || "") : "";
+            document.getElementById("mciVal").value = parseNum(dt["Nilai Barang (Cover)"]) || "";
+            document.getElementById("mciItem").value = dt["Komoditas Muatan"] !== "-" ? (dt["Komoditas Muatan"] || "") : "";
+            document.getElementById("mciQty").value = dt["Qty/Berat"] !== "-" ? (dt["Qty/Berat"] || "") : "";
+            document.getElementById("mciPack").value = dt["Kemasan/Packing"] !== "-" ? (dt["Kemasan/Packing"] || "") : "";
+            document.getElementById("mciETD").value = dt["ETD (Jadwal Kirim)"] !== "-" ? (dt["ETD (Jadwal Kirim)"] || "") : "";
+            document.getElementById("mciCont").value = dt["No. Container"] !== "-" ? (dt["No. Container"] || "") : "";
+            document.getElementById("mciLoss").value = dt["Loss Record 3 Thn"] || "NIL (Tanpa Klaim)";
+        }
+
+        closeM(null);
+        document.getElementById("formCard").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function cancelEditMode() {
+        isEditMode = false;
+        editOriginalTime = "";
+        document.getElementById("editBanner").style.display = "none";
+        document.getElementById("btnCancelEditBottom").style.display = "none";
     }
 
     function filterOrFetchHistory() {
-        const phone = val("syncPhone") || val("clientPhone");
-        if (!phone) {
-            alert("Harap masukkan nomor WhatsApp yang ingin dicari!");
+        const mode = val("searchMode");
+        const query = val("syncQuery");
+
+        if (!query) {
+            alert(mode === "phone" ? "Harap masukkan nomor WhatsApp lengkap!" : "Harap masukkan Nama Lengkap tertanggung!");
             return;
         }
 
-        const cleanPhone = phone.replace(/[^0-9]/g, '');
+        if (mode === "phone") {
+            const cleanPhone = query.replace(/[^0-9]/g, '');
+            if (cleanPhone.length < 10) {
+                alert("Untuk keamanan privasi, pencarian nomor WhatsApp wajib memasukkan nomor lengkap minimal 10 digit!");
+                return;
+            }
+        } else {
+            if (query.trim().length < 3) {
+                alert("Harap masukkan nama lengkap tertanggung secara jelas (minimal 3 karakter)!");
+                return;
+            }
+        }
+
         const btn = document.querySelector(".btn-sync");
         btn.innerText = "Mencari...";
         btn.disabled = true;
@@ -395,7 +555,7 @@
         fetch(SCRIPT_URL, {
             method: "POST",
             headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify({ action: "getHistory", phone: cleanPhone })
+            body: JSON.stringify({ action: "getHistory", mode: mode, query: query.trim() })
         })
         .then(res => res.json())
         .then(cloudData => {
@@ -406,24 +566,35 @@
                 });
                 localStorage.setItem("kbru_q", JSON.stringify(localQ));
                 renderQ(cloudData);
-                alert(`Ditemukan ${cloudData.length} data pengajuan. Riwayat berhasil disinkronkan ke perangkat ini!`);
+                alert(`Ditemukan ${cloudData.length} data pengajuan yang cocok persis. Riwayat berhasil disinkronkan ke perangkat ini!`);
             } else {
                 const localMatches = localQ.filter(item => {
-                    const p = (item.contact || "").replace(/[^0-9]/g, '');
-                    return p && (p.includes(cleanPhone) || cleanPhone.includes(p));
+                    if (mode === "phone") {
+                        const cleanQ = query.replace(/[^0-9]/g, '');
+                        const p = (item.contact || "").replace(/[^0-9]/g, '');
+                        return p === cleanQ;
+                    } else {
+                        return (item.client || "").trim().toLowerCase() === query.trim().toLowerCase();
+                    }
                 });
+
                 if (localMatches.length > 0) {
                     renderQ(localMatches);
                 } else {
-                    alert(`Tidak ditemukan riwayat pengajuan dengan nomor ${phone} di database maupun perangkat ini.`);
+                    alert(`Tidak ditemukan riwayat pengajuan dengan ${mode === 'phone' ? 'nomor WhatsApp' : 'nama'} '${query}'. Pastikan input Anda sudah lengkap dan benar.`);
                 }
             }
         })
         .catch(err => {
             console.error("Fetch history error:", err);
             const localMatches = localQ.filter(item => {
-                const p = (item.contact || "").replace(/[^0-9]/g, '');
-                return p && (p.includes(cleanPhone) || cleanPhone.includes(p));
+                if (mode === "phone") {
+                    const cleanQ = query.replace(/[^0-9]/g, '');
+                    const p = (item.contact || "").replace(/[^0-9]/g, '');
+                    return p === cleanQ;
+                } else {
+                    return (item.client || "").trim().toLowerCase() === query.trim().toLowerCase();
+                }
             });
             if (localMatches.length > 0) {
                 renderQ(localMatches);
@@ -438,7 +609,7 @@
     }
 
     function resetQueueView() {
-        document.getElementById("syncPhone").value = "";
+        document.getElementById("syncQuery").value = "";
         const allData = JSON.parse(localStorage.getItem("kbru_q") || "[]");
         renderQ(allData);
     }
@@ -459,13 +630,21 @@
             <div class="queue-item" onclick="showM(${i})">
                 <div style="display:flex;justify-content:space-between;align-items:center;">
                     <strong>[${item.lob}] ${item.client}</strong>
-                    <div style="display:flex;align-items:center;gap:8px;">
+                    <div class="item-actions">
+                        <button type="button" class="btn-edit-item" title="Edit pengajuan ini" onclick="handleEditClick(event, ${i})">Edit Data</button>
                         <span style="font-size:.72rem;background:#fee2e2;color:#b91c1c;padding:3px 7px;border-radius:4px;font-weight:700;">Detail &rarr;</span>
-                        <button type="button" class="btn-del-item" title="Hapus pengajuan ini" onclick="deleteQueueItem(event, ${i})">&#128465;</button>
+                        <button type="button" class="btn-del-item" title="Hapus dari perangkat ini" onclick="deleteQueueItem(event, ${i})">&#128465;</button>
                     </div>
                 </div>
                 <div style="font-size:.78rem;color:var(--mut);margin-top:3px">Kontak: ${item.contact} &bull; Waktu: ${item.time}</div>
             </div>`).join("");
+    }
+
+    function handleEditClick(e, index) {
+        e.stopPropagation();
+        const activeList = window.activeQueueData || JSON.parse(localStorage.getItem("kbru_q") || "[]");
+        const target = activeList[index];
+        if (target) loadItemToForm(target);
     }
 
     function deleteQueueItem(e, index) {
@@ -474,7 +653,7 @@
         const target = activeList[index];
         if (!target) return;
 
-        if (confirm(`Hapus riwayat penawaran [${target.lob}] untuk ${target.client}?`)) {
+        if (confirm(`Hapus riwayat penawaran [${target.lob}] untuk ${target.client} dari perangkat ini? (Data di cloud tidak terhapus)`)) {
             let localQ = JSON.parse(localStorage.getItem("kbru_q") || "[]");
             localQ = localQ.filter(item => !(item.time === target.time && item.client === target.client));
             localStorage.setItem("kbru_q", JSON.stringify(localQ));
@@ -499,6 +678,11 @@
         }
         rows += `<tr><td>Catatan Kebutuhan</td><td>${data.notes}</td></tr>`;
         document.getElementById("mContent").innerHTML = rows;
+
+        document.getElementById("btnModalEdit").onclick = function() {
+            loadItemToForm(data);
+        };
+
         document.getElementById("modal").style.display = "flex";
     }
 
