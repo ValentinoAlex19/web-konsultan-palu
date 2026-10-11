@@ -67,7 +67,8 @@
 
         .btn-file {
             display: inline-block; background: #fff; border: 1px solid var(--bdr); color: var(--red-p);
-            padding: 7px 12px; border-radius: 5px; font-size: .8rem; font-weight: 700; text-decoration: none; cursor: pointer;
+            padding: 7px 12px; border-radius: 5px; font-size: .8rem; font-weight: 700; text-decoration: none;
+            cursor: pointer; margin-right: 6px; margin-top: 4px;
         }
         .btn-file:hover { background: #f1f5f9; }
 
@@ -207,22 +208,20 @@
                         Berkas Kalkulator Premi Resmi Asuransi Simas Jiwa (.xlsm)
                     </strong>
                     Kalkulator formulir di bawah ini dikhususkan untuk mempermudah simulasi cepat dari ponsel dengan <strong>masa asuransi bulat tahunan (minimal 1 tahun murni)</strong>. Apabila masa asuransi ganjil (di bawah 1 tahun atau memiliki kelebihan bulan/hari), Anda <strong>wajib menghitung menggunakan berkas kalkulator Excel resmi Simas Jiwa</strong> berikut:
-                    <div style="margin-top:8px;">
-                        <a href="Simulasi%20Premi%20AJK%20BPR%20Sulawesi%20Mandiri%20-%20Final.xlsm" class="btn-file" download style="color:var(--grn-p);border-color:var(--grn-b);">
-                            &darr; Unduh Berkas Excel (.xlsm) Sulman
-                        </a>
+                    <div id="excelDownloadContainer" style="margin-top:8px;">
+                        <!-- Tombol unduh dinamis akan dimuat lewat JS -->
                     </div>
                 </div>
 
-                <!-- UNDUH TABEL RATE SULMAN DI TAB BARU -->
+                <!-- UNDUH TABEL RATE DI TAB BARU -->
                 <div id="readyDocs" class="card-note note-amber">
                     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
                         <div>
-                            <strong style="color:var(--amb-p);display:block;">Tabel Acuan Rate Premi BPR Sulman (PDF)</strong>
+                            <strong style="color:var(--amb-p);display:block;" id="ratePdfTitle">Tabel Acuan Rate Premi (PDF)</strong>
                             <span>*Catatan: Rate pada file PDF ini hanya berlaku untuk perhitungan tahunan bulat dan tidak memuat masa asuransi di bawah 1 tahun atau masa asuransi yang memiliki kelebihan bulan.</span>
                         </div>
-                        <a href="Rate%20Berjangka%20Menurun%20BPR%20Sulman.pdf" class="btn-file" target="_blank" rel="noopener noreferrer">
-                            ↗ Buka Rate Sulman di Tab Baru (PDF)
+                        <a id="ratePdfLink" href="#" class="btn-file" target="_blank" rel="noopener noreferrer" style="color:var(--amb-p);border-color:var(--amb-b);">
+                            ↗ Buka Tabel Rate di Tab Baru (PDF)
                         </a>
                     </div>
                 </div>
@@ -275,7 +274,7 @@
                             </select>
                         </div>
 
-                        <!-- INPUT TANGGAL PERIODE ASURANSI (WAJIB TERLEBIH DAHULU) -->
+                        <!-- INPUT TANGGAL PERIODE ASURANSI -->
                         <div style="background:#fff7ed;padding:10px;border-radius:6px;border:1px solid #fed7aa;">
                             <label for="startDate" style="color:var(--red-d);">Tanggal Awal Periode: <span style="color:var(--red-p)">*</span></label>
                             <input type="date" id="startDate" onchange="calcPeriodDuration()" required>
@@ -293,7 +292,7 @@
                             </div>
                         </div>
 
-                        <!-- PARAMETER PLAFON UP & RATE WAJIB DIISI -->
+                        <!-- PARAMETER PLAFON UP & RATE -->
                         <div>
                             <label for="numTSI">Plafon Uang Pertanggungan / UP (Rp): <span style="color:var(--red-p)">*</span></label>
                             <input type="number" id="numTSI" value="100000000" step="5000000" min="1" oninput="runCalc()" disabled required>
@@ -375,21 +374,58 @@
         </div>
     </div>
 
-    <footer>&copy; 2026 PT Kalibesar Raya Utama - Cabang Palu. Terdaftar & Diawasi OJK[cite: 1].</footer>
+    <footer>&copy; 2026 PT Kalibesar Raya Utama - Cabang Palu. Terdaftar & Diawasi OJK.</footer>
 
-    <script>
+<script>
         const DB = {
-            "sulman": { name: "PT BPR Sulawesi Mandiri", pin: "112233", ready: true },
-            "sulmitra": { name: "PT BPR Sulawesi Mitra Abadi", pin: "556677", ready: false },
-            "paluanugerah": { name: "PT BPR Palu Anugerah", pin: "223344", ready: false },
-            "binarta": { name: "PT BPR Binarta Luhur", pin: "334455", ready: false },
-            "yaspis": { name: "PT BPR Yaspis Dana Prima", pin: "445566", ready: false }
+            "sulman": { 
+                name: "PT BPR Sulawesi Mandiri", 
+                pin: "112233", 
+                ready: true,
+                excels: [
+                    { file: "Simulasi Premi AJK BPR Sulawesi Mandiri - Final.xlsm", label: "↓ Unduh Berkas Excel Sulman" }
+                ],
+                pdf: { name: "Rate Berjangka Menurun BPR Sulman.pdf", label: "↗ Buka Rate Sulman (PDF)" }
+            },
+            "sulmitra": { 
+                name: "PT BPR Sulawesi Mitra Abadi", 
+                pin: "556677", 
+                ready: true,
+                excels: [
+                    { file: "Simulasi Premi AJK BPR Sulawesi Mitra Abadi - Final.xlsm", label: "↓ Unduh Berkas Excel Sulmitra" }
+                ],
+                pdf: { name: "Rate Berjangka Menurun BPR Sulawesi Mitra Abadi.pdf", label: "↗ Buka Rate Sulmitra (PDF)" }
+            },
+            "paluanugerah": { 
+                name: "PT BPR Palu Anugerah", 
+                pin: "223344", 
+                ready: false,
+                excels: [],
+                pdf: { name: "#", label: "Belum Tersedia" }
+            },
+            "binarta": { 
+                name: "PT BPR Binarta Luhur", 
+                pin: "334455", 
+                ready: false,
+                excels: [],
+                pdf: { name: "#", label: "Belum Tersedia" }
+            },
+            "yaspis": { 
+                name: "PT BPR Yaspis Dana Prima", 
+                pin: "445566", 
+                ready: true,
+                excels: [
+                    { file: "Simulasi Premi AJK BPR Yaspis Dana Prima (1-5 th) - Final.xlsm", label: "↓ Unduh Excel Yaspis (1-5 Thn)" },
+                    { file: "Simulasi Premi AJK BPR Yaspis Dana Prima (6 - 10 th) - Final.xlsm", label: "↓ Unduh Excel Yaspis (6-10 Thn)" }
+                ],
+                pdf: { name: "Rate Berjangka Menurun BPR Yaspis Dana Prima.pdf", label: "↗ Buka Rate Yaspis (PDF)" }
+            }
         };
 
         const STORAGE_KEY = "kbru_ajk_queue_palu";
         let activeBankKey = "sulman";
         let isTenorValidYearly = false;
-        let detectedDurationYears = 0; // Durasi tahun murni dari hasil periode
+        let detectedDurationYears = 0;
 
         const ui = {
             gate: document.getElementById("gateArea"),
@@ -401,6 +437,9 @@
             title: document.getElementById("clientTitle"),
             docs: document.getElementById("readyDocs"),
             excelNote: document.getElementById("readyExcelNotice"),
+            excelBox: document.getElementById("excelDownloadContainer"),
+            ratePdfTitle: document.getElementById("ratePdfTitle"),
+            ratePdfLink: document.getElementById("ratePdfLink"),
             calc: document.getElementById("calcContainer"),
             pend: document.getElementById("pendingBox"),
             name: document.getElementById("custName"),
@@ -448,9 +487,20 @@
             ui.calc.style.display = isReady ? "block" : "none";
             ui.pend.style.display = isReady ? "none" : "block";
 
+            if (isReady) {
+                // Muat tombol Excel dinamis
+                ui.excelBox.innerHTML = client.excels.map(exc => 
+                    `<a href="${encodeURIComponent(exc.file)}" class="btn-file" download style="color:var(--grn-p);border-color:var(--grn-b);">${exc.label}</a>`
+                ).join("");
+
+                // Muat link PDF rate dinamis
+                ui.ratePdfTitle.innerText = `Tabel Acuan Rate Premi ${client.name} (PDF)`;
+                ui.ratePdfLink.href = encodeURIComponent(client.pdf.name);
+                ui.ratePdfLink.innerText = client.pdf.label;
+            }
+
             ui.searchName.value = "";
             renderQueue();
-            
             blockFormInputs(true, "Silakan isi tanggal awal & akhir periode terlebih dahulu");
         }
 
@@ -561,7 +611,6 @@
             ui.btnSave.disabled = false;
             ui.outPremi.style.fontSize = "1.5rem";
 
-            // Rumus: (Rate * UP) / 1000
             const premi = (rate * up) / 1000;
             ui.outTSI.innerText = fmtIDR.format(up).split(",")[0];
             ui.outRate.innerText = rate.toLocaleString('id-ID') + " (per 1.000)";
