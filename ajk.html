@@ -220,9 +220,9 @@
                             <strong style="color:var(--amb-p);display:block;" id="ratePdfTitle">Tabel Acuan Rate Premi (PDF)</strong>
                             <span>*Catatan: Rate pada file PDF ini hanya berlaku untuk perhitungan tahunan bulat dan tidak memuat masa asuransi di bawah 1 tahun atau masa asuransi yang memiliki kelebihan bulan.</span>
                         </div>
-                        <a id="ratePdfLink" href="#" class="btn-file" target="_blank" rel="noopener noreferrer" style="color:var(--amb-p);border-color:var(--amb-b);">
-                            ↗ Buka Tabel Rate di Tab Baru (PDF)
-                        </a>
+                        <div id="pdfDownloadContainer">
+                            <!-- Tombol PDF dinamis akan dimuat lewat JS -->
+                        </div>
                     </div>
                 </div>
 
@@ -377,7 +377,8 @@
     <footer>&copy; 2026 PT Kalibesar Raya Utama - Cabang Palu. Terdaftar & Diawasi OJK.</footer>
 
 <script>
-        const DB = {
+
+const DB = {
             "sulman": { 
                 name: "PT BPR Sulawesi Mandiri", 
                 pin: "112233", 
@@ -389,36 +390,47 @@
             },
             "sulmitra": { 
                 name: "PT BPR Sulawesi Mitra Abadi", 
-                pin: "556677", 
+                pin: "223344", 
                 ready: true,
                 excels: [
                     { file: "Simulasi Premi AJK BPR Sulawesi Mitra Abadi - Final.xlsm", label: "↓ Unduh Berkas Excel Sulmitra" }
                 ],
-                pdf: { name: "Rate Berjangka Menurun BPR Sulawesi Mitra Abadi.pdf", label: "↗ Buka Rate Sulmitra (PDF)" }
+                pdf: { name: "Rate_Sulmitra.pdf", label: "↗ Buka Rate Sulmitra (PDF)" }
             },
-            "paluanugerah": { 
+ "paluanugerah": { 
                 name: "PT BPR Palu Anugerah", 
-                pin: "223344", 
-                ready: false,
-                excels: [],
-                pdf: { name: "#", label: "Belum Tersedia" }
+                pin: "334455", 
+                ready: true,
+                excels: [
+                    { file: "Simulasi Premi AJK BPR Palu Anugerah (Loan Interest 17%) - Sent.xlsm", label: "↓ Excel Palu Anugerah (Interest 17%)" },
+                    { file: "Simulasi Premi AJK BPR Palu Anugerah (Loan Interest 16%) - Sent.xlsm", label: "↓ Excel Palu Anugerah (Interest 16%)" },
+                    { file: "Simulasi Premi AJK BPR Palu Anugerah Konsumtif PNS - Sent.xlsm", label: "↓ Excel Palu Anugerah (Konsumtif PNS)" }
+                ],
+                pdf: { name: "Rate_PaluAnugerah.pdf", label: "↗ Buka Rate Palu Anugerah (PDF)" }
             },
             "binarta": { 
                 name: "PT BPR Binarta Luhur", 
-                pin: "334455", 
-                ready: false,
-                excels: [],
-                pdf: { name: "#", label: "Belum Tersedia" }
+                pin: "445566", 
+                ready: true,
+                excels: [
+                    { file: "Simulasi Premi AJK BPR Binarta Luhur - Sent.xlsm", label: "↓ Unduh Berkas Excel Binarta Luhur" }
+                ],
+                pdfs: [
+                    { name: "CN BPR BINARTA LUHUR (UP MENURUN).pdf", label: "↗ Buka Rate UP Menurun (PDF)" },
+                    { name: "CN BPR BINARTA LUHUR (UP TETAP).pdf", label: "↗ Buka Rate UP Tetap (PDF)" }
+                ]
             },
             "yaspis": { 
                 name: "PT BPR Yaspis Dana Prima", 
-                pin: "445566", 
+                pin: "556677", 
                 ready: true,
                 excels: [
                     { file: "Simulasi Premi AJK BPR Yaspis Dana Prima (1-5 th) - Final.xlsm", label: "↓ Unduh Excel Yaspis (1-5 Thn)" },
                     { file: "Simulasi Premi AJK BPR Yaspis Dana Prima (6 - 10 th) - Final.xlsm", label: "↓ Unduh Excel Yaspis (6-10 Thn)" }
                 ],
-                pdf: { name: "Rate Berjangka Menurun BPR Yaspis Dana Prima.pdf", label: "↗ Buka Rate Yaspis (PDF)" }
+                pdfs: [
+                    { name: "CN BPR YASPIS DANA PRIMA - MULTIGUNA (ENDORSE).signed.pdf", label: "↗ Buka Dokumen Endorse Yaspis" }
+                ]
             }
         };
 
@@ -494,9 +506,13 @@
                 ).join("");
 
                 // Muat link PDF rate dinamis
-                ui.ratePdfTitle.innerText = `Tabel Acuan Rate Premi ${client.name} (PDF)`;
-                ui.ratePdfLink.href = encodeURIComponent(client.pdf.name);
-                ui.ratePdfLink.innerText = client.pdf.label;
+                // Muat tombol link PDF rate dinamis (mendukung banyak file PDF)
+                ui.ratePdfTitle.innerText = `Dokumen & Tabel Acuan ${client.name}`;
+
+                const pdfList = client.pdfs || (client.pdf ? [client.pdf] : []);
+                document.getElementById("pdfDownloadContainer").innerHTML = pdfList.map(p => 
+                    `<a href="${encodeURIComponent(p.name)}" class="btn-file" target="_blank" rel="noopener noreferrer" style="color:var(--amb-p);border-color:var(--amb-b);">${p.label}</a>`
+                ).join("");
             }
 
             ui.searchName.value = "";
