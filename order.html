@@ -148,13 +148,37 @@
             .modal-dl-group, .modal-act-group { width:100%; }
             .modal-dl-group button, .modal-act-group button { flex:1; text-align:center; padding:10px; }
         }
+
+        .db-link-icon {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #15803d;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .db-link-icon:hover {
+            background: #dcfce7;
+        }
+
     </style>
 </head>
 <body>
 
 <nav>
     <div class="brand">PT KALIBESAR RAYA UTAMA - CABANG PALU</div>
-    <a href="index.html" class="nav-back">&larr; Beranda</a>
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <a href="https://docs.google.com/spreadsheets/d/1ManQ5i5TjPf3qv247c_muSsrSyqouvzM7Z7sJSy-6Qg/edit?gid=0#gid=0" target="_blank" rel="noopener noreferrer" class="db-link-icon" title="Buka Database Spreadsheet">
+            📊 Database Sheet
+        </a>
+        <a href="index.html" class="nav-back">&larr; Beranda</a>
+    </div>
 </nav>
 
 <div class="container">
