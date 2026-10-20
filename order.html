@@ -7,11 +7,12 @@
     <style>
         :root { --p-red:#b91c1c; --d-red:#7f1d1d; --bg:#f8fafc; --txt:#1e293b; --mut:#64748b; --bdr:#cbd5e1; }
         * { box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI',Arial,sans-serif; }
-        body { background:var(--bg); color:var(--txt); line-height:1.4; }
-        nav { background:#fff; border-bottom:3px solid var(--p-red); padding:12px 25px; display:flex; justify-content:space-between; align-items:center; }
-        .brand { font-weight:800; color:var(--p-red); font-size:1.1rem; }
-        .nav-back { text-decoration:none; color:var(--p-red); font-weight:600; font-size:.85rem; }
-        .container { max-width:900px; margin:20px auto; padding:0 15px; }
+        body { background:var(--bg); color:var(--txt); line-height:1.45; -webkit-tap-highlight-color:transparent; }
+        nav { background:#fff; border-bottom:3px solid var(--p-red); padding:12px 25px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:90; box-shadow:0 1px 3px rgba(0,0,0,.04); }
+        .brand { font-weight:800; color:var(--p-red); font-size:1.05rem; }
+        .nav-back { text-decoration:none; color:var(--p-red); font-weight:700; font-size:.85rem; }
+        .nav-back:hover { text-decoration:underline; }
+        .container { max-width:920px; margin:20px auto; padding:0 15px; }
         .card, .doc-sec, .queue-box { background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:20px; margin-bottom:20px; box-shadow:0 2px 4px rgba(0,0,0,.03); }
         .card { border-top:4px solid var(--p-red); }
         .doc-sec { border-left:5px solid var(--p-red); }
@@ -28,13 +29,19 @@
         .edit-banner { display:none; background:#fef3c7; border:1px solid #f59e0b; border-left:4px solid #d97706; padding:10px 14px; border-radius:6px; margin-bottom:14px; font-size:.85rem; color:#92400e; }
         
         .lob-box { background:#fff1f2; border:1px solid #fecaca; padding:12px; border-radius:6px; margin-bottom:18px; }
-        .lob-select { width:100%; padding:9px; font-weight:700; color:var(--d-red); border:2px solid var(--p-red); border-radius:5px; outline:none; }
+        .lob-select { width:100%; padding:9px; font-weight:700; color:var(--d-red); border:2px solid var(--p-red); border-radius:5px; outline:none; background:#fff; }
         .sec-title { font-size:.9rem; font-weight:700; color:var(--d-red); border-bottom:1px solid var(--bdr); padding-bottom:5px; margin:16px 0 12px; }
         .form-row { display:flex; gap:12px; margin-bottom:12px; flex-wrap:wrap; }
         .form-group { flex:1; min-width:200px; }
         label { display:block; font-weight:600; font-size:.8rem; margin-bottom:4px; }
-        input, select, textarea { width:100%; padding:8px 10px; border:1px solid var(--bdr); border-radius:5px; font-size:.88rem; outline:none; }
-        input:focus, select:focus, textarea:focus { border-color:var(--p-red); }
+        input, select, textarea { width:100%; padding:9px 10px; border:1px solid var(--bdr); border-radius:5px; font-size:.88rem; outline:none; background:#fff; }
+        input:focus, select:focus, textarea:focus { border-color:var(--p-red); box-shadow:0 0 0 2px rgba(185,28,28,.1); }
+        textarea { resize:vertical; line-height:1.5; }
+
+        /* Kotak Total TSI Otomatis PAR */
+        .tsi-summary-bar { background:#fff1f2; border:1px solid #fecaca; border-radius:6px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; margin-top:4px; margin-bottom:8px; font-size:.86rem; }
+        .tsi-summary-bar strong { color:var(--d-red); font-size:1rem; }
+
         .transit-card { background:#fdf2f2; border:1px dashed #f87171; padding:10px 14px; border-radius:6px; margin-bottom:10px; }
         .btn-transit { background:#0284c7; color:#fff; border:none; padding:7px 12px; border-radius:4px; font-size:.8rem; font-weight:600; cursor:pointer; margin-bottom:12px; }
         .btn-del-transit { background:none; border:none; color:#dc2626; font-size:.75rem; font-weight:700; cursor:pointer; float:right; }
@@ -47,8 +54,9 @@
         .btn-db { background:var(--p-red); }
         .btn-db:hover { background:var(--d-red); }
         
-        .queue-item { background:var(--bg); border-left:4px solid var(--p-red); padding:10px 14px; border-radius:4px; margin-bottom:8px; font-size:.85rem; cursor:pointer; }
-        .item-actions { display:flex; align-items:center; gap:6px; }
+        .queue-item { background:var(--bg); border-left:4px solid var(--p-red); padding:10px 14px; border-radius:4px; margin-bottom:8px; font-size:.85rem; cursor:pointer; transition:background .15s; }
+        .queue-item:hover { background:#f1f5f9; }
+        .item-actions { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
         .btn-edit-item { background:#e0f2fe; border:1px solid #bae6fd; color:#0369a1; font-size:.76rem; font-weight:700; padding:4px 8px; border-radius:4px; cursor:pointer; }
         .btn-edit-item:hover { background:#bae6fd; }
         .btn-del-item { background:none; border:none; color:#dc2626; font-size:1.1rem; cursor:pointer; padding:4px 8px; border-radius:4px; line-height:1; }
@@ -61,11 +69,42 @@
         .btn-reset:hover { background:#334155; }
         
         /* Modal General & Detail */
-        .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:99; justify-content:center; align-items:center; padding:15px; }
-        .modal-body { background:#fff; max-width:600px; width:100%; max-height:85vh; border-radius:8px; border-top:5px solid var(--p-red); overflow-y:auto; padding:18px; }
+        .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:999; justify-content:center; align-items:center; padding:15px; }
+        .modal-body { background:#fff; max-width:650px; width:100%; max-height:88vh; border-radius:8px; border-top:5px solid var(--p-red); overflow-y:auto; padding:20px; box-shadow:0 10px 30px rgba(0,0,0,.25); }
+        
+        /* Kop Resmi KBRU pada Area Tangkap Gambar / Cetak PDF */
+        .capture-brand-header {
+            display:none;
+            border-bottom:2px solid var(--p-red);
+            padding-bottom:10px;
+            margin-bottom:12px;
+            justify-content:space-between;
+            align-items:center;
+        }
+        .capture-brand-header .cb-title { font-weight:800; color:var(--p-red); font-size:1rem; }
+        .capture-brand-header .cb-sub { font-size:.75rem; color:var(--mut); }
+
         .dt-tbl { width:100%; border-collapse:collapse; font-size:.85rem; }
-        .dt-tbl td { padding:8px 10px; border-bottom:1px solid #f1f5f9; vertical-align:top; }
-        .dt-tbl td:first-child { font-weight:600; width:40%; background:#f8fafc; border-right:1px solid #e2e8f0; }
+        .dt-tbl td { padding:9px 12px; border-bottom:1px solid #e2e8f0; vertical-align:top; white-space:pre-wrap; word-break:break-word; }
+        .dt-tbl td:first-child { font-weight:700; width:38%; background:#f8fafc; border-right:1px solid #e2e8f0; color:#334155; }
+
+        /* Baris Tombol Modal Detail */
+        .modal-btn-bar {
+            margin-top:16px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:8px;
+            flex-wrap:wrap;
+            border-top:1px solid #e2e8f0;
+            padding-top:14px;
+        }
+        .modal-dl-group, .modal-act-group { display:flex; gap:8px; flex-wrap:wrap; }
+        .btn-dl-pdf { background:#b91c1c; color:#fff; border:none; padding:8px 13px; border-radius:5px; font-size:.82rem; font-weight:700; cursor:pointer; }
+        .btn-dl-pdf:hover { background:#7f1d1d; }
+        .btn-dl-png { background:#047857; color:#fff; border:none; padding:8px 13px; border-radius:5px; font-size:.82rem; font-weight:700; cursor:pointer; }
+        .btn-dl-png:hover { background:#065f46; }
+        .btn-dl-png:disabled { background:#94a3b8; cursor:wait; }
 
         /* Strict Confirmation Modal Box */
         .confirm-modal-body {
@@ -87,7 +126,28 @@
         .btn-confirm-no { background: #64748b; color: #fff; }
         .btn-confirm-no:hover { background: #475569; }
 
-        @media(max-width:600px){ .container{padding:0 8px} .card{padding:14px} .sync-bar{flex-direction:column; align-items:stretch;} .sync-mode{width:100%} }
+        /* Mode Cetak PDF Khusus Detail RFQ */
+        @media print {
+            body * { visibility: hidden; }
+            #modal, #modal * { visibility: visible; }
+            #modal { position: absolute; left: 0; top: 0; width: 100%; background: #fff !important; padding: 0 !important; display: block !important; }
+            .modal-body { max-width: 100% !important; max-height: none !important; box-shadow: none !important; border: none !important; padding: 10px !important; overflow: visible !important; }
+            .capture-brand-header { display: flex !important; }
+            .modal-btn-bar, #btnCloseModalTop { display: none !important; }
+        }
+
+        @media(max-width:600px){
+            nav { padding: 12px 15px; }
+            .brand { font-size: .95rem; }
+            .container { padding:0 10px; }
+            .card, .doc-sec, .queue-box { padding:14px; }
+            input, select, textarea { font-size:16px; /* Cegah auto-zoom layar HP */ }
+            .sync-bar { flex-direction:column; align-items:stretch; }
+            .sync-mode { width:100%; }
+            .modal-btn-bar { flex-direction:column; align-items:stretch; }
+            .modal-dl-group, .modal-act-group { width:100%; }
+            .modal-dl-group button, .modal-act-group button { flex:1; text-align:center; padding:10px; }
+        }
     </style>
 </head>
 <body>
@@ -101,12 +161,12 @@
     <div class="doc-sec">
         <h3 style="color:var(--d-red);font-size:.95rem">Dokumen Acuan, Persyaratan & Ketentuan Order (PDF)</h3>
         <div class="pdf-grid">
-            <a href="Persyaratan%20KYC.pdf" class="btn-pdf btn-kyc" target="_blank">Persyaratan KYC</a>
-            <a href="Order%20Asuransi%20PAR.pdf" class="btn-pdf" target="_blank">Order PAR</a>
-            <a href="Order%20Asuransi%20MV.pdf" class="btn-pdf" target="_blank">Order MV</a>
-            <a href="Order%20Asuransi%20CPM.pdf" class="btn-pdf" target="_blank">Order CPM</a>
-            <a href="Order%20Asuransi%20cargo%20Rutin%20(MOP).pdf" class="btn-pdf" target="_blank">Cargo MOP</a>
-            <a href="Order%20Asuransi%20cargo%20Tidak%20Rutin%20(MCI).pdf" class="btn-pdf" target="_blank">Cargo MCI</a>
+            <a href="Persyaratan%20KYC.pdf" class="btn-pdf btn-kyc" target="_blank" rel="noopener noreferrer">Persyaratan KYC</a>
+            <a href="Order%20Asuransi%20PAR.pdf" class="btn-pdf" target="_blank" rel="noopener noreferrer">Order PAR</a>
+            <a href="Order%20Asuransi%20MV.pdf" class="btn-pdf" target="_blank" rel="noopener noreferrer">Order MV</a>
+            <a href="Order%20Asuransi%20CPM.pdf" class="btn-pdf" target="_blank" rel="noopener noreferrer">Order CPM</a>
+            <a href="Order%20Asuransi%20cargo%20Rutin%20(MOP).pdf" class="btn-pdf" target="_blank" rel="noopener noreferrer">Cargo MOP</a>
+            <a href="Order%20Asuransi%20cargo%20Tidak%20Rutin%20(MCI).pdf" class="btn-pdf" target="_blank" rel="noopener noreferrer">Cargo MCI</a>
         </div>
     </div>
 
@@ -122,7 +182,7 @@
 
         <div class="kyc-notice">
             <strong>Pemberitahuan Persyaratan KYC (Know Your Customer):</strong><br>
-            Setelah penawaran sudah sesuai, tim KBRU Palu tentu diharuskan melengkapi data KYC (Know Your Customer) sebagai persyaratan penting dan juga untuk *release* invoice serta polis asuransi resmi. Mohon memeriksa ketentuan kelengkapan berkas pada file <strong>Persyaratan KYC (PDF)</strong> di atas.
+            Setelah penawaran sudah sesuai, tim KBRU Palu tentu diharuskan melengkapi data KYC (Know Your Customer) sebagai persyaratan penting dan juga untuk <em>release</em> invoice serta polis asuransi resmi. Mohon memeriksa ketentuan kelengkapan berkas pada file <strong>Persyaratan KYC (PDF)</strong> di atas.
         </div>
 
         <div class="lob-box">
@@ -133,16 +193,23 @@
                 <option value="CPM">Civil Plant & Machinery (CPM - Alat Berat)</option>
                 <option value="MOP">Marine Cargo MOP (Pengiriman Rutin 1 Thn)</option>
                 <option value="MCI">Marine Cargo MCI (Single Shipment - Sekali Kirim)</option>
+                <option value="LAINNYA">Lini Bisnis Lainnya (CAR, EAR, Liability, PA, Surety Bond, dll.)</option>
             </select>
         </div>
 
         <form id="rfqForm" onsubmit="return false">
-            <div class="sec-title">1. Data Pemohon & Ketentuan Mata Uang</div>
+            <div class="sec-title">1. Data Pemohon, AO Marketing & Ketentuan Mata Uang</div>
             <div class="form-row">
                 <div class="form-group"><label>Nama Tertanggung / Perusahaan *</label><input type="text" id="clientName" required placeholder="Sesuai Nama di Polis Nantinya"></div>
                 <div class="form-group"><label>WhatsApp / Kontak *</label><input type="text" id="clientPhone" required placeholder="08123456789"></div>
                 <div class="form-group"><label>Alamat Email Aktif *</label><input type="email" id="clientEmail" required placeholder="perusahaan@email.com"></div>
-                <div class="form-group" style="max-width:180px;">
+            </div>
+            <div class="form-row">
+                <div class="form-group" style="flex:1.5">
+                    <label>Nama AO / Marketing Pengaju (Ketik Manual)</label>
+                    <input type="text" id="aoMarketing" placeholder="Ketik nama AO Bank/Mitra atau Marketing (Kosongkan jika nasabah langsung)">
+                </div>
+                <div class="form-group" style="max-width:220px;">
                     <label>Mata Uang (Kurs) *</label>
                     <select id="currencySelect" onchange="updateCurrencyLabels()" style="font-weight:700;color:var(--d-red)">
                         <option value="IDR" selected>IDR - Rupiah</option>
@@ -157,19 +224,24 @@
             <div id="secPAR" class="lob-pane">
                 <div class="sec-title">2. Detail Objek Properti (PAR)</div>
                 <div class="form-row">
-                    <div class="form-group" style="flex:2"><label>Risk Location (Alamat Lengkap) *</label><input type="text" id="parLoc" placeholder="Alamat lengkap lokasi aset"></div>
-                    <div class="form-group"><label>Kondisi APAR *</label><select id="parApar"><option>Ada & Terawat</option><option>Tidak Ada</option></select></div>
+                    <div class="form-group" style="flex:2"><label>Risk Location (Alamat Lengkap Objek) *</label><input type="text" id="parLoc" placeholder="Alamat lengkap lokasi bangunan/aset"></div>
+                    <div class="form-group" style="flex:1.2"><label>Okupasi Bangunan / Penggunaan *</label><input type="text" id="parOcc" placeholder="Misal: Rumah Tinggal, Kafe, Kantor, Gudang..."></div>
                 </div>
                 <div class="form-row">
+                    <div class="form-group"><label>Kondisi APAR *</label><select id="parApar"><option>Ada & Terawat</option><option>Tidak Ada</option></select></div>
                     <div class="form-group"><label>Jumlah Lantai *</label><input type="number" id="parFloor" value="1" min="1"></div>
                     <div class="form-group"><label>Konstruksi Gedung *</label><select id="parClass"><option>Kelas 1 (Permanen)</option><option>Kelas 2 (Semi Permanen)</option><option>Kelas 3 (Kayu)</option></select></div>
                 </div>
                 <div class="sec-title">Breakdown Nilai Pertanggungan / NRV (<span class="curTag">IDR</span>) * (Wajib isi minimal salah satu)</div>
                 <div class="form-row">
-                    <div class="form-group"><label>Building (<span class="curTag">IDR</span>)</label><input type="text" id="parBld" class="input-currency" placeholder="0"></div>
-                    <div class="form-group"><label>Content / Isi (<span class="curTag">IDR</span>)</label><input type="text" id="parCnt" class="input-currency" placeholder="0"></div>
-                    <div class="form-group"><label>Stock Dagangan (<span class="curTag">IDR</span>)</label><input type="text" id="parStk" class="input-currency" placeholder="0"></div>
-                    <div class="form-group"><label>Machinery (<span class="curTag">IDR</span>)</label><input type="text" id="parMch" class="input-currency" placeholder="0"></div>
+                    <div class="form-group"><label>Building (<span class="curTag">IDR</span>)</label><input type="text" id="parBld" class="input-currency par-tsi-input" placeholder="0"></div>
+                    <div class="form-group"><label>Content / Isi (<span class="curTag">IDR</span>)</label><input type="text" id="parCnt" class="input-currency par-tsi-input" placeholder="0"></div>
+                    <div class="form-group"><label>Stock Dagangan (<span class="curTag">IDR</span>)</label><input type="text" id="parStk" class="input-currency par-tsi-input" placeholder="0"></div>
+                    <div class="form-group"><label>Machinery (<span class="curTag">IDR</span>)</label><input type="text" id="parMch" class="input-currency par-tsi-input" placeholder="0"></div>
+                </div>
+                <div class="tsi-summary-bar">
+                    <span>Total Nilai Pertanggungan (Total TSI):</span>
+                    <strong id="parTotalTSI">IDR 0</strong>
                 </div>
             </div>
 
@@ -256,8 +328,25 @@
                 </div>
             </div>
 
+            <!-- TAB LOB LAINNYA (FLEKSIBEL) -->
+            <div id="secLAINNYA" class="lob-pane" style="display:none">
+                <div class="sec-title">2. Detail Lini Bisnis Lainnya</div>
+                <div class="form-row">
+                    <div class="form-group" style="flex:1">
+                        <label>Nama Lini Bisnis / Jenis Asuransi yang Diajukan *</label>
+                        <input type="text" id="othLobName" placeholder="Ketik manual, misal: Contractor All Risk (CAR), Public Liability, Personal Accident, Surety Bond...">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group" style="flex:1">
+                        <label>Rincian Lengkap Objek & Data Permohonan (<span class="curTag">IDR</span>) *</label>
+                        <textarea id="othDetails" rows="7" placeholder="Ketikkan secara lengkap dan bebas seluruh data permohonan sesuai kebutuhan LOB tersebut, misalnya:&#10;- Objek Pertanggungan & Deskripsi Pekerjaan/Proyek&#10;- Nilai Pertanggungan (TSI) / Nilai Kontrak&#10;- Lokasi Risiko & Periode Pertanggungan&#10;- Rincian Teknis Lainnya..."></textarea>
+                    </div>
+                </div>
+            </div>
+
             <div class="form-row">
-                <div class="form-group"><label>Catatan Tambahan</label><textarea id="notes" rows="2" placeholder="Catatan klausul khusus atau jadwal survei..."></textarea></div>
+                <div class="form-group"><label>Catatan Tambahan</label><textarea id="notes" rows="2" placeholder="Catatan klausul khusus, perluasan jaminan, atau jadwal survei..."></textarea></div>
             </div>
 
             <!-- Tombol Batal Mode Revisi (Tepat di Atas Tombol Simpan) -->
@@ -276,7 +365,7 @@
 
     <!-- Antrean Masuk -->
     <div class="queue-box">
-        <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px">
             <h3 style="color:var(--d-red);font-size:1rem">Antrean Order Penawaran Terdaftar</h3>
             <button onclick="clearQ()" style="border:none;background:none;color:#dc2626;cursor:pointer;font-size:.8rem;font-weight:700">Hapus Seluruh Riwayat Perangkat Ini</button>
         </div>
@@ -302,15 +391,32 @@
 
 <!-- Modal Detail Riwayat -->
 <div id="modal" class="modal" onclick="closeM(event)">
-    <div class="modal-body" onclick="event.stopPropagation()">
-        <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--bdr);padding-bottom:8px">
-            <h3 id="mTitle" style="color:var(--d-red);font-size:1.05rem"></h3>
-            <button onclick="closeM(null)" style="border:none;background:none;font-size:1.4rem;cursor:pointer">&times;</button>
+    <div class="modal-body" id="modalCaptureArea" onclick="event.stopPropagation()">
+        <!-- Kop Resmi saat Unduh Foto / Cetak PDF -->
+        <div class="capture-brand-header" id="captureHeader">
+            <div>
+                <div class="cb-title">PT KALIBESAR RAYA UTAMA - CABANG PALU</div>
+                <div class="cb-sub">Ringkasan Permohonan Penawaran Asuransi (Request for Quotation)</div>
+            </div>
+            <div style="font-size:.75rem;font-weight:700;color:var(--d-red)">DOKUMEN RFQ</div>
         </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--bdr);padding-bottom:8px">
+            <h3 id="mTitle" style="color:var(--d-red);font-size:1.05rem"></h3>
+            <button id="btnCloseModalTop" onclick="closeM(null)" style="border:none;background:none;font-size:1.4rem;cursor:pointer;line-height:1">&times;</button>
+        </div>
+
         <table class="dt-tbl" id="mContent" style="margin-top:12px"></table>
-        <div style="margin-top:14px;display:flex;justify-content:flex-end;gap:8px">
-            <button type="button" id="btnModalEdit" class="btn-edit-item" style="padding:7px 14px;font-size:.84rem">Muat ke Formulir untuk Diedit</button>
-            <button type="button" onclick="closeM(null)" style="background:#475569;color:#fff;border:none;padding:7px 14px;border-radius:4px;font-size:.84rem;cursor:pointer">Tutup</button>
+
+        <div class="modal-btn-bar" id="modalActionBar">
+            <div class="modal-dl-group">
+                <button type="button" class="btn-dl-pdf" onclick="downloadDetailPDF()">&#128196; Simpan PDF</button>
+                <button type="button" id="btnDlPng" class="btn-dl-png" onclick="downloadDetailPNG()">&#128444;&#65039; Unduh Foto PNG</button>
+            </div>
+            <div class="modal-act-group">
+                <button type="button" id="btnModalEdit" class="btn-edit-item" style="padding:8px 14px;font-size:.82rem">Muat ke Formulir untuk Diedit</button>
+                <button type="button" onclick="closeM(null)" style="background:#475569;color:#fff;border:none;padding:8px 14px;border-radius:5px;font-size:.82rem;font-weight:600;cursor:pointer">Tutup</button>
+            </div>
         </div>
     </div>
 </div>
@@ -337,14 +443,25 @@
     let curLOB = "PAR";
     let isEditMode = false;
     let editOriginalTime = "";
-    let pendingPayload = null; // Penampung data saat menunggu konfirmasi modal
+    let pendingPayload = null;
+    let activeModalData = null;
 
     const val = id => document.getElementById(id)?.value?.trim() || "";
+
+    // Keamanan Anti-XSS: Melumpuhkan tag script/HTML berbahaya saat merender teks ke layar
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return "";
+        return String(str).replace(/[&<>"']/g, m => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        })[m]);
+    }
 
     // 1. Parser & Formatter Pemisah Ribuan Otomatis (Titik) & Desimal Manual (Koma)
     function cleanNumericString(str) {
         if (!str) return "";
-        let cleaned = String(str).replace(/[^0-9,]/g, '');
+        // Jika string diawali kode mata uang seperti "IDR 1.000.000", buang kode mata uangnya dulu
+        let stripped = String(str).replace(/^[A-Z]{3}\s+/i, '');
+        let cleaned = stripped.replace(/[^0-9,]/g, '');
         const parts = cleaned.split(',');
         if (parts.length > 2) {
             cleaned = parts[0] + ',' + parts.slice(1).join('');
@@ -374,13 +491,14 @@
         inputElement.value = integerPart + decimalPart;
 
         const newLength = inputElement.value.length;
-        const newPosition = cursorPosition + (newLength - originalLength);
-        inputElement.setSelectionRange(newPosition, newPosition);
+        const newPosition = Math.max(0, cursorPosition + (newLength - originalLength));
+        try { inputElement.setSelectionRange(newPosition, newPosition); } catch(e) {}
     }
 
     function parseAmountToNumber(valStr) {
         if (!valStr) return 0;
-        const clean = String(valStr).replace(/\./g, '').replace(',', '.');
+        const stripped = String(valStr).replace(/^[A-Z]{3}\s+/i, '');
+        const clean = stripped.replace(/\./g, '').replace(',', '.');
         return parseFloat(clean) || 0;
     }
 
@@ -397,10 +515,25 @@
         return parts.length > 1 ? intPart + ',' + parts[1] : intPart;
     }
 
+    function updateParTotalTSI() {
+        const cur = val("currencySelect") || "IDR";
+        const total = parseAmountToNumber(val("parBld")) +
+                      parseAmountToNumber(val("parCnt")) +
+                      parseAmountToNumber(val("parStk")) +
+                      parseAmountToNumber(val("parMch"));
+        const outEl = document.getElementById("parTotalTSI");
+        if (outEl) {
+            outEl.innerText = cur + " " + total.toLocaleString('id-ID');
+        }
+    }
+
     // Pasang listener format pada seluruh kolom nominal
     document.querySelectorAll(".input-currency").forEach(input => {
         input.addEventListener("input", function() {
             formatLiveCurrency(this);
+            if (this.classList.contains("par-tsi-input")) {
+                updateParTotalTSI();
+            }
         });
     });
 
@@ -408,6 +541,7 @@
     function updateCurrencyLabels() {
         const cur = val("currencySelect") || "IDR";
         document.querySelectorAll(".curTag").forEach(el => el.innerText = cur);
+        updateParTotalTSI();
     }
 
     function switchLOB(type) {
@@ -429,8 +563,8 @@
                 ${idx > 1 ? '<button type="button" class="btn-del-transit" onclick="this.closest(\'.transit-card\').remove()">Hapus</button>' : ''}
             </div>
             <div class="form-row">
-                <div class="form-group"><input type="text" class="t-from" placeholder="Dari (Titik Asal) *" value="${fromVal}"></div>
-                <div class="form-group"><input type="text" class="t-to" placeholder="Ke (Titik Tujuan/Transit) *" value="${toVal}"></div>
+                <div class="form-group"><input type="text" class="t-from" placeholder="Dari (Titik Asal) *" value="${escapeHtml(fromVal)}"></div>
+                <div class="form-group"><input type="text" class="t-to" placeholder="Ke (Titik Tujuan/Transit) *" value="${escapeHtml(toVal)}"></div>
                 <div class="form-group">
                     <select class="t-mode">
                         <option value="Laut (Kapal/Tongkang)" ${modeVal === 'Laut (Kapal/Tongkang)' ? 'selected' : ''}>Laut (Kapal/Tongkang)</option>
@@ -438,7 +572,7 @@
                         <option value="Udara (Pesawat Kargo)" ${modeVal === 'Udara (Pesawat Kargo)' ? 'selected' : ''}>Udara (Pesawat Kargo)</option>
                     </select>
                 </div>
-                <div class="form-group"><input type="text" class="t-ves" placeholder="Nama Kapal / Plat Truk" value="${vesVal}"></div>
+                <div class="form-group"><input type="text" class="t-ves" placeholder="Nama Kapal / Plat Truk" value="${escapeHtml(vesVal)}"></div>
             </div>`;
         box.appendChild(card);
     }
@@ -469,6 +603,7 @@
 
     function collect() {
         const name = val("clientName"), phone = val("clientPhone"), email = val("clientEmail");
+        const ao = val("aoMarketing") || "-";
         const cur = val("currencySelect") || "IDR";
         
         // Validasi Identitas Pemohon
@@ -491,14 +626,19 @@
         // Validasi Nilai Pertanggungan dan Kolom Kritis Seluruh LOB
         if (curLOB === "PAR") {
             if (!val("parLoc")) {
-                alert("Untuk LOB PAR, Risk Location (Alamat Lengkap) wajib diisi!");
+                alert("Untuk LOB PAR, Risk Location (Alamat Lengkap Objek) wajib diisi!");
                 document.getElementById("parLoc").focus();
+                return null;
+            }
+            if (!val("parOcc")) {
+                alert("Untuk LOB PAR, Okupasi Bangunan (misal: Rumah Tinggal, Kafe, Kantor) wajib diisi!");
+                document.getElementById("parOcc").focus();
                 return null;
             }
             const bld = parseAmountToNumber(val("parBld")), cnt = parseAmountToNumber(val("parCnt"));
             const stk = parseAmountToNumber(val("parStk")), mch = parseAmountToNumber(val("parMch"));
             if (bld <= 0 && cnt <= 0 && stk <= 0 && mch <= 0) {
-                alert(`Untuk LOB PAR, Nilai Pertanggungan wajib diisi minimal salah satu (Building, Content, Stock, atau Machinery) lebih dari 0!`);
+                alert("Untuk LOB PAR, Nilai Pertanggungan wajib diisi minimal salah satu (Building, Content, Stock, atau Machinery) lebih dari 0!");
                 document.getElementById("parBld").focus();
                 return null;
             }
@@ -599,6 +739,17 @@
                 document.getElementById("mciETD").focus();
                 return null;
             }
+        } else if (curLOB === "LAINNYA") {
+            if (!val("othLobName")) {
+                alert("Untuk Lini Bisnis Lainnya, Nama Lini Bisnis / Jenis Asuransi wajib diketikkan!");
+                document.getElementById("othLobName").focus();
+                return null;
+            }
+            if (!val("othDetails")) {
+                alert("Untuk Lini Bisnis Lainnya, Rincian Lengkap Objek & Data Permohonan wajib diisi!");
+                document.getElementById("othDetails").focus();
+                return null;
+            }
         }
 
         let userNote = val("notes") || "-";
@@ -608,50 +759,90 @@
 
         const payload = {
             apiKey: API_KEY,
-            lob: curLOB, client: name, contact: phone, email: email, currency: cur,
+            lob: curLOB, client: name, contact: phone, email: email, ao: ao, currency: cur,
             time: new Date().toLocaleString('id-ID'), notes: userNote, details: {}
         };
 
         if (curLOB === "PAR") {
+            const totalPar = parseAmountToNumber(val("parBld")) +
+                             parseAmountToNumber(val("parCnt")) +
+                             parseAmountToNumber(val("parStk")) +
+                             parseAmountToNumber(val("parMch"));
             payload.details = {
-                "Alamat Objek": val("parLoc") || "-", "APAR": val("parApar") || "-", "Lantai": (val("parFloor") || "1") + " Lantai",
+                "AO Marketing": ao,
+                "Mata Uang (Kurs)": cur,
+                "Alamat Objek": val("parLoc") || "-",
+                "Okupasi Bangunan": val("parOcc") || "-",
+                "APAR": val("parApar") || "-",
+                "Lantai": (val("parFloor") || "1") + " Lantai",
                 "Konstruksi": val("parClass") || "-", 
                 "Building": cur + " " + formatAmountOutput(val("parBld")), 
                 "Content": cur + " " + formatAmountOutput(val("parCnt")),
                 "Stock": cur + " " + formatAmountOutput(val("parStk")), 
-                "Machinery": cur + " " + formatAmountOutput(val("parMch"))
+                "Machinery": cur + " " + formatAmountOutput(val("parMch")),
+                "Total TSI": cur + " " + totalPar.toLocaleString('id-ID')
             };
         } else if (curLOB === "MV") {
             payload.details = {
+                "AO Marketing": ao,
+                "Mata Uang (Kurs)": cur,
                 "Status Leasing": val("mvLeasing"), 
                 "Market Value": cur + " " + formatAmountOutput(val("mvVal")), 
                 "Proteksi": val("mvCover"),
-                "Plat Nomor": val("mvPlate") || "-", "Merek/Tipe": val("mvBrand") || "-", "Tahun": val("mvYear") || "-",
-                "No Rangka/Mesin": val("mvChassis") || "-", "Warna": val("mvColor") || "-"
+                "Plat Nomor": val("mvPlate") || "-",
+                "Merek/Tipe": val("mvBrand") || "-",
+                "Tahun": val("mvYear") || "-",
+                "No Rangka/Mesin": val("mvChassis") || "-",
+                "Warna": val("mvColor") || "-"
             };
         } else if (curLOB === "CPM") {
             payload.details = {
+                "AO Marketing": ao,
+                "Mata Uang (Kurs)": cur,
                 "Status Finansial": val("cpmLeasing"), 
                 "NRV Baru": cur + " " + formatAmountOutput(val("cpmNRV")), 
                 "Pengcoveran": val("cpmCover"),
-                "Jenis Alat": val("cpmType") || "-", "Merek": val("cpmBrand") || "-", "Tahun": val("cpmYear") || "-",
-                "Serial No": val("cpmSerial") || "TBA", "Operasi": val("cpmStatus"), "Site Kerja": val("cpmLoc") || "-"
+                "Jenis Alat": val("cpmType") || "-",
+                "Merek": val("cpmBrand") || "-",
+                "Tahun": val("cpmYear") || "-",
+                "Serial No": val("cpmSerial") || "TBA",
+                "Operasi": val("cpmStatus"),
+                "Site Kerja": val("cpmLoc") || "-"
             };
         } else if (curLOB === "MOP") {
             payload.details = {
-                "Kepentingan": val("mopCap"), "Alamat Kantor": val("mopAddr") || "-", "Jenis Cargo": val("mopCargo") || "-",
-                "Kemasan/Packing": val("mopPack") || "-", "Rute & Moda Transit": getTransitSummary("MOP"), 
+                "AO Marketing": ao,
+                "Mata Uang (Kurs)": cur,
+                "Kepentingan": val("mopCap"),
+                "Alamat Kantor": val("mopAddr") || "-",
+                "Jenis Cargo": val("mopCargo") || "-",
+                "Kemasan/Packing": val("mopPack") || "-",
+                "Rute & Moda Transit": getTransitSummary("MOP"), 
                 "Limit per Shipment": cur + " " + formatAmountOutput(val("mopLimit")),
                 "Estimasi Turnover/Thn": cur + " " + formatAmountOutput(val("mopTurnover")), 
                 "Loss Record 3 Thn": val("mopLoss")
             };
         } else if (curLOB === "MCI") {
             payload.details = {
-                "Kepentingan": val("mciCap"), "Alamat Kantor": val("mciAddr") || "-", 
+                "AO Marketing": ao,
+                "Mata Uang (Kurs)": cur,
+                "Kepentingan": val("mciCap"),
+                "Alamat Kantor": val("mciAddr") || "-", 
                 "Nilai Barang (Cover)": cur + " " + formatAmountOutput(val("mciVal")),
-                "Komoditas Muatan": val("mciItem") || "-", "Qty/Berat": val("mciQty") || "-", "Kemasan/Packing": val("mciPack") || "-",
-                "ETD (Jadwal Kirim)": val("mciETD") || "-", "No. Container": val("mciCont") || "-", "Rute & Moda Transit": getTransitSummary("MCI"),
+                "Komoditas Muatan": val("mciItem") || "-",
+                "Qty/Berat": val("mciQty") || "-",
+                "Kemasan/Packing": val("mciPack") || "-",
+                "ETD (Jadwal Kirim)": val("mciETD") || "-",
+                "No. Container": val("mciCont") || "-",
+                "Rute & Moda Transit": getTransitSummary("MCI"),
                 "Loss Record 3 Thn": val("mciLoss")
+            };
+        } else if (curLOB === "LAINNYA") {
+            payload.details = {
+                "AO Marketing": ao,
+                "Mata Uang (Kurs)": cur,
+                "Jenis Asuransi (LOB)": val("othLobName") || "-",
+                "Rincian Detail Objek & Permohonan": val("othDetails") || "-"
             };
         }
 
@@ -661,10 +852,9 @@
     // 3. Konsep Pop-up Konfirmasi Modal Terkunci (Strict Modal Dialog)
     function initiateSubmission() {
         const payload = collect();
-        if (!payload) return; // Batal jika data wajib belum lengkap
+        if (!payload) return;
 
         pendingPayload = payload;
-        // Buka modal konfirmasi
         document.getElementById("confirmModal").style.display = "flex";
     }
 
@@ -713,6 +903,8 @@
         isEditMode = true;
         editOriginalTime = item.time || "";
 
+        const dt = item.details || {};
+
         document.getElementById("editBanner").style.display = "block";
         document.getElementById("editSourceLabel").innerText = `[${item.lob}] ${item.client} (${item.time})`;
         document.getElementById("btnCancelEditBottom").style.display = "block";
@@ -720,23 +912,22 @@
         document.getElementById("lobSelect").value = item.lob;
         switchLOB(item.lob);
 
-        // Muat mata uang
-        if (item.currency) {
-            document.getElementById("currencySelect").value = item.currency;
-        } else {
-            document.getElementById("currencySelect").value = "IDR";
-        }
+        // Muat mata uang dari item.currency atau dt["Mata Uang (Kurs)"]
+        const savedCur = item.currency || dt["Mata Uang (Kurs)"] || "IDR";
+        document.getElementById("currencySelect").value = savedCur;
         updateCurrencyLabels();
 
+        // Muat Identitas & AO Marketing
         document.getElementById("clientName").value = item.client || "";
         document.getElementById("clientPhone").value = item.contact || "";
         document.getElementById("clientEmail").value = item.email && item.email !== "-" ? item.email : "";
+        const savedAO = item.ao || dt["AO Marketing"] || "";
+        document.getElementById("aoMarketing").value = savedAO !== "-" ? savedAO : "";
         document.getElementById("notes").value = (item.notes || "").replace(/\[REVISI dari pengajuan:.*?\]\s*/g, '');
-
-        const dt = item.details || {};
 
         if (item.lob === "PAR") {
             document.getElementById("parLoc").value = dt["Alamat Objek"] !== "-" ? (dt["Alamat Objek"] || "") : "";
+            document.getElementById("parOcc").value = dt["Okupasi Bangunan"] && dt["Okupasi Bangunan"] !== "-" ? dt["Okupasi Bangunan"] : "";
             document.getElementById("parApar").value = dt["APAR"] || "Ada & Terawat";
             document.getElementById("parFloor").value = parseAmountToNumber(dt["Lantai"]) || 1;
             document.getElementById("parClass").value = dt["Konstruksi"] || "Kelas 1 (Permanen)";
@@ -744,6 +935,7 @@
             document.getElementById("parCnt").value = formatAmountOutput(dt["Content"]);
             document.getElementById("parStk").value = formatAmountOutput(dt["Stock"]);
             document.getElementById("parMch").value = formatAmountOutput(dt["Machinery"]);
+            updateParTotalTSI();
         } else if (item.lob === "MV") {
             document.getElementById("mvLeasing").value = dt["Status Leasing"] || "Milik Sendiri";
             document.getElementById("mvVal").value = formatAmountOutput(dt["Market Value"]);
@@ -781,6 +973,9 @@
             document.getElementById("mciETD").value = dt["ETD (Jadwal Kirim)"] !== "-" ? (dt["ETD (Jadwal Kirim)"] || "") : "";
             document.getElementById("mciCont").value = dt["No. Container"] !== "-" ? (dt["No. Container"] || "") : "";
             document.getElementById("mciLoss").value = dt["Loss Record 3 Thn"] || "NIL (Tanpa Klaim)";
+        } else if (item.lob === "LAINNYA") {
+            document.getElementById("othLobName").value = dt["Jenis Asuransi (LOB)"] && dt["Jenis Asuransi (LOB)"] !== "-" ? dt["Jenis Asuransi (LOB)"] : "";
+            document.getElementById("othDetails").value = dt["Rincian Detail Objek & Permohonan"] && dt["Rincian Detail Objek & Permohonan"] !== "-" ? dt["Rincian Detail Objek & Permohonan"] : "";
         }
 
         closeM(null);
@@ -829,7 +1024,7 @@
         })
         .then(res => res.json())
         .then(cloudData => {
-            if (cloudData && cloudData.length > 0) {
+            if (Array.isArray(cloudData) && cloudData.length > 0) {
                 cloudData.forEach(cItem => {
                     const exists = localQ.some(loc => loc.time === cItem.time && loc.client === cItem.client);
                     if (!exists) localQ.push(cItem);
@@ -896,18 +1091,21 @@
             return;
         }
 
-        list.innerHTML = q.map((item, i) => `
+        list.innerHTML = q.map((item, i) => {
+            const aoLabel = item.ao || (item.details && item.details["AO Marketing"]) || "-";
+            return `
             <div class="queue-item" onclick="showM(${i})">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <strong>[${item.lob}] ${item.client}</strong>
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
+                    <strong>[${escapeHtml(item.lob)}] ${escapeHtml(item.client)}</strong>
                     <div class="item-actions">
                         <button type="button" class="btn-edit-item" title="Edit pengajuan ini" onclick="handleEditClick(event, ${i})">Edit Data</button>
                         <span style="font-size:.72rem;background:#fee2e2;color:#b91c1c;padding:3px 7px;border-radius:4px;font-weight:700;">Detail &rarr;</span>
                         <button type="button" class="btn-del-item" title="Hapus dari perangkat ini" onclick="deleteQueueItem(event, ${i})">&#128465;</button>
                     </div>
                 </div>
-                <div style="font-size:.78rem;color:var(--mut);margin-top:3px">Kontak: ${item.contact} &bull; Email: ${item.email || '-'} &bull; Waktu: ${item.time}</div>
-            </div>`).join("");
+                <div style="font-size:.78rem;color:var(--mut);margin-top:3px">Kontak: ${escapeHtml(item.contact)} &bull; AO: ${escapeHtml(aoLabel)} &bull; Waktu: ${escapeHtml(item.time)}</div>
+            </div>`;
+        }).join("");
     }
 
     function handleEditClick(e, index) {
@@ -941,15 +1139,25 @@
         const q = window.activeQueueData || JSON.parse(localStorage.getItem("kbru_q") || "[]");
         const data = q[i];
         if (!data) return;
+        activeModalData = data;
+
+        const dt = data.details || {};
+        const cur = data.currency || dt["Mata Uang (Kurs)"] || "IDR";
+        const ao = data.ao || dt["AO Marketing"] || "-";
+
         document.getElementById("mTitle").innerText = `Detail RFQ [${data.lob}] - ${data.client}`;
-        let rows = `<tr><td>Waktu Pengajuan</td><td>${data.time}</td></tr>
-                    <tr><td>Kontak/WA</td><td>${data.contact}</td></tr>
-                    <tr><td>Email Klien</td><td>${data.email || '-'}</td></tr>
-                    <tr><td>Mata Uang (Kurs)</td><td>${data.currency || 'IDR'}</td></tr>`;
-        if (data.details) {
-            for (const [k, v] of Object.entries(data.details)) rows += `<tr><td>${k}</td><td>${v}</td></tr>`;
+        let rows = `<tr><td>Waktu Pengajuan</td><td>${escapeHtml(data.time)}</td></tr>
+                    <tr><td>Nama Tertanggung</td><td><strong>${escapeHtml(data.client)}</strong></td></tr>
+                    <tr><td>Kontak / WhatsApp</td><td>${escapeHtml(data.contact)}</td></tr>
+                    <tr><td>Email Klien</td><td>${escapeHtml(data.email || '-')}</td></tr>
+                    <tr><td>AO / Marketing</td><td>${escapeHtml(ao)}</td></tr>
+                    <tr><td>Mata Uang (Kurs)</td><td>${escapeHtml(cur)}</td></tr>`;
+
+        for (const [k, v] of Object.entries(dt)) {
+            if (k === "AO Marketing" || k === "Mata Uang (Kurs)") continue;
+            rows += `<tr><td>${escapeHtml(k)}</td><td>${escapeHtml(v)}</td></tr>`;
         }
-        rows += `<tr><td>Catatan Kebutuhan</td><td>${data.notes}</td></tr>`;
+        rows += `<tr><td>Catatan Kebutuhan</td><td>${escapeHtml(data.notes || '-')}</td></tr>`;
         document.getElementById("mContent").innerHTML = rows;
 
         document.getElementById("btnModalEdit").onclick = function() {
@@ -959,7 +1167,77 @@
         document.getElementById("modal").style.display = "flex";
     }
 
-    function closeM(e) { if (!e || e.target.id === "modal") document.getElementById("modal").style.display = "none"; }
+    function closeM(e) {
+        if (!e || e.target.id === "modal") {
+            document.getElementById("modal").style.display = "none";
+        }
+    }
+
+    // 4. Fitur Download Detail RFQ ke PDF & Foto PNG (Sangat Ringan / Lazy-Load)
+    function downloadDetailPDF() {
+        window.print();
+    }
+
+    function downloadDetailPNG() {
+        if (!activeModalData) return;
+        const btn = document.getElementById("btnDlPng");
+        const origText = btn.innerHTML;
+        btn.innerText = "Memproses Foto...";
+        btn.disabled = true;
+
+        function runCapture() {
+            const captureEl = document.getElementById("modalCaptureArea");
+            const headerEl = document.getElementById("captureHeader");
+            const actionBar = document.getElementById("modalActionBar");
+            const closeBtn = document.getElementById("btnCloseModalTop");
+
+            // Tampilkan kop resmi & sembunyikan tombol sementara saat difoto
+            const prevMaxH = captureEl.style.maxHeight;
+            const prevOverflow = captureEl.style.overflow;
+            headerEl.style.display = "flex";
+            actionBar.style.display = "none";
+            closeBtn.style.display = "none";
+            captureEl.style.maxHeight = "none";
+            captureEl.style.overflow = "visible";
+
+            html2canvas(captureEl, {
+                scale: 2,
+                backgroundColor: "#ffffff",
+                useCORS: true
+            }).then(canvas => {
+                const safeName = String(activeModalData.client || "Klien").replace(/[^a-zA-Z0-9_-]/g, '_');
+                const link = document.createElement("a");
+                link.download = `Detail_RFQ_${activeModalData.lob}_${safeName}.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            }).catch(err => {
+                console.error("Gagal mengunduh gambar:", err);
+                alert("Gagal membuat gambar. Silakan gunakan tombol Simpan PDF.");
+            }).finally(() => {
+                headerEl.style.display = "none";
+                actionBar.style.display = "flex";
+                closeBtn.style.display = "block";
+                captureEl.style.maxHeight = prevMaxH;
+                captureEl.style.overflow = prevOverflow;
+                btn.innerHTML = origText;
+                btn.disabled = false;
+            });
+        }
+
+        if (window.html2canvas) {
+            runCapture();
+        } else {
+            const script = document.createElement("script");
+            script.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+            script.onload = runCapture;
+            script.onerror = function() {
+                alert("Gagal memuat modul pembuat foto karena kendala jaringan. Silakan gunakan fitur Simpan PDF.");
+                btn.innerHTML = origText;
+                btn.disabled = false;
+            };
+            document.head.appendChild(script);
+        }
+    }
 
     function clearQ() {
         if (confirm("Apakah Anda yakin ingin menghapus seluruh riwayat antrean yang tersimpan di perangkat ini?")) {
@@ -968,10 +1246,25 @@
         }
     }
 
+    // 5. Deteksi Pintasan LOB dari URL (?lob=...)
+    function checkUrlLobParam() {
+        const params = new URLSearchParams(window.location.search);
+        const lobParam = (params.get("lob") || "").toUpperCase();
+        const validLobs = ["PAR", "MV", "CPM", "MOP", "MCI", "LAINNYA"];
+        if (validLobs.includes(lobParam)) {
+            const sel = document.getElementById("lobSelect");
+            if (sel) {
+                sel.value = lobParam;
+                switchLOB(lobParam);
+            }
+        }
+    }
+
     addTransit("MOP");
     addTransit("MCI");
     resetQueueView();
     updateCurrencyLabels();
+    checkUrlLobParam();
 </script>
 </body>
 </html>

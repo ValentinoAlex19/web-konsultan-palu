@@ -23,7 +23,7 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
-        body { background: var(--bg); color: var(--txt); line-height: 1.5; }
+        body { background: var(--bg); color: var(--txt); line-height: 1.5; -webkit-tap-highlight-color: transparent; }
 
         /* Navigasi Utama */
         nav {
@@ -47,16 +47,17 @@
             font-size: 0.76rem;
             font-weight: 700;
             letter-spacing: 0.5px;
+            white-space: nowrap;
         }
 
         /* Sub-Navbar Lompatan Cepat (Quick Jump Navbar) */
         .quick-nav {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.96);
             backdrop-filter: blur(8px);
             border-bottom: 1px solid var(--bdr);
-            padding: 10px 20px;
+            padding: 10px 16px;
             position: sticky;
-            top: 61px; /* Tepat di bawah navbar utama */
+            top: 55px;
             z-index: 999;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
@@ -66,7 +67,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
+            flex-wrap: wrap;
         }
         .quick-nav-label {
             font-size: 0.82rem;
@@ -83,12 +85,12 @@
             font-size: 0.84rem;
             font-weight: 700;
             text-decoration: none;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 6px;
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .quick-nav-btn:hover, .quick-nav-btn:active {
+        .quick-nav-btn:hover, .quick-nav-btn:active, .quick-nav-btn.active {
             background: var(--p-red);
             color: #fff;
             border-color: var(--p-red);
@@ -101,7 +103,7 @@
             background: linear-gradient(135deg, #7f1d1d 0%, #b91c1c 100%);
             color: #fff;
             text-align: center;
-            padding: 38px 20px 44px;
+            padding: 36px 20px 44px;
             box-shadow: inset 0 -4px 12px rgba(0,0,0,0.1);
         }
         .hero h1 { font-size: 1.75rem; font-weight: 800; margin-bottom: 8px; }
@@ -123,7 +125,7 @@
         /* Grid Pembagian Porsi 2 Kolom */
         .portal-grid {
             display: grid;
-            grid-template-columns: 1fr 1.25fr;
+            grid-template-columns: 1.05fr 1.2fr;
             gap: 24px;
             align-items: start;
         }
@@ -137,7 +139,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.04);
             display: flex;
             flex-direction: column;
-            scroll-margin-top: 135px; /* Memberi jarak pas saat di-klik lewat quick nav */
+            scroll-margin-top: 125px;
             transition: box-shadow 0.3s ease;
         }
         .section-panel:target {
@@ -147,7 +149,7 @@
         .panel-header {
             border-bottom: 2px solid #f1f5f9;
             padding-bottom: 12px;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
         }
         .panel-header h2 { font-size: 1.18rem; color: var(--d-red); font-weight: 800; }
         .panel-header span { font-size: 0.83rem; color: var(--mut); }
@@ -165,6 +167,14 @@
             margin-bottom: 16px;
         }
 
+        .lob-tag-hint {
+            font-size: 0.76rem;
+            color: var(--mut);
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: block;
+        }
+
         .lob-tag-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -175,20 +185,51 @@
             background: var(--soft-red);
             border: 1px solid var(--border-red);
             border-radius: 6px;
-            padding: 9px 12px;
+            padding: 10px 12px;
             font-size: 0.81rem;
             font-weight: 700;
             color: var(--d-red);
             display: flex;
             align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            text-decoration: none;
+            transition: all 0.18s ease;
+        }
+        .lob-tag-item:hover, .lob-tag-item:active {
+            background: #ffe4e6;
+            border-color: var(--p-red);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(185, 28, 28, 0.12);
+        }
+        .lob-tag-left {
+            display: flex;
+            align-items: center;
             gap: 8px;
         }
-        .lob-tag-item span {
+        .lob-dot {
             display: inline-block;
             width: 7px;
             height: 7px;
             background: var(--p-red);
             border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .lob-arrow {
+            font-size: 0.78rem;
+            color: var(--p-red);
+            opacity: 0.8;
+        }
+        .lob-tag-other {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            color: #1e40af;
+        }
+        .lob-tag-other .lob-dot { background: #2563eb; }
+        .lob-tag-other .lob-arrow { color: #2563eb; }
+        .lob-tag-other:hover, .lob-tag-other:active {
+            background: #dbeafe;
+            border-color: #2563eb;
         }
 
         .kyc-box {
@@ -253,7 +294,7 @@
             background: var(--p-red);
             color: #fff;
             text-decoration: none;
-            padding: 9px 12px;
+            padding: 10px 12px;
             border-radius: 5px;
             font-weight: 700;
             font-size: 0.82rem;
@@ -261,15 +302,10 @@
         }
         .btn-calc:hover { background: var(--d-red); }
 
-        .card-disabled { border-top-color: #94a3b8; opacity: 0.75; }
-        .card-disabled:hover { transform: none; box-shadow: none; }
-        .card-disabled h3 { color: #475569; }
-        .btn-disabled {
-            background: #cbd5e1;
-            color: #475569;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
+        .card-shortcut { border-top-color: #0284c7; }
+        .card-shortcut h3 { color: #0369a1; }
+        .btn-shortcut { background: #0284c7; }
+        .btn-shortcut:hover { background: #0369a1; }
 
         footer {
             text-align: center;
@@ -285,10 +321,15 @@
         }
 
         @media (max-width: 900px) {
-            .portal-grid {
-                grid-template-columns: 1fr;
-            }
-            .container { margin-top: 15px; }
+            nav { padding: 12px 16px; }
+            .brand { font-size: 0.98rem; }
+            .quick-nav { top: 49px; padding: 8px 12px; }
+            .quick-nav-btn { flex: 1; justify-content: center; padding: 8px 10px; font-size: 0.8rem; }
+            .hero { padding: 28px 16px 34px; }
+            .hero h1 { font-size: 1.4rem; }
+            .portal-grid { grid-template-columns: 1fr; }
+            .container { margin-top: 14px; padding: 0 14px; }
+            .section-panel { padding: 18px; scroll-margin-top: 115px; }
             .lob-tag-grid { grid-template-columns: 1fr; }
         }
     </style>
@@ -303,9 +344,9 @@
     <!-- Sub-Navbar Navigasi Cepat dengan Animasi Smooth Scroll -->
     <div class="quick-nav">
         <div class="quick-nav-container">
-            <span class="quick-nav-label">Navigasi Cepat:</span>
-            <a href="#form-pengajuan" class="quick-nav-btn">&larr; Form Pengajuan</a>
-            <a href="#kalkulator-mandiri" class="quick-nav-btn">Kalkulator Mandiri &rarr;</a>
+            <span class="quick-nav-label">Menu Utama:</span>
+            <a href="#form-pengajuan" id="navBtnOrder" class="quick-nav-btn active">&larr; Form Pengajuan Penawaran</a>
+            <a href="#kalkulator-mandiri" id="navBtnCalc" class="quick-nav-btn">Kalkulator Premi Mandiri &rarr;</a>
         </div>
     </div>
 
@@ -313,18 +354,18 @@
     <header class="hero">
         <h1>Portal Layanan Penawaran & Simulasi Premi</h1>
         <p>
-            Hitung estimasi premi asuransi aset Anda secara mandiri dengan parameter regulasi OJK, atau ajukan permohonan penawaran resmi (Request for Quotation) untuk segera diterbitkan penawaran kompetitif oleh tim KBRU Cabang Palu.
+            Ajukan permohonan penawaran resmi (Request for Quotation) untuk segera diterbitkan penawaran kompetitif oleh tim KBRU Cabang Palu, atau hitung estimasi premi asuransi aset Anda secara mandiri sesuai regulasi OJK.
         </p>
     </header>
 
     <main class="container">
         <div class="portal-grid">
 
-            <!-- SISI KIRI (DI HP OTOMATIS TAMPIL DI ATAS): Form Pengajuan Penawaran Resmi -->
+            <!-- SISI KIRI (DI HP OTOMATIS TAMPIL PALING ATAS): Form Pengajuan Penawaran Resmi -->
             <section id="form-pengajuan" class="section-panel order-panel">
                 <div class="order-content">
                     <div class="panel-header">
-                        <h2>Pengajuan Penawaran Resmi</h2>
+                        <h2>Pengajuan Penawaran Resmi (RFQ)</h2>
                         <span>Layanan penerbitan polis & telaah penawaran oleh staf KBRU Palu.</span>
                     </div>
 
@@ -332,20 +373,40 @@
                         Berminat mendapatkan penawaran perlindungan terbaik untuk aset Anda? Lengkapi formulir pengajuan order secara online. Tim operasional pialang kami akan segera menyusun dan menerbitkan surat penawaran resmi berlisensi.
                     </p>
 
-                    <div style="font-size: 0.84rem; font-weight: 700; color: var(--d-red); margin-bottom: 8px;">
-                        Lini Bisnis (LOB) yang Tersedia di Form Order:
+                    <div style="font-size: 0.84rem; font-weight: 700; color: var(--d-red); margin-bottom: 2px;">
+                        Pilih Pintasan Lini Bisnis (LOB) Form Order:
                     </div>
+                    <span class="lob-tag-hint">*Klik salah satu lini bisnis di bawah ini untuk langsung membuka formulirnya:</span>
 
                     <div class="lob-tag-grid">
-                        <div class="lob-tag-item"><span></span> Property All Risk (PAR)</div>
-                        <div class="lob-tag-item"><span></span> Motor Vehicle (MV)</div>
-                        <div class="lob-tag-item"><span></span> Heavy Equipment (CPM)</div>
-                        <div class="lob-tag-item"><span></span> Marine Cargo Rutin (MOP)</div>
-                        <div class="lob-tag-item" style="grid-column: span 2;"><span></span> Marine Cargo Sekali Kirim (MCI)</div>
+                        <a href="order.html?lob=PAR" class="lob-tag-item">
+                            <span class="lob-tag-left"><span class="lob-dot"></span> Property All Risk (PAR)</span>
+                            <span class="lob-arrow">&rarr;</span>
+                        </a>
+                        <a href="order.html?lob=MV" class="lob-tag-item">
+                            <span class="lob-tag-left"><span class="lob-dot"></span> Motor Vehicle (MV)</span>
+                            <span class="lob-arrow">&rarr;</span>
+                        </a>
+                        <a href="order.html?lob=CPM" class="lob-tag-item">
+                            <span class="lob-tag-left"><span class="lob-dot"></span> Heavy Equipment (CPM)</span>
+                            <span class="lob-arrow">&rarr;</span>
+                        </a>
+                        <a href="order.html?lob=MOP" class="lob-tag-item">
+                            <span class="lob-tag-left"><span class="lob-dot"></span> Marine Cargo Rutin (MOP)</span>
+                            <span class="lob-arrow">&rarr;</span>
+                        </a>
+                        <a href="order.html?lob=MCI" class="lob-tag-item">
+                            <span class="lob-tag-left"><span class="lob-dot"></span> Marine Cargo Sekali Kirim (MCI)</span>
+                            <span class="lob-arrow">&rarr;</span>
+                        </a>
+                        <a href="order.html?lob=LAINNYA" class="lob-tag-item lob-tag-other">
+                            <span class="lob-tag-left"><span class="lob-dot"></span> Lini Bisnis Lainnya (Fleksibel)</span>
+                            <span class="lob-arrow">&rarr;</span>
+                        </a>
                     </div>
 
                     <div class="kyc-box">
-                        <strong>Ketentuan Berkas:</strong> Dokumen persyaratan dan data-data lainnya yang dibutuhkan dapat dilihat pada sistem formulir ini.
+                        <strong>Ketentuan Berkas:</strong> Dokumen persyaratan KYC dan rincian data yang dibutuhkan untuk setiap lini bisnis dapat diunduh langsung di dalam halaman formulir.
                     </div>
                 </div>
 
@@ -387,22 +448,31 @@
                         <a href="ajk.html" class="btn-calc">Buka Portal AJK &rarr;</a>
                     </article>
 
-                    <!-- Heavy Equipment -->
-                    <article class="calc-card card-disabled">
+                    <!-- Heavy Equipment Shortcut -->
+                    <article class="calc-card card-shortcut">
                         <div>
                             <h3>Heavy Equipment (CPM)</h3>
-                            <p>Simulasi alat berat konstruksi dan pertambangan di Sulawesi Tengah. Hubungi konsultan kami untuk analisis risiko.</p>
+                            <p>Proteksi alat berat konstruksi dan pertambangan di Sulawesi Tengah. Ajukan rincian unit melalui Form Order.</p>
                         </div>
-                        <span class="btn-calc btn-disabled">Form Order Siap Pakai</span>
+                        <a href="order.html?lob=CPM" class="btn-calc btn-shortcut">Ajukan di Form CPM &rarr;</a>
                     </article>
 
-                    <!-- Marine Cargo -->
-                    <article class="calc-card card-disabled">
+                    <!-- Marine Cargo Shortcut -->
+                    <article class="calc-card card-shortcut">
                         <div>
                             <h3>Marine Cargo (MOP/MCI)</h3>
                             <p>Proteksi pengiriman logistik antar-pulau rute multimoda darat dan laut. Tersedia di form permohonan penawaran.</p>
                         </div>
-                        <span class="btn-calc btn-disabled">Form Order Siap Pakai</span>
+                        <a href="order.html?lob=MOP" class="btn-calc btn-shortcut">Ajukan di Form Cargo &rarr;</a>
+                    </article>
+
+                    <!-- LOB Lainnya Shortcut -->
+                    <article class="calc-card card-shortcut">
+                        <div>
+                            <h3>Lini Bisnis Lainnya</h3>
+                            <p>Kebutuhan asuransi CAR, EAR, Public Liability, Personal Accident, Surety Bond, atau produk asuransi khusus lainnya.</p>
+                        </div>
+                        <a href="order.html?lob=LAINNYA" class="btn-calc btn-shortcut">Ajukan LOB Lainnya &rarr;</a>
                     </article>
                 </div>
             </section>
@@ -414,5 +484,31 @@
         &copy; 2026 PT Kalibesar Raya Utama - Cabang Palu. Pialang Asuransi Terdaftar & Diawasi OJK.
     </footer>
 
+    <script>
+        // Indikator aktif ringan pada tombol Quick-Nav saat pengguna scroll di HP/Desktop
+        const secOrder = document.getElementById("form-pengajuan");
+        const secCalc = document.getElementById("kalkulator-mandiri");
+        const btnOrder = document.getElementById("navBtnOrder");
+        const btnCalc = document.getElementById("navBtnCalc");
+
+        if ("IntersectionObserver" in window && secOrder && secCalc) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        if (entry.target.id === "form-pengajuan") {
+                            btnOrder.classList.add("active");
+                            btnCalc.classList.remove("active");
+                        } else if (entry.target.id === "kalkulator-mandiri") {
+                            btnCalc.classList.add("active");
+                            btnOrder.classList.remove("active");
+                        }
+                    }
+                });
+            }, { threshold: 0.35 });
+
+            observer.observe(secOrder);
+            observer.observe(secCalc);
+        }
+    </script>
 </body>
 </html>
